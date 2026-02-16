@@ -199,7 +199,7 @@
       <div class="glass-card rounded-2xl p-4 border border-white/10 mb-4">
         {#if !viewerConnected}
           <button on:click={connectWallet} class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-            <span>🦊</span> Connect Wallet to Tip
+            Connect Wallet to Tip
           </button>
         {:else}
           <div class="flex items-center justify-between">
@@ -234,7 +234,7 @@
             {#if isLoading}
               <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
             {:else}
-              <span>🎁</span> Generate Tip
+              Generate Tip
             {/if}
           </button>
         </form>
@@ -262,7 +262,7 @@
               {#if isLoading}
                 <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
               {:else}
-                <span>🦊</span> Pay {amount} SOL Now
+                Pay {amount} SOL Now
               {/if}
             </button>
           {/if}

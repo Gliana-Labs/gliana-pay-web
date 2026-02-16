@@ -130,7 +130,7 @@
       on:click={enableSound}
       class="absolute top-2 right-2 text-xs bg-white/10 hover:bg-white/20 text-white/70 px-2 py-1 rounded pointer-events-auto"
     >
-      🔊 Enable Sound
+      Enable Sound
     </button>
   {/if}
 

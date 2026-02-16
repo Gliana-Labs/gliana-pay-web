@@ -9,34 +9,65 @@
   let slug = '';
   let showDashboard = false;
   let turnstileToken = '';
+  let turnstileContainer: HTMLDivElement;
+  let turnstileWidgetId: string | null = null;
+  let turnstileLoaded = false;
 
   // Turnstile site key - get from https://dash.cloudflare.com/ -> Turnstile
   const TURNSTILE_SITE_KEY = '0x4AAAAAACd6patp0WteLo73';
 
-  // Load Turnstile script
+  // Load Turnstile and render widget
   function loadTurnstile() {
-    if (typeof window !== 'undefined' && !(window as any).turnstile) {
-      const script = document.createElement('script');
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
+    if (typeof window === 'undefined') return;
+
+    // Define callback first
+    (window as any).turnstileCallback = (token: string) => {
+      turnstileToken = token;
+      console.log('Turnstile token received');
+    };
+
+    // If already loaded, render immediately
+    if ((window as any).turnstile) {
+      renderTurnstile();
+      return;
     }
+
+    // Load script
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      renderTurnstile();
+    };
+    document.head.appendChild(script);
   }
 
-  // Turnstile callback to get token
-  function setupTurnstileCallback() {
-    if (typeof window !== 'undefined') {
-      (window as any).turnstileCallback = (token: string) => {
+  function renderTurnstile() {
+    if (!turnstileContainer || !(window as any).turnstile) return;
+
+    // Remove old widget if exists
+    if (turnstileWidgetId) {
+      try {
+        (window as any).turnstile.remove(turnstileWidgetId);
+      } catch (e) {}
+    }
+
+    // Render new widget
+    turnstileWidgetId = (window as any).turnstile.render(turnstileContainer, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: (token: string) => {
         turnstileToken = token;
-      };
-    }
+        console.log('Turnstile token received');
+      }
+    });
   }
 
-  onMount(() => {
+  // Load Turnstile when wallet connects (form becomes visible)
+  $: if (connected && turnstileContainer && !turnstileLoaded) {
+    turnstileLoaded = true;
     loadTurnstile();
-    setupTurnstileCallback();
-  });
+  }
 
   // Dashboard data
   let totalReceived = 0;
@@ -376,7 +407,7 @@
         <!-- Settings -->
         <div>
           <div class="glass-card rounded-2xl border border-white/10 p-6">
-            <h2 class="font-bold text-lg mb-4">⚙️ Settings</h2>
+            <h2 class="font-bold text-lg mb-4">Settings</h2>
             <div class="space-y-4">
               <div>
                 <label for="min-amount" class="block text-sm text-zinc-400 mb-2">Minimum (SOL)</label>
@@ -400,7 +431,7 @@
           </div>
 
           <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
-            <h2 class="font-bold text-lg mb-4">📺 OBS Overlay</h2>
+            <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
 
             <p class="text-sm text-zinc-400 mb-3">How to add tip alerts to your stream:</p>
 
@@ -435,11 +466,11 @@
             </ol>
 
             <a href="/overlay/{slug || 'yourname'}" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
-              <span>👁️ Preview Overlay</span>
+              <span>Preview Overlay</span>
             </a>
 
             <button on:click={testAlert} class="ml-3 inline-flex items-center gap-2 text-sm text-pink-400 hover:underline">
-              <span>🧪 Test Alert</span>
+              <span>Test Alert</span>
             </button>
           </div>
         </div>
@@ -482,8 +513,7 @@
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
               </svg>
             {:else}
-              <span>🦊</span>
-            {/if}
+              {/if}
             Connect Phantom Wallet
           </button>
           <p class="text-xs text-zinc-500 mt-4 text-center">
@@ -514,7 +544,7 @@
 
             <!-- Turnstile Widget -->
             <div class="flex justify-center">
-              <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-callback="turnstileCallback"></div>
+              <div bind:this={turnstileContainer} class="cf-turnstile"></div>
             </div>
 
             <button on:click={register} disabled={loading || !name || !slug || !turnstileToken} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">

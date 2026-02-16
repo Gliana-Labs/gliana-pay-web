@@ -108,7 +108,7 @@
         href="/login"
         class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all"
       >
-        <span>🚀</span> Start Tipping Page
+        Start Tipping Page
       </a>
     </div>
 
