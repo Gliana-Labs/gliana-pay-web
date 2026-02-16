@@ -8,6 +8,35 @@
   let name = '';
   let slug = '';
   let showDashboard = false;
+  let turnstileToken = '';
+
+  // Turnstile site key - get from https://dash.cloudflare.com/ -> Turnstile
+  const TURNSTILE_SITE_KEY = '0x4AAAAAACd6patp0WteLo73';
+
+  // Load Turnstile script
+  function loadTurnstile() {
+    if (typeof window !== 'undefined' && !(window as any).turnstile) {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  }
+
+  // Turnstile callback to get token
+  function setupTurnstileCallback() {
+    if (typeof window !== 'undefined') {
+      (window as any).turnstileCallback = (token: string) => {
+        turnstileToken = token;
+      };
+    }
+  }
+
+  onMount(() => {
+    loadTurnstile();
+    setupTurnstileCallback();
+  });
 
   // Dashboard data
   let totalReceived = 0;
@@ -196,7 +225,8 @@
         body: JSON.stringify({
           wallet: walletAddress,
           name,
-          slug
+          slug,
+          turnstile_token: turnstileToken
         }),
         signal: controller.signal
       });
@@ -482,7 +512,12 @@
               <p class="text-xs text-zinc-500 mt-1">Your page: glianapay.com/{slug || 'yourname'}</p>
             </div>
 
-            <button on:click={register} disabled={loading || !name || !slug} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
+            <!-- Turnstile Widget -->
+            <div class="flex justify-center">
+              <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-callback="turnstileCallback"></div>
+            </div>
+
+            <button on:click={register} disabled={loading || !name || !slug || !turnstileToken} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
               {#if loading}
                 Setting up...
               {:else}
