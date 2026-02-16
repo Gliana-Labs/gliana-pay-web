@@ -168,12 +168,27 @@
   }
 
   // Test alert via WebSocket (for OBS)
+  let ws: WebSocket | null = null;
+  let wsRetryCount = 0;
+  const MAX_WS_RETRIES = 3;
+
   function testAlertWS() {
+    wsRetryCount = 0;
+    sendTestAlert();
+  }
+
+  function sendTestAlert() {
+    if (wsRetryCount >= MAX_WS_RETRIES) {
+      console.error('Max retries reached for WebSocket');
+      return;
+    }
+
     const wsUrl = `wss://api.glianapay.com/ws/${slug}`;
-    const ws = new WebSocket(wsUrl);
+    ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
       console.log('Test WS connected, sending test tip...');
+      wsRetryCount = 0;
       // Wait for welcome message then send test
       setTimeout(() => {
         // Trigger alert via API that broadcasts to DO
@@ -183,13 +198,31 @@
           console.log('Test alert sent via WebSocket');
         }).catch(err => {
           console.error('Failed to send test alert:', err);
+        }).finally(() => {
+          // Give time for message to propagate before closing
+          setTimeout(() => {
+            if (ws) {
+              ws.close();
+              ws = null;
+            }
+          }, 500);
         });
-        ws.close();
-      }, 1000);
+      }, 500);
     };
 
     ws.onerror = (err) => {
       console.error('Test WS error:', err);
+      wsRetryCount++;
+      // Retry after a short delay
+      if (wsRetryCount < MAX_WS_RETRIES) {
+        console.log(`Retrying WebSocket connection... (${wsRetryCount}/${MAX_WS_RETRIES})`);
+        setTimeout(sendTestAlert, 1000);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log('Test WS closed');
+      ws = null;
     };
   }
 

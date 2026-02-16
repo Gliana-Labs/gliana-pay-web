@@ -96,15 +96,45 @@
     return (lamports / 1e9).toFixed(4);
   }
 
+  let wsReconnectAttempts = 0;
+  let wsReconnectDelay = 1000;
+  let wsConnectionTimeout: ReturnType<typeof setTimeout> | null = null;
+
   function connectWebSocket() {
+    // Clear any existing connection
+    if (socket) {
+      socket.close();
+      socket = null;
+    }
+
+    // Clear connection timeout
+    if (wsConnectionTimeout) {
+      clearTimeout(wsConnectionTimeout);
+    }
+
     wsUrl = `wss://${WORKER_HOST}/ws/${data.slug}`;
+    console.log('Connecting to WebSocket:', wsUrl);
 
     try {
       socket = new WebSocket(wsUrl);
+      socket.binaryType = 'arraybuffer';
+
+      // Connection timeout - fail fast
+      wsConnectionTimeout = setTimeout(() => {
+        if (socket && socket.readyState !== WebSocket.OPEN) {
+          console.log('WebSocket connection timeout, closing...');
+          socket.close();
+        }
+      }, 10000);
 
       socket.onopen = () => {
         console.log('WebSocket connected');
         isConnected = true;
+        wsReconnectAttempts = 0;
+        wsReconnectDelay = 1000;
+        if (wsConnectionTimeout) {
+          clearTimeout(wsConnectionTimeout);
+        }
       };
 
       socket.onmessage = (event) => {
@@ -124,8 +154,16 @@
       };
 
       socket.onclose = () => {
+        console.log('WebSocket closed, reconnecting...');
         isConnected = false;
-        setTimeout(connectWebSocket, 3000);
+        if (wsConnectionTimeout) {
+          clearTimeout(wsConnectionTimeout);
+        }
+        // Exponential backoff
+        wsReconnectAttempts++;
+        const delay = Math.min(wsReconnectDelay * Math.pow(1.5, wsReconnectAttempts - 1), 30000);
+        console.log(`Reconnecting in ${delay}ms (attempt ${wsReconnectAttempts})`);
+        setTimeout(connectWebSocket, delay);
       };
 
       socket.onerror = (error) => {
@@ -152,6 +190,9 @@
   onDestroy(() => {
     if (socket) {
       socket.close();
+    }
+    if (wsConnectionTimeout) {
+      clearTimeout(wsConnectionTimeout);
     }
     if (typeof window !== 'undefined') {
       window.removeEventListener('message', handleMessage);
