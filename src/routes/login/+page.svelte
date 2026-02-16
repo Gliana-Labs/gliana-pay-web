@@ -146,7 +146,7 @@
     }
   }
 
-  // Test alert
+  // Test alert via postMessage (new tab)
   function testAlert() {
     const testWindow = window.open(`/overlay/${slug}`, 'GlianaPayOverlay', 'width=600,height=400');
     setTimeout(() => {
@@ -165,6 +165,32 @@
         }, '*');
       }
     }, 1000);
+  }
+
+  // Test alert via WebSocket (for OBS)
+  function testAlertWS() {
+    const wsUrl = `wss://api.glianapay.com/ws/${slug}`;
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      console.log('Test WS connected, sending test tip...');
+      // Wait for welcome message then send test
+      setTimeout(() => {
+        // Trigger alert via API that broadcasts to DO
+        fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
+          method: 'POST'
+        }).then(() => {
+          console.log('Test alert sent via WebSocket');
+        }).catch(err => {
+          console.error('Failed to send test alert:', err);
+        });
+        ws.close();
+      }, 1000);
+    };
+
+    ws.onerror = (err) => {
+      console.error('Test WS error:', err);
+    };
   }
 
   // Check if Phantom is available
@@ -476,7 +502,11 @@
             </a>
 
             <button on:click={testAlert} class="ml-3 inline-flex items-center gap-2 text-sm text-pink-400 hover:underline">
-              <span>Test Alert</span>
+              <span>Test Alert (new tab)</span>
+            </button>
+
+            <button on:click={testAlertWS} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline">
+              <span>Test Alert (WebSocket)</span>
             </button>
           </div>
         </div>
