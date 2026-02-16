@@ -412,6 +412,38 @@
         </div>
       </div>
 
+      <!-- OBS Overlay Setup -->
+      <div class="glass-card rounded-2xl border border-white/10 p-6 mb-8">
+        <h2 class="font-bold text-lg mb-4">📺 Add Tip Alerts to Your Stream (OBS)</h2>
+        <div class="space-y-4">
+          <div>
+            <p class="text-zinc-400 text-sm mb-2">With Sound:</p>
+            <div class="flex items-center gap-2">
+              <code class="bg-zinc-900 px-3 py-2 rounded-lg text-cyan-400 text-sm flex-1 overflow-x-auto">
+                {typeof window !== 'undefined' ? window.location.origin : ''}/overlay/{slug}?sound=1
+              </code>
+              <button on:click={() => navigator.clipboard.writeText(`${typeof window !== 'undefined' ? window.location.origin : ''}/overlay/${slug}?sound=1`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-sm">
+                Copy
+              </button>
+            </div>
+          </div>
+          <div>
+            <p class="text-zinc-400 text-sm mb-2">Without Sound:</p>
+            <div class="flex items-center gap-2">
+              <code class="bg-zinc-900 px-3 py-2 rounded-lg text-cyan-400 text-sm flex-1 overflow-x-auto">
+                {typeof window !== 'undefined' ? window.location.origin : ''}/overlay/{slug}
+              </code>
+              <button on:click={() => navigator.clipboard.writeText(`${typeof window !== 'undefined' ? window.location.origin : ''}/overlay/${slug}`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-sm">
+                Copy
+              </button>
+            </div>
+          </div>
+          <p class="text-zinc-500 text-sm">
+            In OBS, add a "Browser Source" and paste the URL. Check "Shutdown source when not visible" to save resources.
+          </p>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Recent Donations -->
         <div class="lg:col-span-2">
@@ -506,14 +538,6 @@
             <a href="/overlay/{slug || 'yourname'}" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
               <span>Preview Overlay</span>
             </a>
-
-            <button on:click={testAlert} class="ml-3 inline-flex items-center gap-2 text-sm text-pink-400 hover:underline">
-              <span>Test Alert (new tab)</span>
-            </button>
-
-            <button on:click={testAlertWS} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline">
-              <span>Test Alert (WebSocket)</span>
-            </button>
           </div>
         </div>
       </div>
