@@ -171,10 +171,10 @@
   }
 
   onMount(async () => {
-    // First load sound preference from localStorage
-    loadSoundPreference();
-    // Then load settings (which may override soundUrl)
+    // Load settings first (includes sound URL from streamer config)
     await loadSettings();
+    // Then load sound preference from URL param
+    loadSoundPreference();
     // Connect WebSocket
     connectWebSocket();
 

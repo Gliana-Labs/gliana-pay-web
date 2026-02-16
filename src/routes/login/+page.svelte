@@ -454,7 +454,12 @@
               </div>
               <div>
                 <label for="sound" class="block text-sm text-zinc-400 mb-2">Alert Sound URL</label>
-                <input type="url" id="sound" bind:value={soundUrl} class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white" />
+                <div class="flex gap-2">
+                  <input type="url" id="sound" bind:value={soundUrl} class="flex-1 px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white" />
+                  <button on:click={() => soundUrl = 'https://cdn.gliana.app/alerts/default.mp3'} class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-xl text-sm text-zinc-300">
+                    Default
+                  </button>
+                </div>
               </div>
               <button on:click={saveSettings} disabled={settingsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all">
                 {#if settingsLoading}
