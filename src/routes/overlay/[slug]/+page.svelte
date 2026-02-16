@@ -122,21 +122,29 @@
     currentTip = tipData;
     showAlert = true;
 
-    if (soundEnabled) {
-      console.log('Playing alert sound for tip:', tipData);
-      // Create fresh audio each time to ensure it plays
-      const audio = new Audio(soundUrl);
-      audio.volume = 1;
-      audio.play().catch((e) => {
-        console.error('Failed to play alert sound:', e);
-      });
+    // Always try to play sound if enabled
+    if (soundEnabled && soundUrl) {
+      console.log('Playing alert sound for tip:', tipData, 'URL:', soundUrl);
+      playSound();
     } else {
-      console.log('Sound not enabled, skipping alert sound');
+      console.log('Sound not enabled or no URL, skipping alert sound');
     }
 
     setTimeout(() => {
       showAlert = false;
     }, ALERT_DURATION);
+  }
+
+  function playSound() {
+    if (!soundUrl) return;
+
+    const audio = new Audio();
+    audio.volume = 1;
+    audio.src = soundUrl;
+    audio.crossOrigin = 'anonymous';
+    audio.play().catch((e) => {
+      console.error('Failed to play alert sound:', e);
+    });
   }
 
   function handleMessage(event: MessageEvent) {
