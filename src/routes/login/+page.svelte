@@ -119,7 +119,17 @@
   }
 
   // Save settings
+  let soundError = '';
+
   async function saveSettings() {
+    soundError = '';
+
+    // Validate sound URL
+    if (soundUrl && !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) && !soundUrl.includes('/media/sounds/')) {
+      soundError = 'URL should end with .mp3 or contain /media/sounds/';
+      return;
+    }
+
     console.log('saveSettings called, slug:', slug, 'minAmount:', minAmount, 'soundUrl:', soundUrl);
     settingsLoading = true;
     settingsSaved = false;
@@ -463,6 +473,9 @@
                   </button>
                 </div>
               </div>
+              {#if soundError}
+                <p class="text-red-400 text-sm">{soundError}</p>
+              {/if}
               <button on:click={saveSettings} disabled={settingsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all">
                 {#if settingsLoading}
                   Saving...

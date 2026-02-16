@@ -66,12 +66,14 @@
   // Fetch streamer settings on mount
   async function loadSettings() {
     try {
+      console.log('[Overlay] Loading settings for slug:', data.slug);
       const response = await fetch(`https://${WORKER_HOST}/api/streamer/${data.slug}/settings`);
       if (response.ok) {
         const result = await response.json();
+        console.log('[Overlay] Settings response:', result);
         if (result.settings?.sound_url) {
           soundUrl = result.settings.sound_url;
-          console.log('Loaded sound URL:', soundUrl);
+          console.log('[Overlay] Sound URL from settings:', soundUrl);
         }
         // Preload sound after getting URL
         if (soundEnabled) {
@@ -80,7 +82,7 @@
         }
       }
     } catch (e) {
-      console.error('Failed to load settings:', e);
+      console.error('[Overlay] Failed to load settings:', e);
     }
   }
 
