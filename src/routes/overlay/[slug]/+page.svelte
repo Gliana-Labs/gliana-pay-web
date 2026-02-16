@@ -23,6 +23,9 @@
       if (enabled === 'true') {
         soundEnabled = true;
         console.log('Sound preference loaded from localStorage');
+        // Preload the sound
+        alertSound = new Audio(soundUrl);
+        alertSound.volume = 1;
       }
     }
   }
@@ -62,6 +65,11 @@
         if (result.settings?.sound_url) {
           soundUrl = result.settings.sound_url;
           console.log('Loaded sound URL:', soundUrl);
+        }
+        // Preload sound after getting URL
+        if (soundEnabled) {
+          alertSound = new Audio(soundUrl);
+          alertSound.volume = 1;
         }
       }
     } catch (e) {
@@ -117,9 +125,12 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
+    // First load sound preference from localStorage
     loadSoundPreference();
-    loadSettings();
+    // Then load settings (which may override soundUrl)
+    await loadSettings();
+    // Connect WebSocket
     connectWebSocket();
 
     // Listen for test messages from parent window
@@ -153,15 +164,29 @@
   }
 
   function playSound() {
-    if (!soundUrl) return;
+    if (!soundUrl) {
+      console.error('No sound URL');
+      return;
+    }
 
-    const audio = new Audio();
-    audio.volume = 1;
-    audio.src = soundUrl;
-    audio.crossOrigin = 'anonymous';
-    audio.play().catch((e) => {
-      console.error('Failed to play alert sound:', e);
-    });
+    console.log('Playing sound from URL:', soundUrl);
+
+    // Use preloaded audio if available, otherwise create new
+    if (alertSound) {
+      alertSound.currentTime = 0;
+      alertSound.play().catch((e) => {
+        console.error('Failed to play alert sound:', e);
+      });
+    } else {
+      // Fallback: create new audio
+      const audio = new Audio();
+      audio.volume = 1;
+      audio.src = soundUrl;
+      audio.crossOrigin = 'anonymous';
+      audio.play().catch((e) => {
+        console.error('Failed to play alert sound:', e);
+      });
+    }
   }
 
   function handleMessage(event: MessageEvent) {
