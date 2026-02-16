@@ -80,6 +80,7 @@
   // Settings
   let minAmount = 0.001;
   let soundUrl = 'https://cdn.gliana.app/alerts/default.mp3';
+  let soundEnabled = false;
 
   const WORKER_URL = 'https://api.glianapay.com';
 
@@ -480,14 +481,27 @@
               </li>
               <li class="flex gap-2">
                 <span class="text-purple-400 font-bold">2.</span>
-                <span>Enter this URL:</span>
+                <span>Toggle sound below, copy URL, paste in Browser Source</span>
               </li>
             </ol>
 
-            <code class="block text-xs text-green-400 bg-black/30 p-2 rounded mb-2 break-all">
-              https://glianapay.com/overlay/{slug || 'yourname'}
-            </code>
-            <p class="text-xs text-zinc-500 mb-3">Add <code class="text-cyan-400">?sound=1</code> to enable audio alerts</p>
+            <div class="mb-3">
+              <label class="flex items-center gap-2 text-sm text-zinc-300 mb-2">
+                <input type="checkbox" bind:checked={soundEnabled} class="w-4 h-4 accent-purple-500" />
+                Enable sound alerts
+              </label>
+            </div>
+
+            <div class="space-y-2 mb-3">
+              <div class="flex items-center gap-2">
+                <code class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all">
+                  https://glianapay.com/overlay/{slug || 'yourname'}{soundEnabled ? '?sound=1' : ''}
+                </code>
+                <button on:click={() => navigator.clipboard.writeText(`https://glianapay.com/overlay/${slug || 'yourname'}${soundEnabled ? '?sound=1' : ''}`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap">
+                  Copy
+                </button>
+              </div>
+            </div>
 
             <ol class="text-sm text-zinc-300 space-y-2 mb-3">
               <li class="flex gap-2">

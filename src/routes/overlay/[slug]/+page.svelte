@@ -18,21 +18,16 @@
   let alertQueue: WSTipEvent['data'][] = [];
   let isShowingAlert = false;
 
-  // Load sound preference from localStorage or URL param on mount
+  // Load sound preference from URL param only (ignore localStorage for OBS)
   function loadSoundPreference() {
     // Check URL param first (?sound=1 or ?enableSound=true)
     const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
     const urlSound = urlParams.get('sound') || urlParams.get('enableSound');
 
+    // Only enable sound if URL param says so - ignore localStorage
     if (urlSound === '1' || urlSound === 'true') {
       soundEnabled = true;
       console.log('Sound enabled via URL parameter');
-    } else if (typeof localStorage !== 'undefined') {
-      const enabled = localStorage.getItem('soundEnabled');
-      if (enabled === 'true') {
-        soundEnabled = true;
-        console.log('Sound preference loaded from localStorage');
-      }
     }
 
     // Preload the sound if enabled
