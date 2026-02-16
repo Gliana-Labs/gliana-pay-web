@@ -132,6 +132,7 @@
       status = 'Payment successful! 🎉 Thank you for your tip!';
 
       // Trigger alert on overlay
+      console.log('[TipPage] Payment confirmed, triggering alert for:', signedTx.signature);
       triggerAlert(signedTx.signature);
 
       qrCodeUrl = ''; // Hide QR after successful payment
@@ -149,9 +150,19 @@
 
   function sendTipToOverlay(txHash: string, amountLamports: number) {
     if (!streamer) return;
+    console.log('[TipPage] Opening overlay for:', streamer.slug);
+
     const overlayWindow = window.open(`/overlay/${streamer.slug}`, 'GlianaPayOverlay', 'width=600,height=400');
+
+    if (!overlayWindow) {
+      console.error('[TipPage] Popup blocked! Please allow popups for this site');
+      alert('Popup blocked! Please allow popups and try again, or open the overlay manually at /overlay/' + streamer.slug);
+      return;
+    }
+
     setTimeout(() => {
       if (overlayWindow) {
+        console.log('[TipPage] Sending tip data to overlay:', { tx_hash: txHash, amount: amountLamports });
         overlayWindow.postMessage({
           type: 'tip',
           data: {
@@ -165,7 +176,7 @@
           }
         }, '*');
       }
-    }, 1000);
+    }, 1500);
   }
 
   function triggerAlert(signature: string) {

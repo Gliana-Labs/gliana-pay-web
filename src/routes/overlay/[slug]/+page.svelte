@@ -262,8 +262,10 @@
   }
 
   function handleMessage(event: MessageEvent) {
+    console.log('[Overlay] Received postMessage:', event.data);
     // Accept test messages from parent
     if (event.data && event.data.type === 'tip') {
+      console.log('[Overlay] Received tip data:', event.data.data);
       handleTip(event.data.data);
     }
   }
