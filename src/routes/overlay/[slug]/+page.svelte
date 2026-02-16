@@ -37,17 +37,11 @@
     soundEnabled = true;
     soundLoading = true;
 
-    if (!alertSound) {
-      console.error('Audio element not found');
-      soundLoading = false;
-      return;
-    }
-
     // Create new audio with the sound URL
-    const audio = new Audio(soundUrl);
-    audio.volume = 1;
+    alertSound = new Audio(soundUrl);
+    alertSound.volume = 1;
 
-    audio.play()
+    alertSound.play()
       .then(() => {
         console.log('Sound enabled and playing');
       })
@@ -128,10 +122,12 @@
     currentTip = tipData;
     showAlert = true;
 
-    if (soundEnabled && alertSound) {
+    if (soundEnabled) {
       console.log('Playing alert sound for tip:', tipData);
-      alertSound.currentTime = 0;
-      alertSound.play().catch((e) => {
+      // Create fresh audio each time to ensure it plays
+      const audio = new Audio(soundUrl);
+      audio.volume = 1;
+      audio.play().catch((e) => {
         console.error('Failed to play alert sound:', e);
       });
     } else {
