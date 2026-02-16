@@ -545,6 +545,10 @@
             <button on:click={testAlertWS} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline">
               <span>Test Alert</span>
             </button>
+
+            <p class="text-xs text-zinc-500 mt-3">
+              <span class="text-yellow-500">Tip:</span> If settings don't update, right-click the Browser Source in OBS and select "Interact" then refresh the page, or remove and re-add the Browser Source.
+            </p>
           </div>
         </div>
       </div>
