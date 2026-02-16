@@ -101,7 +101,7 @@
       const { Connection, PublicKey, Transaction, SystemProgram } = await import('@solana/web3.js');
 
       // Create connection to Solana
-      const connection = new Connection('https://api.mainnet-beta.solana.com');
+      const connection = new Connection('https://api.devnet.solana.com');
 
       // Get recent blockhash
       const { blockhash } = await connection.getLatestBlockhash();
