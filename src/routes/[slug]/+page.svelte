@@ -129,10 +129,9 @@
       // Wait for confirmation
       await connection.confirmTransaction(signedTx.signature);
 
-      status = 'Payment confirmed! Sending alert to streamer...';
+      status = 'Payment confirmed! Sending alert to streamer... (please don\'t close this page)';
 
       // Record tip and broadcast to streamer's overlay (with retry)
-      status = 'Payment confirmed! Sending alert to streamer...';
       console.log('[TipPage] Recording tip and broadcasting to streamer:', signedTx.signature);
       const tipData = {
         slug: streamer.slug,
@@ -153,6 +152,7 @@
           });
           if (res.ok) {
             status = 'Alert sent to streamer! Thank you for your tip! 🎉';
+            qrCodeUrl = ''; // Hide QR only after success
             console.log('[TipPage] Tip recorded successfully');
             break;
           }
@@ -163,13 +163,12 @@
           }
           if (attempt === 3) {
             status = 'Payment confirmed but alert may be delayed. Thank you!';
+            qrCodeUrl = '';
             console.error('[TipPage] Failed to record tip after 3 attempts');
           }
         }
         if (attempt < 3) await new Promise(r => setTimeout(r, 1000));
       }
-
-      qrCodeUrl = ''; // Hide QR after successful payment
     } catch (error: any) {
       console.error('Payment failed:', error);
       status = error.message?.includes('User rejected')
