@@ -15,6 +15,8 @@
   let soundEnabled = false;
   let soundLoading = false;
   let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
+  let alertQueue: WSTipEvent['data'][] = [];
+  let isShowingAlert = false;
 
   // Load sound preference from localStorage or URL param on mount
   function loadSoundPreference() {
@@ -157,19 +159,38 @@
   });
 
   function handleTip(tipData: WSTipEvent['data']) {
+    // Add to queue
+    alertQueue.push(tipData);
+    console.log('Alert queued, queue length:', alertQueue.length);
+
+    // Process queue if not currently showing
+    if (!isShowingAlert) {
+      processQueue();
+    }
+  }
+
+  function processQueue() {
+    if (alertQueue.length === 0 || isShowingAlert) return;
+
+    isShowingAlert = true;
+    const tipData = alertQueue.shift()!;
     currentTip = tipData;
     showAlert = true;
 
-    // Always try to play sound if enabled
+    // Play sound
     if (soundEnabled && soundUrl) {
-      console.log('Playing alert sound for tip:', tipData, 'URL:', soundUrl);
+      console.log('Playing alert sound for tip:', tipData);
       playSound();
-    } else {
-      console.log('Sound not enabled or no URL, skipping alert sound');
     }
 
+    // After alert duration, show next in queue
     setTimeout(() => {
       showAlert = false;
+      // Small delay before next alert
+      setTimeout(() => {
+        isShowingAlert = false;
+        processQueue();
+      }, 500);
     }, ALERT_DURATION);
   }
 
