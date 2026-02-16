@@ -14,7 +14,7 @@
   let wsUrl = '';
   let soundEnabled = false;
   let soundLoading = false;
-  let soundUrl = 'https://cdn.gliana.app/alerts/default.mp3';
+  let soundUrl = 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3';
 
   // Fetch streamer settings on mount
   async function loadSettings() {
@@ -36,20 +36,27 @@
     console.log('Enable sound clicked, soundUrl:', soundUrl);
     soundEnabled = true;
     soundLoading = true;
-    if (alertSound) {
-      alertSound.volume = 1;
-      alertSound.load();
-      alertSound.play()
-        .then(() => {
-          console.log('Sound enabled and playing');
-        })
-        .catch((e) => {
-          console.error('Failed to play sound:', e);
-        })
-        .finally(() => {
-          soundLoading = false;
-        });
+
+    if (!alertSound) {
+      console.error('Audio element not found');
+      soundLoading = false;
+      return;
     }
+
+    // Create new audio with the sound URL
+    const audio = new Audio(soundUrl);
+    audio.volume = 1;
+
+    audio.play()
+      .then(() => {
+        console.log('Sound enabled and playing');
+      })
+      .catch((e) => {
+        console.error('Failed to play sound:', e);
+      })
+      .finally(() => {
+        soundLoading = false;
+      });
   }
 
   const ALERT_DURATION = 5000;
