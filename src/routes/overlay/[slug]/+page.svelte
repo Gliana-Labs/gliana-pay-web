@@ -172,6 +172,8 @@
     }
   }
 
+  let refreshInterval: ReturnType<typeof setInterval> | null = null;
+
   onMount(async () => {
     // Load settings first (includes sound URL from streamer config)
     await loadSettings();
@@ -182,6 +184,15 @@
 
     // Listen for test messages from parent window
     window.addEventListener('message', handleMessage);
+
+    // Poll settings every 30 seconds to pick up updates (for OBS which caches pages)
+    refreshInterval = setInterval(async () => {
+      console.log('[Overlay] Polling for settings update...');
+      await loadSettings();
+    }, 30000);
+
+    // Also refresh settings when window gains focus
+    window.addEventListener('focus', loadSettings);
   });
 
   onDestroy(() => {
@@ -191,8 +202,12 @@
     if (wsConnectionTimeout) {
       clearTimeout(wsConnectionTimeout);
     }
+    if (refreshInterval) {
+      clearInterval(refreshInterval);
+    }
     if (typeof window !== 'undefined') {
       window.removeEventListener('message', handleMessage);
+      window.removeEventListener('focus', loadSettings);
     }
   });
 
