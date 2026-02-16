@@ -130,6 +130,10 @@
       await connection.confirmTransaction(signedTx.signature);
 
       status = 'Payment successful! 🎉 Thank you for your tip!';
+
+      // Trigger alert on overlay
+      triggerAlert(signedTx.signature);
+
       qrCodeUrl = ''; // Hide QR after successful payment
     } catch (error: any) {
       console.error('Payment failed:', error);
@@ -143,25 +147,36 @@
 
   let testWindow: Window | null = null;
 
-  function testAlert() {
+  function sendTipToOverlay(txHash: string, amountLamports: number) {
     if (!streamer) return;
-    testWindow = window.open(`/overlay/${streamer.slug}`, 'GlianaPayOverlay', 'width=600,height=400');
+    const overlayWindow = window.open(`/overlay/${streamer.slug}`, 'GlianaPayOverlay', 'width=600,height=400');
     setTimeout(() => {
-      if (testWindow) {
-        testWindow.postMessage({
+      if (overlayWindow) {
+        overlayWindow.postMessage({
           type: 'tip',
           data: {
-            tx_hash: 'test_' + crypto.randomUUID(),
-            amount: 100000000,
-            sender: viewerWallet || 'TestUser',
-            sender_name: name || 'Test User',
-            message: message || 'Test tip! 🎉',
+            tx_hash: txHash,
+            amount: amountLamports,
+            sender: viewerWallet || 'Unknown',
+            sender_name: name || viewerWallet?.slice(0, 8) || 'Anonymous',
+            message: message || '🎉',
             timestamp: new Date().toISOString(),
             streamer_slug: streamer.slug
           }
         }, '*');
       }
     }, 1000);
+  }
+
+  function triggerAlert(signature: string) {
+    if (!streamer) return;
+    const lamports = Math.floor(amount * 1e9);
+    sendTipToOverlay(signature, lamports);
+  }
+
+  function testAlert() {
+    if (!streamer) return;
+    sendTipToOverlay('test_' + crypto.randomUUID(), 100000000);
   }
 </script>
 
