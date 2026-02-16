@@ -131,9 +131,20 @@
 
       status = 'Payment successful! 🎉 Thank you for your tip!';
 
-      // Trigger alert on overlay
-      console.log('[TipPage] Payment confirmed, triggering alert for:', signedTx.signature);
-      triggerAlert(signedTx.signature);
+      // Record tip and broadcast to streamer's overlay
+      console.log('[TipPage] Recording tip and broadcasting to streamer:', signedTx.signature);
+      await fetch('https://api.glianapay.com/api/tip/record', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug: streamer.slug,
+          tx_hash: signedTx.signature,
+          amount: Math.floor(amount * 1e9),
+          sender: viewerWallet,
+          sender_name: name || viewerWallet?.slice(0, 8) || 'Anonymous',
+          message: message || '🎉'
+        })
+      });
 
       qrCodeUrl = ''; // Hide QR after successful payment
     } catch (error: any) {
