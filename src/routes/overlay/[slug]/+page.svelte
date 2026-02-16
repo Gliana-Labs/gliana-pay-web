@@ -69,27 +69,6 @@
     }
   }
 
-  function enableSound() {
-    console.log('Enable sound clicked, soundUrl:', soundUrl);
-    soundEnabled = true;
-    soundLoading = true;
-
-    // Create new audio with the sound URL
-    alertSound = new Audio(soundUrl);
-    alertSound.volume = 1;
-
-    alertSound.play()
-      .then(() => {
-        console.log('Sound enabled and playing');
-      })
-      .catch((e) => {
-        console.error('Failed to play sound:', e);
-      })
-      .finally(() => {
-        soundLoading = false;
-      });
-  }
-
   const ALERT_DURATION = 5000;
   const WORKER_HOST = 'api.glianapay.com';
 
