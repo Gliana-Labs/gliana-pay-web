@@ -208,9 +208,9 @@
 
 <!-- OBS Overlay - Transparent Background -->
 <div class="fixed inset-0 pointer-events-none overflow-hidden" style="background: transparent;">
-  <!-- Connection Status -->
-  <div class="absolute top-2 left-2 text-xs text-white/30">
-    {isConnected ? '🟢' : '🔴'}
+  <!-- Connection Status - Debug info -->
+  <div class="absolute top-2 left-2 text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
+    {isConnected ? '🟢 Connected' : '🔴 Disconnected'} | {data.slug}
   </div>
 
   <!-- Enable Sound Button -->
