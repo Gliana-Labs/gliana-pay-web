@@ -131,20 +131,35 @@
 
       status = 'Payment successful! 🎉 Thank you for your tip!';
 
-      // Record tip and broadcast to streamer's overlay
+      // Record tip and broadcast to streamer's overlay (with retry)
       console.log('[TipPage] Recording tip and broadcasting to streamer:', signedTx.signature);
-      await fetch('https://api.glianapay.com/api/tip/record', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          slug: streamer.slug,
-          tx_hash: signedTx.signature,
-          amount: Math.floor(amount * 1e9),
-          sender: viewerWallet,
-          sender_name: name || viewerWallet?.slice(0, 8) || 'Anonymous',
-          message: message || '🎉'
-        })
-      });
+      const tipData = {
+        slug: streamer.slug,
+        tx_hash: signedTx.signature,
+        amount: Math.floor(amount * 1e9),
+        sender: viewerWallet,
+        sender_name: name || viewerWallet?.slice(0, 8) || 'Anonymous',
+        message: message || '🎉'
+      };
+
+      // Retry up to 3 times
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const res = await fetch('https://api.glianapay.com/api/tip/record', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tipData)
+          });
+          if (res.ok) {
+            console.log('[TipPage] Tip recorded successfully');
+            break;
+          }
+        } catch (e) {
+          console.error('[TipPage] Attempt', attempt, 'failed:', e);
+          if (attempt === 3) console.error('[TipPage] Failed to record tip after 3 attempts');
+        }
+        if (attempt < 3) await new Promise(r => setTimeout(r, 1000));
+      }
 
       qrCodeUrl = ''; // Hide QR after successful payment
     } catch (error: any) {
