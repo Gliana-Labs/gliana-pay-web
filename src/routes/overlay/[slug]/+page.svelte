@@ -12,6 +12,15 @@
   let showAlert = false;
   let alertSound: HTMLAudioElement | null = null;
   let wsUrl = '';
+  let soundEnabled = false;
+
+  function enableSound() {
+    soundEnabled = true;
+    if (alertSound) {
+      alertSound.volume = 1;
+      alertSound.play().catch(() => {});
+    }
+  }
 
   const ALERT_DURATION = 5000;
   const WORKER_HOST = 'api.glianapay.com';
@@ -81,7 +90,7 @@
     currentTip = tipData;
     showAlert = true;
 
-    if (alertSound) {
+    if (soundEnabled && alertSound) {
       alertSound.currentTime = 0;
       alertSound.play().catch(console.error);
     }
@@ -114,6 +123,16 @@
   <div class="absolute top-2 left-2 text-xs text-white/30">
     {isConnected ? '🟢' : '🔴'}
   </div>
+
+  <!-- Enable Sound Button -->
+  {#if !soundEnabled}
+    <button
+      on:click={enableSound}
+      class="absolute top-2 right-2 text-xs bg-white/10 hover:bg-white/20 text-white/70 px-2 py-1 rounded pointer-events-auto"
+    >
+      🔊 Enable Sound
+    </button>
+  {/if}
 
   <!-- Alert Container -->
   <div
