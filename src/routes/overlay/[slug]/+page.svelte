@@ -13,12 +13,24 @@
   let alertSound: HTMLAudioElement | null = null;
   let wsUrl = '';
   let soundEnabled = false;
+  let soundLoading = false;
 
   function enableSound() {
     soundEnabled = true;
+    soundLoading = true;
     if (alertSound) {
       alertSound.volume = 1;
-      alertSound.play().catch(() => {});
+      alertSound.load();
+      alertSound.play()
+        .then(() => {
+          console.log('Sound enabled and playing');
+        })
+        .catch((e) => {
+          console.error('Failed to play sound:', e);
+        })
+        .finally(() => {
+          soundLoading = false;
+        });
     }
   }
 
@@ -91,8 +103,13 @@
     showAlert = true;
 
     if (soundEnabled && alertSound) {
+      console.log('Playing alert sound for tip:', tipData);
       alertSound.currentTime = 0;
-      alertSound.play().catch(console.error);
+      alertSound.play().catch((e) => {
+        console.error('Failed to play alert sound:', e);
+      });
+    } else {
+      console.log('Sound not enabled, skipping alert sound');
     }
 
     setTimeout(() => {
@@ -128,9 +145,10 @@
   {#if !soundEnabled}
     <button
       on:click={enableSound}
-      class="absolute top-2 right-2 text-xs bg-white/10 hover:bg-white/20 text-white/70 px-2 py-1 rounded pointer-events-auto"
+      disabled={soundLoading}
+      class="absolute top-2 right-2 text-xs bg-white/10 hover:bg-white/20 text-white/70 px-2 py-1 rounded pointer-events-auto disabled:opacity-50"
     >
-      Enable Sound
+      {soundLoading ? 'Loading...' : 'Enable Sound'}
     </button>
   {/if}
 
