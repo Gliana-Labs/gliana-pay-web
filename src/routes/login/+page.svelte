@@ -186,28 +186,42 @@
     const wsUrl = `wss://api.glianapay.com/ws/${slug}`;
     ws = new WebSocket(wsUrl);
 
+    let welcomeReceived = false;
+
     ws.onopen = () => {
-      console.log('Test WS connected, sending test tip...');
+      console.log('Test WS connected');
       wsRetryCount = 0;
-      // Wait for welcome message then send test
-      setTimeout(() => {
-        // Trigger alert via API that broadcasts to DO
-        fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
-          method: 'POST'
-        }).then(() => {
-          console.log('Test alert sent via WebSocket');
-        }).catch(err => {
-          console.error('Failed to send test alert:', err);
-        }).finally(() => {
-          // Give time for message to propagate before closing
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'welcome') {
+          console.log('Welcome received:', msg.message);
+          welcomeReceived = true;
+          // Wait a bit after welcome then send test
           setTimeout(() => {
-            if (ws) {
-              ws.close();
-              ws = null;
-            }
-          }, 500);
-        });
-      }, 500);
+            console.log('Test WS sending test tip...');
+            fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
+              method: 'POST'
+            }).then(() => {
+              console.log('Test alert sent via WebSocket');
+            }).catch(err => {
+              console.error('Failed to send test alert:', err);
+            }).finally(() => {
+              // Give time for message to propagate before closing
+              setTimeout(() => {
+                if (ws) {
+                  ws.close();
+                  ws = null;
+                }
+              }, 500);
+            });
+          }, 300);
+        }
+      } catch (e) {
+        console.error('Failed to parse message:', e);
+      }
     };
 
     ws.onerror = (err) => {
