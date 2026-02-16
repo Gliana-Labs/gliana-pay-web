@@ -1,0 +1,207 @@
+<script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
+  import type { WSTipEvent, WSMessage } from '$lib/types';
+
+  export let data: {
+    slug: string;
+  };
+
+  let socket: WebSocket | null = null;
+  let isConnected = false;
+  let currentTip: WSTipEvent['data'] | null = null;
+  let showAlert = false;
+  let alertSound: HTMLAudioElement | null = null;
+  let wsUrl = '';
+
+  const ALERT_DURATION = 5000;
+  const WORKER_HOST = 'gliana-pay-worker.glianalabs-572.workers.dev';
+
+  function formatSOL(lamports: number): string {
+    return (lamports / 1e9).toFixed(4);
+  }
+
+  function connectWebSocket() {
+    wsUrl = `wss://${WORKER_HOST}/ws/${data.slug}`;
+
+    try {
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        console.log('WebSocket connected');
+        isConnected = true;
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const message: WSMessage = JSON.parse(event.data);
+
+          if (message.type === 'tip') {
+            handleTip(message.data as WSTipEvent['data']);
+          } else if (message.type === 'welcome') {
+            console.log('Welcome:', message.message);
+          } else if (message.type === 'error') {
+            console.error('WebSocket error:', message.message);
+          }
+        } catch (error) {
+          console.error('Failed to parse message:', error);
+        }
+      };
+
+      socket.onclose = () => {
+        isConnected = false;
+        setTimeout(connectWebSocket, 3000);
+      };
+
+      socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    } catch (error) {
+      console.error('Failed to create WebSocket:', error);
+      setTimeout(connectWebSocket, 3000);
+    }
+  }
+
+  onMount(() => {
+    connectWebSocket();
+
+    // Listen for test messages from parent window
+    window.addEventListener('message', handleMessage);
+  });
+
+  onDestroy(() => {
+    if (socket) {
+      socket.close();
+    }
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('message', handleMessage);
+    }
+  });
+
+  function handleTip(tipData: WSTipEvent['data']) {
+    currentTip = tipData;
+    showAlert = true;
+
+    if (alertSound) {
+      alertSound.currentTime = 0;
+      alertSound.play().catch(console.error);
+    }
+
+    setTimeout(() => {
+      showAlert = false;
+    }, ALERT_DURATION);
+  }
+
+  function handleMessage(event: MessageEvent) {
+    // Accept test messages from parent
+    if (event.data && event.data.type === 'tip') {
+      handleTip(event.data.data);
+    }
+  }
+</script>
+
+<svelte:head>
+  <title>Alert Overlay - {data.slug}</title>
+</svelte:head>
+
+<!-- Hidden audio element -->
+<audio bind:this={alertSound} preload="auto">
+  <source src="https://cdn.gliana.app/alerts/default.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- OBS Overlay - Transparent Background -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden" style="background: transparent;">
+  <!-- Connection Status -->
+  <div class="absolute top-2 left-2 text-xs text-white/30">
+    {isConnected ? '🟢' : '🔴'}
+  </div>
+
+  <!-- Alert Container -->
+  <div
+    class="absolute bottom-4 right-4 max-w-sm transition-all duration-500 ease-out"
+    class:translate-x-0={showAlert}
+    class:translate-x-[150%]={!showAlert}
+    class:opacity-100={showAlert}
+    class:opacity-0={!showAlert}
+  >
+    {#if currentTip}
+      <div class="relative">
+        <!-- Glow -->
+        <div class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
+
+        <!-- Main Card -->
+        <div class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl p-5 shadow-2xl">
+          <!-- Animated gradient border -->
+          <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-30 animate-pulse"></div>
+
+          <div class="relative flex items-center gap-4">
+            <!-- Avatar -->
+            <div class="relative flex-shrink-0">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                <span class="text-2xl">💎</span>
+              </div>
+              <!-- Sparkles -->
+              <div class="absolute -top-1 -right-1 text-lg animate-bounce">✨</div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <!-- Header -->
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-cyan-400 animate-pulse">
+                  🎉 NEW TIP!
+                </span>
+              </div>
+
+              <!-- Amount -->
+              <div class="text-2xl font-bold text-white mb-1">
+                {formatSOL(currentTip.amount)} SOL
+              </div>
+
+              <!-- Name & Message -->
+              {#if currentTip.sender_name}
+                <div class="text-base font-semibold text-purple-300 truncate">
+                  {currentTip.sender_name}
+                </div>
+              {/if}
+
+              {#if currentTip.message}
+                <div class="text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1 mt-1 truncate">
+                  {currentTip.message}
+                </div>
+              {/if}
+            </div>
+
+            <!-- Coin icon -->
+            <div class="flex-shrink-0 text-3xl animate-bounce">
+              🪙
+            </div>
+          </div>
+
+          <!-- Sparkle decorations -->
+          <div class="absolute top-2 right-8">
+            <span class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"></span>
+          </div>
+          <div class="absolute bottom-3 left-6">
+            <span class="absolute w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping" style="animation-delay: 0.3s;"></span>
+          </div>
+        </div>
+
+        <!-- Bottom line -->
+        <div class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-3/4 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"></div>
+      </div>
+    {/if}
+  </div>
+</div>
+
+<style>
+  :global(body) {
+    background: transparent !important;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  :global(html) {
+    background: transparent !important;
+  }
+</style>
