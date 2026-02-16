@@ -269,10 +269,8 @@
         </div>
       {/if}
 
-      <div class="mt-8 text-center space-y-2">
+      <div class="mt-8 text-center">
         <p class="text-zinc-600 text-sm">Streamer: <span class="text-purple-400 font-mono">{streamer?.slug}</span></p>
-        <a href="/overlay/{streamer?.slug}" target="_blank" class="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-cyan-400">📺 OBS Overlay</a>
-        <button on:click={testAlert} class="block mx-auto text-sm text-zinc-500 hover:text-pink-400">🧪 Test Alert</button>
       </div>
     {/if}
   </div>

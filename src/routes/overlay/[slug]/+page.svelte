@@ -14,7 +14,7 @@
   let wsUrl = '';
 
   const ALERT_DURATION = 5000;
-  const WORKER_HOST = 'gliana-pay-worker.glianalabs-572.workers.dev';
+  const WORKER_HOST = 'api.glianapay.com';
 
   function formatSOL(lamports: number): string {
     return (lamports / 1e9).toFixed(4);

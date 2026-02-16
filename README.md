@@ -40,4 +40,4 @@ The overlay shows real-time tip notifications with animations and sound.
 
 ## Environment
 
-- Worker URL: `https://gliana-pay-worker.glianalabs-572.workers.dev`
+- Worker URL: `https://api.glianapay.com`

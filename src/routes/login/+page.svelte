@@ -21,7 +21,7 @@
   let minAmount = 0.001;
   let soundUrl = 'https://cdn.gliana.app/alerts/default.mp3';
 
-  const WORKER_URL = 'https://gliana-pay-worker.glianalabs-572.workers.dev';
+  const WORKER_URL = 'https://api.glianapay.com';
 
   // Load dashboard data
   async function loadDashboardData() {
@@ -79,6 +79,27 @@
     } finally {
       settingsLoading = false;
     }
+  }
+
+  // Test alert
+  function testAlert() {
+    const testWindow = window.open(`/overlay/${slug}`, 'GlianaPayOverlay', 'width=600,height=400');
+    setTimeout(() => {
+      if (testWindow) {
+        testWindow.postMessage({
+          type: 'tip',
+          data: {
+            tx_hash: 'test_' + Date.now(),
+            amount: 100000000,
+            sender: walletAddress || 'TestUser',
+            sender_name: 'Test User',
+            message: 'Test tip! 🎉',
+            timestamp: new Date().toISOString(),
+            streamer_slug: slug
+          }
+        }, '*');
+      }
+    }, 1000);
   }
 
   // Check if Phantom is available
@@ -349,9 +370,47 @@
           </div>
 
           <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
-            <h2 class="font-bold text-lg mb-4">📺 OBS Setup</h2>
-            <p class="text-sm text-zinc-400 mb-2">Add as browser source:</p>
-            <code class="text-xs text-purple-400 break-all">https://glianapay.com/overlay/{slug || 'yourname'}</code>
+            <h2 class="font-bold text-lg mb-4">📺 OBS Overlay</h2>
+
+            <p class="text-sm text-zinc-400 mb-3">How to add tip alerts to your stream:</p>
+
+            <ol class="text-sm text-zinc-300 space-y-2 mb-4">
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">1.</span>
+                <span>In OBS, add a <strong>Browser Source</strong></span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">2.</span>
+                <span>Enter this URL:</span>
+              </li>
+            </ol>
+
+            <code class="block text-xs text-green-400 bg-black/30 p-2 rounded mb-3 break-all">
+              https://glianapay.com/overlay/{slug || 'yourname'}
+            </code>
+
+            <ol class="text-sm text-zinc-300 space-y-2 mb-3">
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">3.</span>
+                <span>Set Width: <strong>600</strong>, Height: <strong>400</strong></span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">4.</span>
+                <span>Check "Shutdown source when not visible"</span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">5.</span>
+                <span>Position the overlay in your scene</span>
+              </li>
+            </ol>
+
+            <a href="/overlay/{slug || 'yourname'}" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
+              <span>👁️ Preview Overlay</span>
+            </a>
+
+            <button on:click={testAlert} class="ml-3 inline-flex items-center gap-2 text-sm text-pink-400 hover:underline">
+              <span>🧪 Test Alert</span>
+            </button>
           </div>
         </div>
       </div>
