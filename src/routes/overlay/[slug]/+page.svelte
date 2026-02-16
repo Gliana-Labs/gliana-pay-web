@@ -16,17 +16,27 @@
   let soundLoading = false;
   let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
 
-  // Load sound preference from localStorage on mount
+  // Load sound preference from localStorage or URL param on mount
   function loadSoundPreference() {
-    if (typeof localStorage !== 'undefined') {
+    // Check URL param first (?sound=1 or ?enableSound=true)
+    const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+    const urlSound = urlParams.get('sound') || urlParams.get('enableSound');
+
+    if (urlSound === '1' || urlSound === 'true') {
+      soundEnabled = true;
+      console.log('Sound enabled via URL parameter');
+    } else if (typeof localStorage !== 'undefined') {
       const enabled = localStorage.getItem('soundEnabled');
       if (enabled === 'true') {
         soundEnabled = true;
         console.log('Sound preference loaded from localStorage');
-        // Preload the sound
-        alertSound = new Audio(soundUrl);
-        alertSound.volume = 1;
       }
+    }
+
+    // Preload the sound if enabled
+    if (soundEnabled) {
+      alertSound = new Audio(soundUrl);
+      alertSound.volume = 1;
     }
   }
 
