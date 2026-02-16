@@ -173,88 +173,30 @@
     }, 1000);
   }
 
-  // Test alert via WebSocket (for OBS)
-  let ws: WebSocket | null = null;
-  let wsRetryCount = 0;
-  let wsTestInProgress = false;
-  const MAX_WS_RETRIES = 3;
+  // Test alert via WebSocket (for OBS) - simplified
+  let testInProgress = false;
 
   function testAlertWS() {
-    if (wsTestInProgress) {
+    if (testInProgress) {
       console.log('Test already in progress');
       return;
     }
-    wsTestInProgress = true;
-    wsRetryCount = 0;
-    sendTestAlert();
+    testInProgress = true;
 
-    // Reset flag after a delay
-    setTimeout(() => {
-      wsTestInProgress = false;
-    }, 3000);
-  }
-
-  function sendTestAlert() {
-    if (wsRetryCount >= MAX_WS_RETRIES) {
-      console.error('Max retries reached for WebSocket');
-      return;
-    }
-
-    const wsUrl = `wss://api.glianapay.com/ws/${slug}`;
-    ws = new WebSocket(wsUrl);
-
-    let welcomeReceived = false;
-
-    ws.onopen = () => {
-      console.log('Test WS connected');
-      wsRetryCount = 0;
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const msg = JSON.parse(event.data);
-        if (msg.type === 'welcome') {
-          console.log('Welcome received:', msg.message);
-          welcomeReceived = true;
-          // Wait a bit after welcome then send test
-          setTimeout(() => {
-            console.log('Test WS sending test tip...');
-            fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
-              method: 'POST'
-            }).then(() => {
-              console.log('Test alert sent via WebSocket');
-            }).catch(err => {
-              console.error('Failed to send test alert:', err);
-            }).finally(() => {
-              // Give time for message to propagate before closing
-              setTimeout(() => {
-                if (ws) {
-                  ws.close();
-                  ws = null;
-                }
-              }, 500);
-            });
-          }, 300);
-        }
-      } catch (e) {
-        console.error('Failed to parse message:', e);
-      }
-    };
-
-    ws.onerror = (err) => {
-      console.error('Test WS error:', err);
-      wsRetryCount++;
-      // Retry after a short delay
-      if (wsRetryCount < MAX_WS_RETRIES) {
-        console.log(`Retrying WebSocket connection... (${wsRetryCount}/${MAX_WS_RETRIES})`);
-        setTimeout(sendTestAlert, 1000);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log('Test WS closed');
-      ws = null;
-    };
+    // Just call the API directly - no need for WebSocket on client
+    // The DO will broadcast to connected viewers
+    fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
+      method: 'POST'
+    }).then(() => {
+      console.log('Test alert sent via WebSocket');
+    }).catch(err => {
+      console.error('Failed to send test alert:', err);
+    }).finally(() => {
+      // Allow next test after delay
+      setTimeout(() => {
+        testInProgress = false;
+      }, 2000);
+    });
   }
 
   // Check if Phantom is available
