@@ -172,8 +172,6 @@
     }
   }
 
-  let settingsRefreshInterval: ReturnType<typeof setInterval>;
-
   onMount(async () => {
     // Load settings first (includes sound URL from streamer config)
     await loadSettings();
@@ -181,12 +179,6 @@
     loadSoundPreference();
     // Connect WebSocket
     connectWebSocket();
-
-    // Refresh settings every 30 seconds to pick up changes
-    settingsRefreshInterval = setInterval(async () => {
-      console.log('[Overlay] Refreshing settings...');
-      await loadSettings();
-    }, 30000);
 
     // Listen for test messages from parent window
     window.addEventListener('message', handleMessage);
@@ -198,9 +190,6 @@
     }
     if (wsConnectionTimeout) {
       clearTimeout(wsConnectionTimeout);
-    }
-    if (settingsRefreshInterval) {
-      clearInterval(settingsRefreshInterval);
     }
     if (typeof window !== 'undefined') {
       window.removeEventListener('message', handleMessage);
@@ -218,13 +207,16 @@
     }
   }
 
-  function processQueue() {
+  async function processQueue() {
     if (alertQueue.length === 0 || isShowingAlert) return;
 
     isShowingAlert = true;
     const tipData = alertQueue.shift()!;
     currentTip = tipData;
     showAlert = true;
+
+    // Reload settings right before playing sound to get latest URL
+    await loadSettings();
 
     // Play sound
     if (soundEnabled && soundUrl) {
