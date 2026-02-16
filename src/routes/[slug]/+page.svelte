@@ -129,9 +129,10 @@
       // Wait for confirmation
       await connection.confirmTransaction(signedTx.signature);
 
-      status = 'Payment successful! 🎉 Thank you for your tip!';
+      status = 'Payment confirmed! Sending alert to streamer...';
 
       // Record tip and broadcast to streamer's overlay (with retry)
+      status = 'Payment confirmed! Sending alert to streamer...';
       console.log('[TipPage] Recording tip and broadcasting to streamer:', signedTx.signature);
       const tipData = {
         slug: streamer.slug,
@@ -151,12 +152,19 @@
             body: JSON.stringify(tipData)
           });
           if (res.ok) {
+            status = 'Alert sent to streamer! Thank you for your tip! 🎉';
             console.log('[TipPage] Tip recorded successfully');
             break;
           }
         } catch (e) {
           console.error('[TipPage] Attempt', attempt, 'failed:', e);
-          if (attempt === 3) console.error('[TipPage] Failed to record tip after 3 attempts');
+          if (attempt < 3) {
+            status = `Sending alert... (attempt ${attempt}/3)`;
+          }
+          if (attempt === 3) {
+            status = 'Payment confirmed but alert may be delayed. Thank you!';
+            console.error('[TipPage] Failed to record tip after 3 attempts');
+          }
         }
         if (attempt < 3) await new Promise(r => setTimeout(r, 1000));
       }
