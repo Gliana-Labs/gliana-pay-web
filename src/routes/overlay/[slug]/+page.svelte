@@ -172,6 +172,8 @@
     }
   }
 
+  let settingsRefreshInterval: ReturnType<typeof setInterval>;
+
   onMount(async () => {
     // Load settings first (includes sound URL from streamer config)
     await loadSettings();
@@ -179,6 +181,12 @@
     loadSoundPreference();
     // Connect WebSocket
     connectWebSocket();
+
+    // Refresh settings every 30 seconds to pick up changes
+    settingsRefreshInterval = setInterval(async () => {
+      console.log('[Overlay] Refreshing settings...');
+      await loadSettings();
+    }, 30000);
 
     // Listen for test messages from parent window
     window.addEventListener('message', handleMessage);
@@ -190,6 +198,9 @@
     }
     if (wsConnectionTimeout) {
       clearTimeout(wsConnectionTimeout);
+    }
+    if (settingsRefreshInterval) {
+      clearInterval(settingsRefreshInterval);
     }
     if (typeof window !== 'undefined') {
       window.removeEventListener('message', handleMessage);
