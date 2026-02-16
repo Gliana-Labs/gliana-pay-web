@@ -14,8 +14,26 @@
   let wsUrl = '';
   let soundEnabled = false;
   let soundLoading = false;
+  let soundUrl = 'https://cdn.gliana.app/alerts/default.mp3';
+
+  // Fetch streamer settings on mount
+  async function loadSettings() {
+    try {
+      const response = await fetch(`https://${WORKER_HOST}/api/streamer/${data.slug}/settings`);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.settings?.sound_url) {
+          soundUrl = result.settings.sound_url;
+          console.log('Loaded sound URL:', soundUrl);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load settings:', e);
+    }
+  }
 
   function enableSound() {
+    console.log('Enable sound clicked, soundUrl:', soundUrl);
     soundEnabled = true;
     soundLoading = true;
     if (alertSound) {
@@ -83,6 +101,7 @@
   }
 
   onMount(() => {
+    loadSettings();
     connectWebSocket();
 
     // Listen for test messages from parent window
@@ -130,8 +149,8 @@
 </svelte:head>
 
 <!-- Hidden audio element -->
-<audio bind:this={alertSound} preload="auto">
-  <source src="https://cdn.gliana.app/alerts/default.mp3" type="audio/mpeg" />
+<audio bind:this={alertSound} preload="auto" src={soundUrl}>
+  <source src={soundUrl} type="audio/mpeg" />
 </audio>
 
 <!-- OBS Overlay - Transparent Background -->
