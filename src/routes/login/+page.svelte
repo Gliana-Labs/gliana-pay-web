@@ -412,38 +412,6 @@
         </div>
       </div>
 
-      <!-- OBS Overlay Setup -->
-      <div class="glass-card rounded-2xl border border-white/10 p-6 mb-8">
-        <h2 class="font-bold text-lg mb-4">📺 Add Tip Alerts to Your Stream (OBS)</h2>
-        <div class="space-y-4">
-          <div>
-            <p class="text-zinc-400 text-sm mb-2">With Sound:</p>
-            <div class="flex items-center gap-2">
-              <code class="bg-zinc-900 px-3 py-2 rounded-lg text-cyan-400 text-sm flex-1 overflow-x-auto">
-                {typeof window !== 'undefined' ? window.location.origin : ''}/overlay/{slug}?sound=1
-              </code>
-              <button on:click={() => navigator.clipboard.writeText(`${typeof window !== 'undefined' ? window.location.origin : ''}/overlay/${slug}?sound=1`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-sm">
-                Copy
-              </button>
-            </div>
-          </div>
-          <div>
-            <p class="text-zinc-400 text-sm mb-2">Without Sound:</p>
-            <div class="flex items-center gap-2">
-              <code class="bg-zinc-900 px-3 py-2 rounded-lg text-cyan-400 text-sm flex-1 overflow-x-auto">
-                {typeof window !== 'undefined' ? window.location.origin : ''}/overlay/{slug}
-              </code>
-              <button on:click={() => navigator.clipboard.writeText(`${typeof window !== 'undefined' ? window.location.origin : ''}/overlay/${slug}`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-sm">
-                Copy
-              </button>
-            </div>
-          </div>
-          <p class="text-zinc-500 text-sm">
-            In OBS, add a "Browser Source" and paste the URL. Check "Shutdown source when not visible" to save resources.
-          </p>
-        </div>
-      </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Recent Donations -->
         <div class="lg:col-span-2">
@@ -516,9 +484,10 @@
               </li>
             </ol>
 
-            <code class="block text-xs text-green-400 bg-black/30 p-2 rounded mb-3 break-all">
+            <code class="block text-xs text-green-400 bg-black/30 p-2 rounded mb-2 break-all">
               https://glianapay.com/overlay/{slug || 'yourname'}
             </code>
+            <p class="text-xs text-zinc-500 mb-3">Add <code class="text-cyan-400">?sound=1</code> to enable audio alerts</p>
 
             <ol class="text-sm text-zinc-300 space-y-2 mb-3">
               <li class="flex gap-2">
