@@ -538,6 +538,10 @@
             <a href="/overlay/{slug || 'yourname'}" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
               <span>Preview Overlay</span>
             </a>
+
+            <button on:click={testAlertWS} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline">
+              <span>Test Alert</span>
+            </button>
           </div>
         </div>
       </div>
