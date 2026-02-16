@@ -289,6 +289,7 @@
         slug = data.streamer.slug;
         saveSession();
         showDashboard = true;
+        loadDashboardData();
       }
     } catch (e) {
       // No existing account
