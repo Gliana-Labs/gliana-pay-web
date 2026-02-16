@@ -147,7 +147,12 @@
   }
 
   // Test alert via postMessage (new tab)
+  let testAlertInProgress = false;
+
   function testAlert() {
+    if (testAlertInProgress) return;
+    testAlertInProgress = true;
+
     const testWindow = window.open(`/overlay/${slug}`, 'GlianaPayOverlay', 'width=600,height=400');
     setTimeout(() => {
       if (testWindow) {
@@ -164,17 +169,29 @@
           }
         }, '*');
       }
+      testAlertInProgress = false;
     }, 1000);
   }
 
   // Test alert via WebSocket (for OBS)
   let ws: WebSocket | null = null;
   let wsRetryCount = 0;
+  let wsTestInProgress = false;
   const MAX_WS_RETRIES = 3;
 
   function testAlertWS() {
+    if (wsTestInProgress) {
+      console.log('Test already in progress');
+      return;
+    }
+    wsTestInProgress = true;
     wsRetryCount = 0;
     sendTestAlert();
+
+    // Reset flag after a delay
+    setTimeout(() => {
+      wsTestInProgress = false;
+    }, 3000);
   }
 
   function sendTestAlert() {
