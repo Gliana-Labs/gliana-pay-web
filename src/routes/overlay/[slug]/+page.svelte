@@ -14,7 +14,7 @@
   let wsUrl = '';
   let soundEnabled = false;
   let soundLoading = false;
-  let soundUrl = 'https://www.myinstants.com/media/sounds/baby-laughing-meme.mp3';
+  let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
 
   // Load sound preference from localStorage on mount
   function loadSoundPreference() {
