@@ -16,6 +16,43 @@
   let soundLoading = false;
   let soundUrl = 'https://www.myinstants.com/media/sounds/baby-laughing-meme.mp3';
 
+  // Load sound preference from localStorage on mount
+  function loadSoundPreference() {
+    if (typeof localStorage !== 'undefined') {
+      const enabled = localStorage.getItem('soundEnabled');
+      if (enabled === 'true') {
+        soundEnabled = true;
+        console.log('Sound preference loaded from localStorage');
+      }
+    }
+  }
+
+  function enableSound() {
+    console.log('Enable sound clicked, soundUrl:', soundUrl);
+    soundEnabled = true;
+    soundLoading = true;
+
+    // Save preference
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('soundEnabled', 'true');
+    }
+
+    // Create new audio with the sound URL
+    alertSound = new Audio(soundUrl);
+    alertSound.volume = 1;
+
+    alertSound.play()
+      .then(() => {
+        console.log('Sound enabled and playing');
+      })
+      .catch((e) => {
+        console.error('Failed to play sound:', e);
+      })
+      .finally(() => {
+        soundLoading = false;
+      });
+  }
+
   // Fetch streamer settings on mount
   async function loadSettings() {
     try {
@@ -102,6 +139,7 @@
   }
 
   onMount(() => {
+    loadSoundPreference();
     loadSettings();
     connectWebSocket();
 
