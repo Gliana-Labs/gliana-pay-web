@@ -79,7 +79,7 @@
 
   // Settings
   let minAmount = 0.001;
-  let soundUrl = 'https://cdn.gliana.app/alerts/default.mp3';
+  let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
   let soundEnabled = false;
 
   const WORKER_URL = 'https://api.glianapay.com';
@@ -108,7 +108,7 @@
         const data = await response.json();
         if (data.settings) {
           minAmount = (data.settings.min_amount || 1000000) / 1e9;
-          soundUrl = data.settings.sound_url || 'https://cdn.gliana.app/alerts/default.mp3';
+          soundUrl = data.settings.sound_url || 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
         }
       }
     } catch (e) {
@@ -456,7 +456,7 @@
                 <label for="sound" class="block text-sm text-zinc-400 mb-2">Alert Sound URL</label>
                 <div class="flex gap-2">
                   <input type="url" id="sound" bind:value={soundUrl} class="flex-1 px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white" />
-                  <button on:click={() => soundUrl = 'https://cdn.gliana.app/alerts/default.mp3'} class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-xl text-sm text-zinc-300">
+                  <button on:click={() => soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3'} class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-xl text-sm text-zinc-300">
                     Default
                   </button>
                 </div>
