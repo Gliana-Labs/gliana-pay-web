@@ -165,9 +165,9 @@
     <button
       on:click={enableSound}
       disabled={soundLoading}
-      class="absolute top-2 right-2 text-xs bg-white/10 hover:bg-white/20 text-white/70 px-2 py-1 rounded pointer-events-auto disabled:opacity-50"
+      class="absolute top-2 right-2 text-xs bg-black/80 hover:bg-black/60 text-yellow-400 px-3 py-2 rounded-lg border border-yellow-400/50 pointer-events-auto disabled:opacity-50 font-bold"
     >
-      {soundLoading ? 'Loading...' : 'Enable Sound'}
+      🔊 {soundLoading ? 'Loading...' : 'Enable Sound'}
     </button>
   {/if}
 
