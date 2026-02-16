@@ -23,7 +23,7 @@
   }
 
   const ALERT_DURATION = 5000;
-  const WORKER_HOST = 'api.glianapay.com';
+  const WORKER_HOST = 'glianapay.com';
 
   function formatSOL(lamports: number): string {
     return (lamports / 1e9).toFixed(4);

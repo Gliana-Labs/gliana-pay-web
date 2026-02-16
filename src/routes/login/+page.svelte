@@ -21,7 +21,7 @@
   let minAmount = 0.001;
   let soundUrl = 'https://cdn.gliana.app/alerts/default.mp3';
 
-  const WORKER_URL = 'https://api.glianapay.com';
+  const WORKER_URL = 'https://glianapay.com';
 
   // Load dashboard data
   async function loadDashboardData() {
