@@ -117,6 +117,7 @@
 
   // Save settings
   async function saveSettings() {
+    console.log('saveSettings called, slug:', slug, 'minAmount:', minAmount, 'soundUrl:', soundUrl);
     settingsLoading = true;
     settingsSaved = false;
 
@@ -130,9 +131,13 @@
         })
       });
 
+      console.log('Settings response:', response.status);
       if (response.ok) {
         settingsSaved = true;
         setTimeout(() => settingsSaved = false, 3000);
+      } else {
+        const err = await response.json();
+        console.error('Settings save error:', err);
       }
     } catch (e) {
       console.error('Failed to save settings:', e);
