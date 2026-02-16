@@ -14,7 +14,7 @@
   let wsUrl = '';
   let soundEnabled = false;
   let soundLoading = false;
-  let soundUrl = 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3';
+  let soundUrl = 'https://www.myinstants.com/media/sounds/baby-laughing-meme.mp3';
 
   // Fetch streamer settings on mount
   async function loadSettings() {
