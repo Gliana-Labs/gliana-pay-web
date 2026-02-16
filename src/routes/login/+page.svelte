@@ -125,7 +125,7 @@
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          min_amount: Math.floor(minAmount * 1e9),
+          min_amount: Math.floor(minAmount * 1e6),
           sound_url: soundUrl
         })
       });
