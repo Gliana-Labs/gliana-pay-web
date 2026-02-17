@@ -387,9 +387,7 @@
     <div class="border-b border-white/10">
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <button on:click={goToHome} class="flex items-center gap-2">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center">
-            <span class="font-bold">G</span>
-          </div>
+          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 rounded-xl" />
           <span class="font-bold">GlianaPay</span>
         </button>
         <div class="flex items-center gap-4">

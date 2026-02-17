@@ -38,9 +38,11 @@
     <div class="text-center mb-12">
       <!-- Animated Logo -->
       <div class="relative inline-block mb-6">
-        <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-2xl shadow-cyan-500/40 animate-pulse-glow">
-          <span class="text-4xl font-bold text-white">G</span>
-        </div>
+        <img
+          src="/logo.svg"
+          alt="GlianaPay"
+          class="w-24 h-24 rounded-3xl shadow-2xl shadow-purple-500/40 animate-pulse-glow"
+        />
         <!-- Sparkles -->
         <div class="absolute -top-2 -right-2 text-2xl animate-bounce">✨</div>
         <div class="absolute -bottom-1 -left-1 text-xl animate-bounce" style="animation-delay: 0.5s;">⭐</div>
