@@ -29,7 +29,7 @@
   <!-- Floating 3D-style shapes -->
   <div class="absolute inset-0 pointer-events-none">
     <!-- Hexagon with glow -->
-    <div class="absolute top-20 left-[10%] w-20 h-20 opacity-20 float">
+    <div class="absolute top-20 left-[10%] w-20 h-20 opacity-50 float">
       <svg class="w-full h-full" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="hex1h" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -42,7 +42,7 @@
       </svg>
     </div>
     <!-- Glowing orb -->
-    <div class="absolute top-40 right-[15%] w-16 h-16 opacity-20 float" style="animation-delay: 0.5s;">
+    <div class="absolute top-40 right-[15%] w-16 h-16 opacity-50 float" style="animation-delay: 0.5s;">
       <svg class="w-full h-full" viewBox="0 0 100 100">
         <defs>
           <radialGradient id="orb1h" cx="30%" cy="30%">
@@ -55,7 +55,7 @@
       </svg>
     </div>
     <!-- Diamond shape -->
-    <div class="absolute bottom-32 left-[20%] w-14 h-14 opacity-20 float" style="animation-delay: 1s;">
+    <div class="absolute bottom-32 left-[20%] w-14 h-14 opacity-50 float" style="animation-delay: 1s;">
       <svg class="w-full h-full" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="diam1h" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -68,7 +68,7 @@
       </svg>
     </div>
     <!-- Ring -->
-    <div class="absolute bottom-20 right-[10%] w-16 h-16 opacity-20 float" style="animation-delay: 1.5s;">
+    <div class="absolute bottom-20 right-[10%] w-16 h-16 opacity-50 float" style="animation-delay: 1.5s;">
       <svg class="w-full h-full" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="35" fill="none" stroke="#eab308" stroke-width="3" opacity="0.4"/>
         <circle cx="50" cy="50" r="25" fill="none" stroke="#eab308" stroke-width="2" opacity="0.3"/>
