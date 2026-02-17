@@ -26,19 +26,54 @@
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
   </div>
 
-  <!-- Floating crypto icons -->
+  <!-- Floating 3D-style shapes -->
   <div class="absolute inset-0 pointer-events-none">
-    <div class="absolute top-20 left-[10%] w-16 h-16 opacity-20 float">
-      <svg class="w-full h-full text-yellow-400" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1"/><text x="12" y="16" text-anchor="middle" font-size="8" fill="currentColor">$</text></svg>
+    <!-- Hexagon with glow -->
+    <div class="absolute top-20 left-[10%] w-20 h-20 opacity-20 float">
+      <svg class="w-full h-full" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="hex1h" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="url(#hex1h)" opacity="0.3"/>
+        <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="url(#hex1h)" stroke-width="2"/>
+      </svg>
     </div>
-    <div class="absolute top-40 right-[15%] w-14 h-14 opacity-20 float" style="animation-delay: 0.5s;">
-      <svg class="w-full h-full text-purple-400" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+    <!-- Glowing orb -->
+    <div class="absolute top-40 right-[15%] w-16 h-16 opacity-20 float" style="animation-delay: 0.5s;">
+      <svg class="w-full h-full" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="orb1h" cx="30%" cy="30%">
+            <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0" />
+          </radialGradient>
+        </defs>
+        <circle cx="50" cy="50" r="40" fill="url(#orb1h)"/>
+        <circle cx="40" cy="40" r="15" fill="#22d3ee" opacity="0.5"/>
+      </svg>
     </div>
+    <!-- Diamond shape -->
     <div class="absolute bottom-32 left-[20%] w-14 h-14 opacity-20 float" style="animation-delay: 1s;">
-      <svg class="w-full h-full text-cyan-400" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1"/><text x="12" y="15" text-anchor="middle" font-size="6" fill="currentColor">SOL</text></svg>
+      <svg class="w-full h-full" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="diam1h" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <polygon points="50,10 90,50 50,90 10,50" fill="url(#diam1h)" opacity="0.3"/>
+        <polygon points="50,25 75,50 50,75 25,50" fill="none" stroke="#ec4899" stroke-width="2"/>
+      </svg>
     </div>
+    <!-- Ring -->
     <div class="absolute bottom-20 right-[10%] w-16 h-16 opacity-20 float" style="animation-delay: 1.5s;">
-      <svg class="w-full h-full text-pink-400" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1"/></svg>
+      <svg class="w-full h-full" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#eab308" stroke-width="3" opacity="0.4"/>
+        <circle cx="50" cy="50" r="25" fill="none" stroke="#eab308" stroke-width="2" opacity="0.3"/>
+        <circle cx="50" cy="50" r="10" fill="#eab308" opacity="0.5"/>
+      </svg>
     </div>
   </div>
 
@@ -50,7 +85,7 @@
         <img
           src="/logo.svg"
           alt="GlianaPay"
-          class="w-24 h-24 rounded-3xl shadow-2xl shadow-purple-500/40 animate-pulse-glow"
+          class="w-24 h-24 bg-transparent shadow-2xl shadow-purple-500/40 animate-pulse-glow"
         />
         <!-- Sparkles -->
         <div class="absolute -top-2 -right-2 text-2xl animate-bounce">✨</div>
@@ -137,12 +172,12 @@
 
     <!-- Footer -->
     <div class="absolute bottom-6 left-0 right-0 flex justify-center">
-      <div class="flex items-center gap-2">
+      <a href="https://gliana-labs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <img src="/logo.svg" alt="gliana" class="h-5 w-auto" />
         <span class="text-zinc-600 text-xs">
-          &copy; {currentYear} gliana
+          &copy; {currentYear} by glianalabs
         </span>
-      </div>
+      </a>
     </div>
   </div>
 </div>
