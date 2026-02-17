@@ -383,55 +383,15 @@
 {#if showDashboard}
   <!-- Dashboard View -->
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
-    <!-- Floating 3D-style shapes -->
+    <!-- Floating icons -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <!-- Hexagon with glow -->
-      <div class="absolute top-20 left-[10%] w-20 h-20 opacity-50 float">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="hex1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="url(#hex1)" opacity="0.3"/>
-          <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="url(#hex1)" stroke-width="2"/>
-        </svg>
-      </div>
-      <!-- Glowing orb -->
-      <div class="absolute top-40 right-[15%] w-16 h-16 opacity-50 float" style="animation-delay: 0.5s;">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <defs>
-            <radialGradient id="orb1" cx="30%" cy="30%">
-              <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0" />
-            </radialGradient>
-          </defs>
-          <circle cx="50" cy="50" r="40" fill="url(#orb1)"/>
-          <circle cx="40" cy="40" r="15" fill="#22d3ee" opacity="0.5"/>
-        </svg>
-      </div>
-      <!-- Diamond shape -->
-      <div class="absolute bottom-32 left-[20%] w-14 h-14 opacity-50 float" style="animation-delay: 1s;">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="diam1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <polygon points="50,10 90,50 50,90 10,50" fill="url(#diam1)" opacity="0.3"/>
-          <polygon points="50,25 75,50 50,75 25,50" fill="none" stroke="#ec4899" stroke-width="2"/>
-        </svg>
-      </div>
-      <!-- Ring -->
-      <div class="absolute bottom-20 right-[10%] w-16 h-16 opacity-50 float" style="animation-delay: 1.5s;">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="35" fill="none" stroke="#eab308" stroke-width="3" opacity="0.4"/>
-          <circle cx="50" cy="50" r="25" fill="none" stroke="#eab308" stroke-width="2" opacity="0.3"/>
-          <circle cx="50" cy="50" r="10" fill="#eab308" opacity="0.5"/>
-        </svg>
-      </div>
+      <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[12%] left-[8%] w-24 h-24 opacity-40 float" />
+      <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[25%] right-[10%] w-24 h-24 opacity-40 float" style="animation-delay: 0.5s;" />
+      <img src="/3dicons-credit-card-dynamic-color.png" alt="" class="absolute top-[48%] left-[6%] w-20 h-20 opacity-35 float" style="animation-delay: 1s;" />
+      <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute top-[42%] right-[6%] w-20 h-20 opacity-35 float" style="animation-delay: 1.5s;" />
+      <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[18%] left-[12%] w-24 h-24 opacity-40 float" style="animation-delay: 2s;" />
+      <img src="/3dicons-camera-dynamic-color.png" alt="" class="absolute bottom-[25%] right-[15%] w-20 h-20 opacity-35 float" style="animation-delay: 2.5s;" />
+      <img src="/3dicons-ghost-dynamic-color.png" alt="" class="absolute top-[35%] left-[20%] w-16 h-16 opacity-30 float" style="animation-delay: 0.8s;" />
     </div>
 
     <!-- Header -->
@@ -606,55 +566,15 @@
 {:else}
   <!-- Login View -->
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
-    <!-- Floating 3D-style shapes -->
+    <!-- Floating icons -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <!-- Hexagon with glow -->
-      <div class="absolute top-20 left-[10%] w-20 h-20 opacity-50 float">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="hex1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="url(#hex1)" opacity="0.3"/>
-          <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="url(#hex1)" stroke-width="2"/>
-        </svg>
-      </div>
-      <!-- Glowing orb -->
-      <div class="absolute top-40 right-[15%] w-16 h-16 opacity-50 float" style="animation-delay: 0.5s;">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <defs>
-            <radialGradient id="orb1" cx="30%" cy="30%">
-              <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:0" />
-            </radialGradient>
-          </defs>
-          <circle cx="50" cy="50" r="40" fill="url(#orb1)"/>
-          <circle cx="40" cy="40" r="15" fill="#22d3ee" opacity="0.5"/>
-        </svg>
-      </div>
-      <!-- Diamond shape -->
-      <div class="absolute bottom-32 left-[20%] w-14 h-14 opacity-50 float" style="animation-delay: 1s;">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="diam1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <polygon points="50,10 90,50 50,90 10,50" fill="url(#diam1)" opacity="0.3"/>
-          <polygon points="50,25 75,50 50,75 25,50" fill="none" stroke="#ec4899" stroke-width="2"/>
-        </svg>
-      </div>
-      <!-- Ring -->
-      <div class="absolute bottom-20 right-[10%] w-16 h-16 opacity-50 float" style="animation-delay: 1.5s;">
-        <svg class="w-full h-full" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="35" fill="none" stroke="#eab308" stroke-width="3" opacity="0.4"/>
-          <circle cx="50" cy="50" r="25" fill="none" stroke="#eab308" stroke-width="2" opacity="0.3"/>
-          <circle cx="50" cy="50" r="10" fill="#eab308" opacity="0.5"/>
-        </svg>
-      </div>
+      <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[12%] left-[8%] w-24 h-24 opacity-40 float" />
+      <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[25%] right-[10%] w-24 h-24 opacity-40 float" style="animation-delay: 0.5s;" />
+      <img src="/3dicons-credit-card-dynamic-color.png" alt="" class="absolute top-[48%] left-[6%] w-20 h-20 opacity-35 float" style="animation-delay: 1s;" />
+      <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute top-[42%] right-[6%] w-20 h-20 opacity-35 float" style="animation-delay: 1.5s;" />
+      <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[18%] left-[12%] w-24 h-24 opacity-40 float" style="animation-delay: 2s;" />
+      <img src="/3dicons-camera-dynamic-color.png" alt="" class="absolute bottom-[25%] right-[15%] w-20 h-20 opacity-35 float" style="animation-delay: 2.5s;" />
+      <img src="/3dicons-ghost-dynamic-color.png" alt="" class="absolute top-[35%] left-[20%] w-16 h-16 opacity-30 float" style="animation-delay: 0.8s;" />
     </div>
 
     <div class="absolute inset-0 overflow-hidden">
