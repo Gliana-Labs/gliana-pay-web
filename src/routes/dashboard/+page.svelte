@@ -67,13 +67,10 @@
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
   <!-- Floating icons -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[12%] left-[8%] w-24 h-24 opacity-40 float" />
-    <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[25%] right-[10%] w-24 h-24 opacity-40 float" style="animation-delay: 0.5s;" />
-    <img src="/3dicons-credit-card-dynamic-color.png" alt="" class="absolute top-[48%] left-[6%] w-20 h-20 opacity-35 float" style="animation-delay: 1s;" />
-    <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute top-[42%] right-[6%] w-20 h-20 opacity-35 float" style="animation-delay: 1.5s;" />
-    <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[18%] left-[12%] w-24 h-24 opacity-40 float" style="animation-delay: 2s;" />
-    <img src="/3dicons-camera-dynamic-color.png" alt="" class="absolute bottom-[25%] right-[15%] w-20 h-20 opacity-35 float" style="animation-delay: 2.5s;" />
-    <img src="/3dicons-ghost-dynamic-color.png" alt="" class="absolute top-[35%] left-[20%] w-16 h-16 opacity-30 float" style="animation-delay: 0.8s;" />
+    <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[10%] left-[5%] w-16 h-16 opacity-25 float" />
+    <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[15%] right-[8%] w-16 h-16 opacity-25 float" style="animation-delay: 1s;" />
+    <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute bottom-[20%] left-[10%] w-14 h-14 opacity-20 float" style="animation-delay: 2s;" />
+    <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[15%] right-[5%] w-16 h-16 opacity-25 float" style="animation-delay: 1.5s;" />
   </div>
 
   <!-- Header -->
