@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { Canvas } from '@threlte/core';
-  import Scene3D from '$lib/components/Scene3D.svelte';
-
   let slug = '';
   const currentYear = new Date().getFullYear();
 
@@ -29,11 +26,13 @@
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
   </div>
 
-  <!-- 3D Background -->
-  <div class="absolute inset-0 pointer-events-none">
-    <Canvas>
-      <Scene3D />
-    </Canvas>
+  <!-- Floating icons -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[15%] left-[8%] w-28 h-28 opacity-40 float" />
+    <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[25%] right-[12%] w-28 h-28 opacity-40 float" style="animation-delay: 0.5s;" />
+    <img src="/3dicons-credit-card-dynamic-color.png" alt="" class="absolute top-[50%] left-[5%] w-24 h-24 opacity-35 float" style="animation-delay: 1s;" />
+    <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute top-[45%] right-[8%] w-26 h-26 opacity-35 float" style="animation-delay: 1.5s;" />
+    <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[15%] left-[15%] w-28 h-28 opacity-40 float" style="animation-delay: 2s;" />
   </div>
 
   <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
