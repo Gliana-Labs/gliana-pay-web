@@ -12,6 +12,25 @@
 
 <svelte:head>
   <title>GlianaPay - Web3 Tipping for Streamers</title>
+  <meta name="description" content="Accept SOL tips with real-time OBS alerts. The easiest way for streamers to receive cryptocurrency donations. Powered by Solana blockchain." />
+  <meta name="keywords" content="streamer tips, Solana tips, crypto donations, OBS overlay, live streaming, Web3 payments, creator monetization" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="GlianaPay - Web3 Tipping for Streamers" />
+  <meta property="og:description" content="Accept SOL tips with real-time OBS alerts. Powered by Solana blockchain." />
+  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:title" content="GlianaPay - Web3 Tipping for Streamers" />
+  <meta name="twitter:description" content="Accept SOL tips with real-time OBS alerts. Powered by Solana blockchain." />
+  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:site" content="@glianalabs" />
+  <meta name="twitter:creator" content="@glianalabs" />
+
+  <!-- Additional SEO -->
+  <link rel="alternate" hreflang="en" href="https://glianapay.com/" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">

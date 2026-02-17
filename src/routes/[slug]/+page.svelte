@@ -1,3 +1,22 @@
+<svelte:head>
+  <title>Tip {data.streamer?.name || 'Streamer'} - GlianaPay</title>
+  <meta name="description" content="Send a SOL tip to {data.streamer?.name || 'this streamer'} on GlianaPay. Real-time OBS alerts included." />
+  <meta name="keywords" content="tip, donate, Solana, SOL, {data.streamer?.name || 'streamer'}, crypto, Web3" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Tip {data.streamer?.name || 'Streamer'} - GlianaPay" />
+  <meta property="og:description" content="Send a SOL tip with real-time OBS alerts" />
+  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter -->
+  <meta name="twitter:title" content="Tip {data.streamer?.name || 'Streamer'} - GlianaPay" />
+  <meta name="twitter:description" content="Send a SOL tip with real-time OBS alerts" />
+  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:site" content="@glianalabs" />
+  <meta name="twitter:creator" content="@glianalabs" />
+</svelte:head>
+
 <script lang="ts">
   import type { Streamer, AlertSettings } from '$lib/types';
 

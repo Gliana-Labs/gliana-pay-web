@@ -1,3 +1,21 @@
+<svelte:head>
+  <title>Login - GlianaPay | Web3 Tipping for Streamers</title>
+  <meta name="description" content="Connect your Phantom wallet to create and manage your GlianaPay tipping page. Accept SOL tips with real-time OBS alerts." />
+  <meta name="keywords" content="login, streamer, wallet connect, Phantom, Solana, tips, donations" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Login - GlianaPay" />
+  <meta property="og:description" content="Connect your Phantom wallet to create and manage your tipping page." />
+  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:title" content="Login - GlianaPay" />
+  <meta name="twitter:description" content="Connect your Phantom wallet to create and manage your tipping page." />
+  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:site" content="@glianalabs" />
+  <meta name="twitter:creator" content="@glianalabs" />
+</svelte:head>
+
 <script lang="ts">
   import { onMount } from 'svelte';
 
