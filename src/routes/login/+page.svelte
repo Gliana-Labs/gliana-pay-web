@@ -563,10 +563,9 @@
     <!-- Header -->
     <div class="relative z-10 flex items-center justify-between px-4 py-4">
       <a href="/" class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold">
-          G
-        </div>
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 rounded-xl" />
       </a>
+      <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
     </div>
 
     <div class="relative z-10 max-w-md mx-auto px-4 py-8">
