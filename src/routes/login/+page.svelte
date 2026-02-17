@@ -387,7 +387,7 @@
     <div class="border-b border-white/10">
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <button on:click={goToHome} class="flex items-center gap-2">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-purple-500 to-blue-500 flex items-center justify-center">
             <span class="font-bold">G</span>
           </div>
           <span class="font-bold">GlianaPay</span>
@@ -565,7 +565,7 @@
     <!-- Header -->
     <div class="relative z-10 flex items-center justify-between px-4 py-4">
       <a href="/" class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 via-purple-500 to-blue-500 flex items-center justify-center text-sm font-bold">
           G
         </div>
       </a>
@@ -582,7 +582,7 @@
           <button
             on:click={connectWallet}
             disabled={loading}
-            class="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+            class="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:opacity-50 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
           >
             {#if loading}
               <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -624,7 +624,7 @@
               <div bind:this={turnstileContainer} class="cf-turnstile"></div>
             </div>
 
-            <button on:click={register} disabled={loading || !name || !slug || !turnstileToken} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
+            <button on:click={register} disabled={loading || !name || !slug || !turnstileToken} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-blue-500 disabled:opacity-50 rounded-xl font-bold transition-all">
               {#if loading}
                 Setting up...
               {:else}
