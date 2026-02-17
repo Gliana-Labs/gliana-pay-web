@@ -1,5 +1,6 @@
 <script lang="ts">
   let slug = '';
+  const currentYear = new Date().getFullYear();
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -127,9 +128,6 @@
     </div>
 
     <!-- Footer -->
-    <script>
-      const currentYear = new Date().getFullYear();
-    </script>
     <div class="absolute bottom-6 left-0 right-0 flex justify-center">
       <div class="flex items-center gap-2">
         <img src="/logo.svg" alt="gliana" class="h-5 w-auto" />
