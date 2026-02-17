@@ -85,7 +85,7 @@
   <div class="border-b border-white/10">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2">
-        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10" />
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent" />
         <span class="font-bold">GlianaPay</span>
       </a>
       <div class="flex items-center gap-4">

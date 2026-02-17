@@ -403,7 +403,7 @@
     <div class="border-b border-white/10">
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <button on:click={goToHome} class="flex items-center gap-2">
-          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10" />
+          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent" />
           <span class="font-bold">GlianaPay</span>
         </button>
         <div class="flex items-center gap-4">
@@ -595,7 +595,7 @@
     <!-- Header -->
     <div class="relative z-10 flex items-center justify-between px-4 py-4">
       <a href="/" class="flex items-center gap-2">
-        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10" />
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent" />
       </a>
       <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
     </div>
