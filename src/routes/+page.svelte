@@ -85,7 +85,7 @@
         <img
           src="/logo.svg"
           alt="GlianaPay"
-          class="w-24 h-24 bg-transparent shadow-2xl shadow-purple-500/40 animate-pulse-glow"
+          class="w-24 h-24 bg-transparent rounded-3xl shadow-2xl shadow-purple-500/40 animate-pulse-glow"
         />
         <!-- Sparkles -->
         <div class="absolute -top-2 -right-2 text-2xl animate-bounce">✨</div>

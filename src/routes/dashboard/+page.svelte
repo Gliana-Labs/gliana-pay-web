@@ -68,7 +68,7 @@
   <!-- Floating 3D-style shapes -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden">
     <!-- Hexagon with glow -->
-    <div class="absolute top-20 left-[10%] w-20 h-20 opacity-10 float">
+    <div class="absolute top-20 left-[10%] w-24 h-24 opacity-30 float">
       <svg class="w-full h-full" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="hex1d" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -76,12 +76,12 @@
             <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
           </linearGradient>
         </defs>
-        <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="url(#hex1d)" opacity="0.3"/>
-        <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="url(#hex1d)" stroke-width="2"/>
+        <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="url(#hex1d)" opacity="0.5"/>
+        <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="url(#hex1d)" stroke-width="3"/>
       </svg>
     </div>
     <!-- Glowing orb -->
-    <div class="absolute top-40 right-[15%] w-16 h-16 opacity-10 float" style="animation-delay: 0.5s;">
+    <div class="absolute top-40 right-[15%] w-20 h-20 opacity-30 float" style="animation-delay: 0.5s;">
       <svg class="w-full h-full" viewBox="0 0 100 100">
         <defs>
           <radialGradient id="orb1d" cx="30%" cy="30%">
@@ -90,11 +90,11 @@
           </radialGradient>
         </defs>
         <circle cx="50" cy="50" r="40" fill="url(#orb1d)"/>
-        <circle cx="40" cy="40" r="15" fill="#22d3ee" opacity="0.5"/>
+        <circle cx="40" cy="40" r="15" fill="#22d3ee" opacity="0.7"/>
       </svg>
     </div>
     <!-- Diamond shape -->
-    <div class="absolute bottom-32 left-[20%] w-14 h-14 opacity-10 float" style="animation-delay: 1s;">
+    <div class="absolute bottom-32 left-[20%] w-20 h-20 opacity-30 float" style="animation-delay: 1s;">
       <svg class="w-full h-full" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="diam1d" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -102,16 +102,16 @@
             <stop offset="100%" style="stop-color:#f43f5e;stop-opacity:1" />
           </linearGradient>
         </defs>
-        <polygon points="50,10 90,50 50,90 10,50" fill="url(#diam1d)" opacity="0.3"/>
-        <polygon points="50,25 75,50 50,75 25,50" fill="none" stroke="#ec4899" stroke-width="2"/>
+        <polygon points="50,10 90,50 50,90 10,50" fill="url(#diam1d)" opacity="0.5"/>
+        <polygon points="50,25 75,50 50,75 25,50" fill="none" stroke="#ec4899" stroke-width="3"/>
       </svg>
     </div>
     <!-- Ring -->
-    <div class="absolute bottom-20 right-[10%] w-16 h-16 opacity-10 float" style="animation-delay: 1.5s;">
+    <div class="absolute bottom-20 right-[10%] w-20 h-20 opacity-30 float" style="animation-delay: 1.5s;">
       <svg class="w-full h-full" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="35" fill="none" stroke="#eab308" stroke-width="3" opacity="0.4"/>
-        <circle cx="50" cy="50" r="25" fill="none" stroke="#eab308" stroke-width="2" opacity="0.3"/>
-        <circle cx="50" cy="50" r="10" fill="#eab308" opacity="0.5"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#eab308" stroke-width="3" opacity="0.6"/>
+        <circle cx="50" cy="50" r="25" fill="none" stroke="#eab308" stroke-width="2" opacity="0.5"/>
+        <circle cx="50" cy="50" r="10" fill="#eab308" opacity="0.7"/>
       </svg>
     </div>
   </div>
@@ -120,7 +120,7 @@
   <div class="border-b border-white/10">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2">
-        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent" />
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
         <span class="font-bold">GlianaPay</span>
       </a>
       <div class="flex items-center gap-4">
