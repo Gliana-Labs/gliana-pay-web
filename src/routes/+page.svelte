@@ -19,7 +19,7 @@
     <!-- Gradient orbs -->
     <div class="absolute top-1/4 -left-32 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
     <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-3xl"></div>
 
     <!-- Grid pattern -->
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
@@ -38,7 +38,7 @@
     <div class="text-center mb-12">
       <!-- Animated Logo -->
       <div class="relative inline-block mb-6">
-        <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl shadow-purple-500/40 animate-pulse-glow">
+        <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-500 flex items-center justify-center shadow-2xl shadow-cyan-500/40 animate-pulse-glow">
           <span class="text-4xl font-bold text-white">G</span>
         </div>
         <!-- Sparkles -->
@@ -63,7 +63,7 @@
     <!-- Search Form -->
     <form on:submit={handleSubmit} class="w-full max-w-md">
       <div class="relative group">
-        <div class="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
         <input
           type="text"
           bind:value={slug}
@@ -74,7 +74,7 @@
 
       <button
         type="submit"
-        class="mt-6 w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/30"
+        class="mt-6 w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-blue-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/30"
       >
         <span class="inline-flex items-center gap-2">
           <span>Go to Streamer</span>
@@ -95,7 +95,7 @@
         <h3 class="font-semibold text-white mb-1">Web3 Native</h3>
         <p class="text-sm text-zinc-500">Powered by Solana</p>
       </div>
-      <div class="glass-card p-5 rounded-2xl border border-white/10 hover:border-pink-500/30 transition-colors">
+      <div class="glass-card p-5 rounded-2xl border border-white/10 hover:border-blue-500/30 transition-colors">
         <div class="text-3xl mb-3">📺</div>
         <h3 class="font-semibold text-white mb-1">OBS Alerts</h3>
         <p class="text-sm text-zinc-500">Real-time overlays</p>
@@ -106,7 +106,7 @@
     <div class="mt-12">
       <a
         href="/login"
-        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 rounded-xl font-semibold transition-all"
       >
         Start Tipping Page
       </a>

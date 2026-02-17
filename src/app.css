@@ -12,8 +12,8 @@
     --bg-elevated: #1f1f23;
 
     --accent-cyan: #22d3ee;
+    --accent-blue: #3b82f6;
     --accent-purple: #a855f7;
-    --accent-pink: #ec4899;
     --accent-yellow: #fbbf24;
 
     --text-primary: #fafafa;
@@ -52,7 +52,7 @@
   /* Gradient text */
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%);
+    background-image: linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #a855f7 100%);
     background-size: 200% 200%;
     animation: gradient 3s ease infinite;
   }
@@ -65,14 +65,14 @@
   /* Glow button */
   .btn-glow {
     @apply relative overflow-hidden;
-    background: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%);
+    background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #a855f7 100%);
     background-size: 200% 200%;
     animation: gradient 3s ease infinite;
-    @apply shadow-lg shadow-purple-500/30;
+    @apply shadow-lg shadow-cyan-500/30;
   }
 
   .btn-glow:hover {
-    @apply shadow-xl shadow-purple-500/50;
+    @apply shadow-xl shadow-cyan-500/50;
     transform: scale(1.02);
   }
 
@@ -87,7 +87,7 @@
     inset: -2px;
     border-radius: inherit;
     padding: 2px;
-    background: linear-gradient(135deg, #22d3ee, #a855f7, #ec4899);
+    background: linear-gradient(135deg, #22d3ee, #3b82f6, #a855f7);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;

@@ -233,7 +233,7 @@
   <div class="relative z-10 max-w-xl mx-auto px-4 py-8">
     <div class="text-center mb-8">
       <div class="relative inline-block mb-4">
-        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/30">
+        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-blue-500 flex items-center justify-center shadow-xl shadow-purple-500/30">
           <span class="text-4xl">🎮</span>
         </div>
       </div>
@@ -289,7 +289,7 @@
             <p class="mt-2 text-xs text-zinc-500">Min: 0.001 SOL</p>
           </div>
 
-          <button type="submit" disabled={isLoading || !streamer} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2">
+          <button type="submit" disabled={isLoading || !streamer} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-blue-500 disabled:opacity-50 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2">
             {#if isLoading}
               <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
             {:else}
