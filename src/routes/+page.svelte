@@ -54,6 +54,12 @@
   </div>
 
   <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
+    <!-- Beta Badge -->
+    <div class="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help group" title="This is a testnet version. We're using Solana devnet - no real money involved. Use Phantom wallet set to devnet mode.">
+      <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+      <span class="text-xs font-medium text-yellow-400">Beta - Testnet</span>
+    </div>
+
     <!-- Logo & Title -->
     <div class="text-center mb-12">
       <!-- Animated Logo -->
@@ -149,9 +155,9 @@
     <!-- Footer -->
     <div class="absolute bottom-6 left-0 right-0 flex justify-center">
       <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-        <img src="/logo.svg" alt="gliana" class="h-5 w-auto" />
+        <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
         <span class="text-zinc-600 text-xs">
-          &copy; {currentYear} by glianalabs
+          &copy; {currentYear} by Gliana Labs
         </span>
       </a>
     </div>
