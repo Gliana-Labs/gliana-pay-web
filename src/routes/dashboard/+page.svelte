@@ -69,7 +69,7 @@
   <div class="border-b border-white/10">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-purple-500 to-blue-500 flex items-center justify-center">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center">
           <span class="font-bold">G</span>
         </div>
         <span class="font-bold">GlianaPay</span>
@@ -118,7 +118,7 @@
           <div class="divide-y divide-white/5">
             {#each donations as donation}
               <div class="p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-lg">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-lg">
                   💎
                 </div>
                 <div class="flex-1 min-w-0">
