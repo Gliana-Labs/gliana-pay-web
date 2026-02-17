@@ -127,12 +127,16 @@
     </div>
 
     <!-- Footer -->
-    <div class="absolute bottom-6 text-zinc-600 text-sm">
-      <span class="inline-flex items-center gap-1">
-        Built with
-        <span class="text-red-400">♥</span>
-        by gliana
-      </span>
+    <script>
+      const currentYear = new Date().getFullYear();
+    </script>
+    <div class="absolute bottom-6 left-0 right-0 flex justify-center">
+      <div class="flex items-center gap-2">
+        <img src="/logo.svg" alt="gliana" class="h-5 w-auto" />
+        <span class="text-zinc-600 text-xs">
+          &copy; {currentYear} gliana
+        </span>
+      </div>
     </div>
   </div>
 </div>
