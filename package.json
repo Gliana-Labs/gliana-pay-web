@@ -25,7 +25,10 @@
   "dependencies": {
     "@solana/pay": "^0.2.0",
     "@solana/web3.js": "^1.95.4",
-    "qrcode": "^1.5.4"
+    "@threlte/core": "^8.3.1",
+    "@threlte/extras": "^9.7.1",
+    "qrcode": "^1.5.4",
+    "three": "^0.182.0"
   },
   "type": "module"
 }
