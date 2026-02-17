@@ -130,8 +130,8 @@
     <div class="absolute bottom-6 text-zinc-600 text-sm">
       <span class="inline-flex items-center gap-1">
         Built with
-        <span class="text-purple-400">♥</span>
-        by <a href="https://gliana.app" target="_blank" class="text-purple-400 hover:underline">gliana</a>
+        <span class="text-red-400">♥</span>
+        by gliana
       </span>
     </div>
   </div>
