@@ -1,6 +1,5 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="6" fill="#0a0a0b"/>
-  <text x="16" y="22" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="white" text-anchor="middle">
-    <tspan fill="#22d3ee">[</tspan><tspan>GP</tspan><tspan fill="#ec4899">]</tspan>
+  <text x="16" y="23" font-family="JetBrains Mono, monospace" font-size="16" font-weight="bold" text-anchor="middle">
+    <tspan fill="#22d3ee">[</tspan><tspan fill="white">GP</tspan><tspan fill="#ec4899">]</tspan>
   </text>
 </svg>

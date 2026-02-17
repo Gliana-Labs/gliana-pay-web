@@ -88,17 +88,29 @@
     <!-- Features -->
     <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
       <div class="glass-card p-5 rounded-2xl border border-white/10 hover:border-purple-500/30 transition-colors">
-        <div class="text-3xl mb-3">⚡</div>
+        <div class="mb-3">
+          <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
         <h3 class="font-semibold text-white mb-1">Instant</h3>
         <p class="text-sm text-zinc-500">Receive tips in seconds</p>
       </div>
       <div class="glass-card p-5 rounded-2xl border border-white/10 hover:border-cyan-500/30 transition-colors">
-        <div class="text-3xl mb-3">🔗</div>
+        <div class="mb-3">
+          <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+          </svg>
+        </div>
         <h3 class="font-semibold text-white mb-1">Web3 Native</h3>
         <p class="text-sm text-zinc-500">Powered by Solana</p>
       </div>
       <div class="glass-card p-5 rounded-2xl border border-white/10 hover:border-pink-500/30 transition-colors">
-        <div class="text-3xl mb-3">📺</div>
+        <div class="mb-3">
+          <svg class="w-8 h-8 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </div>
         <h3 class="font-semibold text-white mb-1">OBS Alerts</h3>
         <p class="text-sm text-zinc-500">Real-time overlays</p>
       </div>
