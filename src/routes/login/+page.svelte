@@ -382,12 +382,20 @@
 
 {#if showDashboard}
   <!-- Dashboard View -->
-  <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora']">
+  <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+    <!-- Floating crypto icons -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute top-20 left-[10%] text-4xl opacity-10 float">🪙</div>
+      <div class="absolute top-40 right-[15%] text-3xl opacity-10 float" style="animation-delay: 0.5s;">🚀</div>
+      <div class="absolute bottom-32 left-[20%] text-3xl opacity-10 float" style="animation-delay: 1s;">💎</div>
+      <div class="absolute bottom-20 right-[10%] text-4xl opacity-10 float" style="animation-delay: 1.5s;">⚡</div>
+    </div>
+
     <!-- Header -->
     <div class="border-b border-white/10">
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <button on:click={goToHome} class="flex items-center gap-2">
-          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 rounded-xl" />
+          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10" />
           <span class="font-bold">GlianaPay</span>
         </button>
         <div class="flex items-center gap-4">
@@ -555,6 +563,14 @@
 {:else}
   <!-- Login View -->
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+    <!-- Floating crypto icons -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute top-20 left-[10%] text-4xl opacity-10 float">🪙</div>
+      <div class="absolute top-40 right-[15%] text-3xl opacity-10 float" style="animation-delay: 0.5s;">🚀</div>
+      <div class="absolute bottom-32 left-[20%] text-3xl opacity-10 float" style="animation-delay: 1s;">💎</div>
+      <div class="absolute bottom-20 right-[10%] text-4xl opacity-10 float" style="animation-delay: 1.5s;">⚡</div>
+    </div>
+
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
       <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
@@ -563,7 +579,7 @@
     <!-- Header -->
     <div class="relative z-10 flex items-center justify-between px-4 py-4">
       <a href="/" class="flex items-center gap-2">
-        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 rounded-xl" />
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10" />
       </a>
       <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
     </div>

@@ -64,12 +64,20 @@
   });
 </script>
 
-<div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora']">
+<div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+  <!-- Floating crypto icons -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-20 left-[10%] text-4xl opacity-10 float">🪙</div>
+    <div class="absolute top-40 right-[15%] text-3xl opacity-10 float" style="animation-delay: 0.5s;">🚀</div>
+    <div class="absolute bottom-32 left-[20%] text-3xl opacity-10 float" style="animation-delay: 1s;">💎</div>
+    <div class="absolute bottom-20 right-[10%] text-4xl opacity-10 float" style="animation-delay: 1.5s;">⚡</div>
+  </div>
+
   <!-- Header -->
   <div class="border-b border-white/10">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2">
-        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 rounded-xl" />
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10" />
         <span class="font-bold">GlianaPay</span>
       </a>
       <div class="flex items-center gap-4">
@@ -116,8 +124,10 @@
           <div class="divide-y divide-white/5">
             {#each donations as donation}
               <div class="p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-lg">
-                  💎
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
@@ -136,7 +146,13 @@
       <!-- Settings -->
       <div>
         <div class="glass-card rounded-2xl border border-white/10 p-6">
-          <h2 class="font-bold text-lg mb-4">⚙️ Settings</h2>
+          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Settings
+          </h2>
 
           <div class="space-y-4">
             <div>
@@ -190,6 +206,15 @@
   .glass-card {
     background: rgba(17, 17, 19, 0.8);
     backdrop-filter: blur(12px);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .float {
+    animation: float 3s ease-in-out infinite;
   }
 
   @keyframes gradient {

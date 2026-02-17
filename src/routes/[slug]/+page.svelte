@@ -225,6 +225,14 @@
 </script>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+  <!-- Floating crypto icons -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-20 left-[10%] text-4xl opacity-10 float">🪙</div>
+    <div class="absolute top-40 right-[15%] text-3xl opacity-10 float" style="animation-delay: 0.5s;">🚀</div>
+    <div class="absolute bottom-32 left-[20%] text-3xl opacity-10 float" style="animation-delay: 1s;">💎</div>
+    <div class="absolute bottom-20 right-[10%] text-4xl opacity-10 float" style="animation-delay: 1.5s;">⚡</div>
+  </div>
+
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
@@ -281,7 +289,12 @@
           </div>
 
           <div>
-            <label for="amount" class="block text-sm font-medium text-zinc-300 mb-2">💎 Amount (SOL)</label>
+            <label for="amount" class="block text-sm font-medium text-zinc-300 mb-2 flex items-center gap-2">
+              <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Amount (SOL)
+            </label>
             <div class="relative">
               <input type="number" id="amount" bind:value={amount} min="0.001" step="0.001" class="w-full px-4 py-3 pr-16 bg-zinc-900/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500/50" />
               <div class="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400 font-semibold">SOL</div>
@@ -341,4 +354,6 @@
   .text-gradient { background-image: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%); background-size: 200% 200%; animation: gradient 3s ease infinite; }
   @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .animate-slide-up { animation: slide-up 0.4s ease-out; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .float { animation: float 3s ease-in-out infinite; }
 </style>

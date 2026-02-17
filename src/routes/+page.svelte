@@ -131,7 +131,7 @@
       <span class="inline-flex items-center gap-1">
         Built with
         <span class="text-purple-400">♥</span>
-        by Gliana Labs
+        by <a href="https://gliana.app" target="_blank" class="text-purple-400 hover:underline">gliana</a>
       </span>
     </div>
   </div>
