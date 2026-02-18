@@ -277,7 +277,15 @@
   </div>
 
   <div class="relative z-10 max-w-xl mx-auto px-4 py-8">
-    <div class="text-center mb-8">
+    <!-- Beta Devnet Badge -->
+    <div class="text-center mb-4">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 text-xs font-medium">
+        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
+        Beta - Devnet
+      </span>
+    </div>
+
+    <div class="text-center mb-6">
       <div class="relative inline-block mb-4">
         <div class="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/30">
           <span class="text-4xl">🎮</span>
@@ -290,7 +298,7 @@
         </span>
       </h1>
 
-      <p class="text-zinc-400">Support with a SOL tip</p>
+      <p class="text-zinc-400 text-sm max-w-xs mx-auto">Send a SOL tip and show your support with a custom message on their live stream</p>
     </div>
 
     {#if data.error}
@@ -308,16 +316,16 @@
               {#each availableWallets as wallet}
                 <button
                   on:click={() => handleConnectWallet(wallet)}
-                  class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+                  class="w-full py-3 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3"
                 >
-                  <img src={wallet.icon} alt={wallet.name} class="w-4 h-4" />
-                  Connect {wallet.name} to Tip
+                  <img src={wallet.icon} alt={wallet.name} class="w-5 h-5" />
+                  Connect {wallet.name}
                 </button>
               {/each}
             </div>
           {:else}
-            <button class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-              Connect Wallet to Tip
+            <button class="w-full py-3 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3">
+              <span>Connect Wallet</span>
             </button>
             <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a> or <a href="https://solflare.com/" target="_blank" class="text-purple-400">Solflare</a></p>
           {/if}
@@ -397,8 +405,14 @@
         </div>
       {/if}
 
-      <div class="mt-8 text-center">
+      <div class="mt-8 text-center space-y-3">
         <p class="text-zinc-600 text-sm">Streamer: <span class="text-purple-400 font-mono">{streamer?.slug}</span></p>
+
+        <!-- Powered by Solana -->
+        <div class="flex items-center justify-center gap-2 pt-3 border-t border-white/5">
+          <span class="text-xs text-zinc-500">Powered by</span>
+          <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
+        </div>
       </div>
     {/if}
   </div>
