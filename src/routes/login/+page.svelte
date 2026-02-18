@@ -378,6 +378,12 @@
 
   async function checkExisting() {
     if (!walletAddress) return;
+    // Don't auto-redirect if we just logged out (no current session)
+    const saved = localStorage.getItem('gliana_session');
+    if (saved) {
+      // Session exists, don't auto-redirect
+      return;
+    }
     try {
       const response = await fetch(`${WORKER_URL}/api/streamer/wallet/${walletAddress}`);
       if (response.ok) {
@@ -410,14 +416,31 @@
     loadSession();
     checkWallets();
 
-    // If already logged in (has session with wallet and slug), redirect to dashboard
+    // If already logged in (has valid session with wallet and slug), redirect to dashboard
     if (walletAddress && slug) {
       window.location.href = '/dashboard';
       return;
     }
 
-    // If user visits login after logout, clear any stale session
-    // and don't auto-redirect - let user explicitly connect wallet
+    // Set up Phantom connect listener for auto-redirect when user connects
+    // Only redirect if they have an existing account (checked via checkExisting)
+    const phantom = getPhantomWallet();
+    if (phantom) {
+      phantom.on('connect', () => {
+        walletAddress = phantom.publicKey?.toString() || '';
+        connected = true;
+        // checkExisting will redirect to dashboard if account exists
+        checkExisting();
+      });
+    }
+  });
+
+  // Cleanup on destroy
+  onDestroy(() => {
+    const phantom = getPhantomWallet();
+    if (phantom) {
+      phantom.off('connect');
+    }
   });
 </script>
 
