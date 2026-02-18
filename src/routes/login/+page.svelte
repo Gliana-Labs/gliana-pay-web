@@ -255,6 +255,8 @@
         walletAddress = address;
         connected = true;
         saveSession();
+        // Check if user already has an account
+        await checkExisting();
       } else {
         error = `Failed to connect to ${wallet.name}. Please try again.`;
       }
