@@ -8,6 +8,7 @@
 
   let socket: WebSocket | null = null;
   let isConnected = false;
+  let isReconnecting = false;
   let currentTip: WSTipEvent['data'] | null = null;
   let showAlert = false;
   let alertSound: HTMLAudioElement | null = null;
@@ -98,6 +99,9 @@
   let wsConnectionTimeout: ReturnType<typeof setTimeout> | null = null;
 
   function connectWebSocket() {
+    // Mark as reconnecting
+    isReconnecting = true;
+
     // Properly close existing connection
     if (socket) {
       socket.onclose = null; // Remove handler to prevent reconnection loop
@@ -129,6 +133,7 @@
       socket.onopen = () => {
         console.log('WebSocket connected');
         isConnected = true;
+        isReconnecting = false;
         wsReconnectAttempts = 0;
         wsReconnectDelay = 1000;
         if (wsConnectionTimeout) {
@@ -155,6 +160,7 @@
       socket.onclose = () => {
         console.log('WebSocket closed, reconnecting...');
         isConnected = false;
+        isReconnecting = true;
         if (wsConnectionTimeout) {
           clearTimeout(wsConnectionTimeout);
           wsConnectionTimeout = null;
@@ -230,6 +236,7 @@
   }
 
   onDestroy(() => {
+    isReconnecting = false;
     if (socket) {
       socket.onclose = null;
       socket.close();
@@ -340,9 +347,15 @@
   <!-- Connection Status - Debug info -->
   <div class="absolute top-2 left-2 flex items-center gap-2">
     <div class="text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
-      {isConnected ? '🟢 Connected' : '🔴 Disconnected'} | {data.slug}
+      {#if isConnected}
+        🟢 Connected | {data.slug}
+      {:else if isReconnecting}
+        🟡 Reconnecting... | {data.slug}
+      {:else}
+        🔴 Disconnected | {data.slug}
+      {/if}
     </div>
-    {#if !isConnected}
+    {#if !isConnected && !isReconnecting}
       <button
         on:click={() => { wsReconnectAttempts = 0; connectWebSocket(); }}
         class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto"
