@@ -250,10 +250,10 @@
               </div>
               <div>
                 <label for="sound" class="block text-sm text-zinc-400 mb-2">Alert Sound URL</label>
-                <div class="flex gap-2 items-center">
+                <div class="flex gap-2">
                   <input type="url" id="sound" bind:value={soundUrl} class="flex-1 px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm" />
-                  <button on:click={() => soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3'} class="px-2 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 whitespace-nowrap">
-                    Default
+                  <button on:click={() => soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3'} class="px-3 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 whitespace-nowrap">
+                    Reset
                   </button>
                 </div>
               </div>
