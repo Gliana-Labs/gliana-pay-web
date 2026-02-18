@@ -281,12 +281,18 @@
   </div>
 
   <div class="relative z-10 max-w-xl mx-auto px-4 py-8">
-    <!-- Beta Devnet Badge -->
+    <!-- Beta Devnet Badge with tooltip -->
     <div class="text-center mb-4">
-      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 text-xs font-medium">
-        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
-        Beta - Devnet
-      </span>
+      <div class="relative inline-block group">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 text-xs font-medium cursor-help">
+          <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
+          Beta - Devnet
+        </span>
+        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zinc-900 border border-yellow-500/30 rounded-lg text-xs text-zinc-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          Make sure your wallet is set to Devnet
+          <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-zinc-900"></div>
+        </div>
+      </div>
     </div>
 
     <div class="text-center mb-6">
