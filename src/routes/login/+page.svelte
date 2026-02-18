@@ -327,6 +327,17 @@
       return;
     }
 
+    // Validate slug format (alphanumeric and hyphens only)
+    if (!/^[a-zA-Z0-9-]+$/.test(slug)) {
+      error = 'URL can only contain letters, numbers, and hyphens';
+      return;
+    }
+
+    if (slug.length < 3 || slug.length > 30) {
+      error = 'URL must be between 3 and 30 characters';
+      return;
+    }
+
     loading = true;
     error = '';
 

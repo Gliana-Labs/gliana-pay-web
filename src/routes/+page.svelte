@@ -4,8 +4,10 @@
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
-    if (slug.trim()) {
-      window.location.href = `/${slug.trim()}`;
+    const cleanSlug = slug.trim().toLowerCase();
+    // Validate slug format (alphanumeric and hyphens only)
+    if (cleanSlug && /^[a-zA-Z0-9-]+$/.test(cleanSlug)) {
+      window.location.href = `/${cleanSlug}`;
     }
   }
 </script>
