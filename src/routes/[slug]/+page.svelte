@@ -321,14 +321,14 @@
                 <button
                   on:click={() => handleConnectWallet(wallet)}
                   disabled={isLoading}
-                  class="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20"
+                  class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400"
                 >
                   Connect {wallet.name}
                 </button>
               {/each}
             </div>
           {:else}
-            <button class="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20">
+            <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
               Connect Wallet
             </button>
             <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a> or <a href="https://solflare.com/" target="_blank" class="text-purple-400">Solflare</a></p>
