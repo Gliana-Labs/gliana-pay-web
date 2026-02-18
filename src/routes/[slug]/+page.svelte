@@ -292,7 +292,7 @@
     </div>
   </div>
 
-  <div class="relative z-10 max-w-xl mx-auto px-4 py-8">
+  <div class="relative z-10 max-w-xl mx-auto px-4 pt-20 pb-8">
     <div class="text-center mb-6">
       <div class="relative inline-block mb-4">
         <div class="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/30">
