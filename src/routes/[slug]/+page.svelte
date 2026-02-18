@@ -264,6 +264,11 @@
     if (!streamer) return;
     sendTipToOverlay('test_' + crypto.randomUUID(), 100000000);
   }
+
+  // Format name as Title Case
+  function titleCase(str: string): string {
+    return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+  }
 </script>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
@@ -302,7 +307,7 @@
 
       <h1 class="text-3xl md:text-4xl font-bold mb-2">
         <span class="text-gradient bg-clip-text text-transparent">
-          {streamer?.name || 'Streamer'}
+          {streamer?.name ? titleCase(streamer.name) : 'Streamer'}
         </span>
       </h1>
 
@@ -413,14 +418,10 @@
         </div>
       {/if}
 
-      <div class="mt-8 text-center space-y-3">
-        <p class="text-zinc-600 text-sm">Streamer: <span class="text-purple-400 font-mono">{streamer?.slug}</span></p>
-
-        <!-- Powered by Solana -->
-        <div class="flex items-center justify-center gap-2 pt-3 border-t border-white/5">
-          <span class="text-xs text-zinc-500">Powered by</span>
-          <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
-        </div>
+      <!-- Powered by Solana -->
+      <div class="mt-8 flex items-center justify-center gap-2">
+        <span class="text-xs text-zinc-500">Powered by</span>
+        <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
       </div>
     {/if}
   </div>
