@@ -481,7 +481,7 @@
                 <button
                   on:click={() => handleConnectWallet(wallet)}
                   disabled={loading}
-                  class="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-xl font-medium transition-all"
+                  class="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20"
                 >
                   {#if loading && selectedWallet?.name === wallet.name}
                     <span class="inline-flex items-center gap-2">
@@ -505,10 +505,10 @@
           {:else}
             <p class="text-sm text-zinc-400 mb-4 text-center">No wallet extension found</p>
             <div class="space-y-2">
-              <a href="https://phantom.app/" target="_blank" class="block w-full py-3 px-4 bg-purple-600 hover:bg-purple-500 rounded-xl font-medium text-center transition-all">
+              <a href="https://phantom.app/" target="_blank" class="block w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-medium text-center transition-all shadow-lg shadow-purple-500/20">
                 Install Phantom
               </a>
-              <a href="https://solflare.com/" target="_blank" class="block w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 rounded-xl font-medium text-center transition-all">
+              <a href="https://solflare.com/" target="_blank" class="block w-full py-3 px-4 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 rounded-xl font-medium text-center transition-all shadow-lg shadow-yellow-500/20">
                 Install Solflare
               </a>
             </div>
