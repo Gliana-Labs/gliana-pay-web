@@ -117,6 +117,7 @@
     </form>
 
     <!-- Features -->
+    <h2 class="sr-only">Features</h2>
     <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
       <div class="glass-card p-5 rounded-2xl border border-white/10 hover:border-purple-500/30 transition-colors">
         <div class="mb-3">
