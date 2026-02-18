@@ -82,7 +82,9 @@
       if (response.ok) {
         const data = await response.json();
         if (data.settings) {
-          minAmount = (data.settings.min_amount || 1000000) / 1e9;
+          // Enforce minimum 0.001 SOL (1000000 lamports)
+          const loadedAmount = data.settings.min_amount || 1000000;
+          minAmount = Math.max(loadedAmount, 1000000) / 1e9;
           soundUrl = data.settings.sound_url || 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
         }
       }
@@ -96,6 +98,11 @@
 
   async function saveSettings() {
     soundError = '';
+
+    // Enforce minimum 0.001 SOL
+    if (minAmount < 0.001) {
+      minAmount = 0.001;
+    }
 
     if (soundUrl && !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) && !soundUrl.includes('/media/sounds/')) {
       soundError = 'URL should end with .mp3 or contain /media/sounds/';
