@@ -66,7 +66,25 @@ export function getAvailableWallets(): WalletInfo[] {
 // Connect to a specific wallet
 export async function connectWallet(wallet: WalletInfo): Promise<string | null> {
   try {
-    const response = await wallet.provider.connect();
+    // For Solflare and some wallets, we may need to specify the network
+    const network = 'devnet';
+
+    // Check if the wallet supports network specification
+    let response;
+    if (wallet.name === 'Solflare' && wallet.provider.connectWithNetwork) {
+      response = await wallet.provider.connectWithNetwork(network);
+    } else if (wallet.name === 'Phantom' && wallet.provider.connect) {
+      // Phantom may accept network parameter
+      try {
+        response = await wallet.provider.connect({ network });
+      } catch {
+        // Fall back to regular connect if network param not supported
+        response = await wallet.provider.connect();
+      }
+    } else {
+      response = await wallet.provider.connect();
+    }
+
     const address = response.publicKey?.toString() || response.pubkey?.toString();
     if (address) {
       connectedWallet.set(address);
@@ -77,7 +95,8 @@ export async function connectWallet(wallet: WalletInfo): Promise<string | null> 
     return null;
   } catch (e: any) {
     console.error(`Wallet connection failed for ${wallet.name}:`, e?.message || e);
-    throw e; // Re-throw so UI can catch it
+    // Return a more specific error message
+    throw new Error(e?.message || `Failed to connect to ${wallet.name}`);
   }
 }
 

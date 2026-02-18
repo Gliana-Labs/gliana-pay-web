@@ -660,6 +660,11 @@
                 </button>
               {/each}
             </div>
+            <!-- Powered by Solana Pay -->
+            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2">
+              <img src="/solana-pay/Color=White.svg" alt="Solana Pay" class="h-4" />
+              <span class="text-xs text-zinc-500">Powered by</span>
+            </div>
           {:else}
             <p class="text-sm text-zinc-400 mb-4 text-center">No wallet extension found</p>
             <div class="space-y-2">
@@ -670,9 +675,11 @@
                 Install Solflare
               </a>
             </div>
-          {/if}
-          {#if error}
-            <p class="mt-3 text-red-400 text-sm text-center">{error}</p>
+            <!-- Powered by Solana Pay -->
+            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2">
+              <img src="/solana-pay/Color=White.svg" alt="Solana Pay" class="h-4" />
+              <span class="text-xs text-zinc-500">Powered by</span>
+            </div>
           {/if}
         {:else}
           <div class="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">

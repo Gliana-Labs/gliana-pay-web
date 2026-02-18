@@ -316,10 +316,10 @@
               {/each}
             </div>
           {:else}
-            <button on:click={connectWallet} class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
+            <button class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
               Connect Wallet to Tip
             </button>
-            <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a></p>
+            <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a> or <a href="https://solflare.com/" target="_blank" class="text-purple-400">Solflare</a></p>
           {/if}
           {#if walletError}
             <p class="text-red-400 text-xs mt-2 text-center">{walletError}</p>
