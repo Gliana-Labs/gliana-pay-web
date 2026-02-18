@@ -98,8 +98,9 @@
   let wsConnectionTimeout: ReturnType<typeof setTimeout> | null = null;
 
   function connectWebSocket() {
-    // Clear any existing connection
+    // Properly close existing connection
     if (socket) {
+      socket.onclose = null; // Remove handler to prevent reconnection loop
       socket.close();
       socket = null;
     }
@@ -107,6 +108,7 @@
     // Clear connection timeout
     if (wsConnectionTimeout) {
       clearTimeout(wsConnectionTimeout);
+      wsConnectionTimeout = null;
     }
 
     wsUrl = `wss://${WORKER_HOST}/ws/${data.slug}`;
@@ -155,6 +157,7 @@
         isConnected = false;
         if (wsConnectionTimeout) {
           clearTimeout(wsConnectionTimeout);
+          wsConnectionTimeout = null;
         }
         // Exponential backoff
         wsReconnectAttempts++;
@@ -173,6 +176,7 @@
   }
 
   let refreshInterval: ReturnType<typeof setInterval> | null = null;
+  let connectionCheckInterval: ReturnType<typeof setInterval> | null = null;
 
   onMount(async () => {
     // Load settings first (includes sound URL from streamer config)
@@ -184,8 +188,10 @@
     wsReconnectAttempts = 0;
     wsReconnectDelay = 1000;
 
-    // Connect WebSocket
-    connectWebSocket();
+    // Small delay before initial connection to ensure clean state
+    setTimeout(() => {
+      connectWebSocket();
+    }, 100);
 
     // Listen for test messages from parent window
     window.addEventListener('message', handleMessage);
@@ -200,19 +206,10 @@
     window.addEventListener('focus', loadSettings);
 
     // Handle visibility change - reconnect when page becomes visible (important for OBS)
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        console.log('[Overlay] Page visible again, checking connection...');
-        if (!socket || socket.readyState !== WebSocket.OPEN) {
-          console.log('[Overlay] Connection lost, reconnecting...');
-          wsReconnectAttempts = 0;
-          connectWebSocket();
-        }
-      }
-    });
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Periodic connection check - reconnect if disconnected (backup for OBS)
-    setInterval(() => {
+    connectionCheckInterval = setInterval(() => {
       if (!socket || socket.readyState !== WebSocket.OPEN) {
         console.log('[Overlay] Periodic check: not connected, reconnecting...');
         wsReconnectAttempts = 0;
@@ -221,9 +218,22 @@
     }, 15000);
   });
 
+  function handleVisibilityChange() {
+    if (document.visibilityState === 'visible') {
+      console.log('[Overlay] Page visible again, checking connection...');
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        console.log('[Overlay] Connection lost, reconnecting...');
+        wsReconnectAttempts = 0;
+        connectWebSocket();
+      }
+    }
+  }
+
   onDestroy(() => {
     if (socket) {
+      socket.onclose = null;
       socket.close();
+      socket = null;
     }
     if (wsConnectionTimeout) {
       clearTimeout(wsConnectionTimeout);
@@ -231,9 +241,13 @@
     if (refreshInterval) {
       clearInterval(refreshInterval);
     }
+    if (connectionCheckInterval) {
+      clearInterval(connectionCheckInterval);
+    }
     if (typeof window !== 'undefined') {
       window.removeEventListener('message', handleMessage);
       window.removeEventListener('focus', loadSettings);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     }
   });
 
