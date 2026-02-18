@@ -134,16 +134,16 @@
         </svg>
       </a>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <div class="absolute bottom-6 left-0 right-0 flex justify-center">
-      <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-        <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
-        <span class="text-zinc-600 text-xs">
-          &copy; {new Date().getFullYear()} by Gliana Labs
-        </span>
-      </a>
-    </div>
+  <!-- Footer -->
+  <div class="absolute bottom-6 left-0 right-0 flex justify-center">
+    <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+      <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
+      <span class="text-zinc-600 text-xs">
+        &copy; {new Date().getFullYear()} by Gliana Labs
+      </span>
+    </a>
   </div>
 </div>
 

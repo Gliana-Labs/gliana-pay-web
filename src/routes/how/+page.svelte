@@ -119,7 +119,7 @@
     </div>
 
     <!-- CTA -->
-    <div class="text-center mt-12">
+    <div class="text-center mt-12 mb-24">
       <a
         href="/login"
         class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold transition-all transform hover:scale-[1.02] shadow-lg shadow-purple-500/30"
@@ -127,16 +127,16 @@
         Get Started Now
       </a>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <div class="absolute bottom-6 left-0 right-0 flex justify-center">
-      <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-        <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
-        <span class="text-zinc-600 text-xs">
-          &copy; {currentYear} by Gliana Labs
-        </span>
-      </a>
-    </div>
+  <!-- Footer -->
+  <div class="absolute bottom-6 left-0 right-0 flex justify-center">
+    <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+      <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
+      <span class="text-zinc-600 text-xs">
+        &copy; {currentYear} by Gliana Labs
+      </span>
+    </a>
   </div>
 </div>
 
