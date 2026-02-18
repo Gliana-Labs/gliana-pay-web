@@ -1,4 +1,6 @@
 <script lang="ts">
+  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
+
   let openIndex: number | null = null;
 
   const faqs = [
@@ -68,11 +70,7 @@
   </div>
 
   <!-- Floating icons -->
-  <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[10%] left-[5%] w-16 h-16 opacity-25 float" />
-    <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[15%] right-[8%] w-16 h-16 opacity-25 float" style="animation-delay: 1s;" />
-    <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute bottom-[20%] left-[10%] w-14 h-14 opacity-20 float" style="animation-delay: 2s;" />
-  </div>
+  <FloatingIcons />
 
   <div class="relative z-10 max-w-3xl mx-auto px-4 py-16">
     <!-- Header -->

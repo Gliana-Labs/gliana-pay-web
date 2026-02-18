@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import { disconnectWallet } from '$lib/wallet';
@@ -180,12 +181,7 @@
 {#if !loading}
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
     <!-- Floating icons -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[10%] left-[5%] w-16 h-16 opacity-25 float" />
-      <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[15%] right-[8%] w-16 h-16 opacity-25 float" style="animation-delay: 1s;" />
-      <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute bottom-[20%] left-[10%] w-14 h-14 opacity-20 float" style="animation-delay: 2s;" />
-      <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[15%] right-[5%] w-16 h-16 opacity-25 float" style="animation-delay: 1.5s;" />
-    </div>
+    <FloatingIcons />
 
     <!-- Header -->
     <div class="border-b border-white/10">

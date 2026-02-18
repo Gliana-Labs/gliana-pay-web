@@ -17,6 +17,7 @@
 </svelte:head>
 
 <script lang="ts">
+  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
   import { onMount, onDestroy } from 'svelte';
   import { getAvailableWallets, connectWallet, disconnectWallet } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
@@ -460,12 +461,7 @@
   <!-- Login View -->
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
     <!-- Floating icons -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[10%] left-[5%] w-16 h-16 opacity-25 float" />
-      <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[15%] right-[8%] w-16 h-16 opacity-25 float" style="animation-delay: 1s;" />
-      <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute bottom-[20%] left-[10%] w-14 h-14 opacity-20 float" style="animation-delay: 2s;" />
-      <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[15%] right-[5%] w-16 h-16 opacity-25 float" style="animation-delay: 1.5s;" />
-    </div>
+    <FloatingIcons />
 
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
