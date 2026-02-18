@@ -17,7 +17,7 @@
 </svelte:head>
 
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { getAvailableWallets, connectWallet, disconnectWallet } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
 
@@ -416,19 +416,29 @@
       return;
     }
 
+    // Only set up Phantom listener if no session exists
     const phantom = getPhantomWallet();
+    if (phantom && phantom.isConnected) {
+      // Wallet already connected from before - clear session first to avoid loop
+      localStorage.removeItem('gliana_session');
+    }
+
     if (phantom) {
+      // Set up connect listener
       phantom.on('connect', () => {
         walletAddress = phantom.publicKey?.toString() || '';
         connected = true;
-        saveSession();
+        // Don't auto-save - only check if account exists
         checkExisting();
       });
-      if (phantom.publicKey) {
-        walletAddress = phantom.publicKey.toString();
-        connected = true;
-        checkExisting();
-      }
+    }
+  });
+
+  // Cleanup on destroy
+  onDestroy(() => {
+    const phantom = getPhantomWallet();
+    if (phantom) {
+      phantom.off('connect');
     }
   });
 </script>
