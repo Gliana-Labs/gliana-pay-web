@@ -614,11 +614,11 @@
     </div>
 
     <div class="relative z-10 max-w-md mx-auto px-4 py-8">
-      <!-- Beta Badge -->
+      <!-- Beta - Testnet Badge -->
       <div class="flex justify-center mb-4">
         <div class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full">
           <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-          <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
+          <span class="text-xs font-medium text-yellow-400">Beta - Testnet</span>
         </div>
       </div>
 
