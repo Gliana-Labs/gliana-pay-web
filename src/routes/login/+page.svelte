@@ -614,9 +614,18 @@
     </div>
 
     <div class="relative z-10 max-w-md mx-auto px-4 py-8">
+      <!-- Beta Badge -->
+      <div class="flex justify-center mb-4">
+        <div class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full">
+          <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+          <span class="text-xs font-medium text-yellow-400">Beta - Testnet</span>
+        </div>
+      </div>
+
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gradient">Streamer Login</h1>
         <p class="text-zinc-400 mt-2">Connect wallet to manage your tipping page</p>
+        <p class="text-xs text-yellow-400/70 mt-2">Using Solana devnet - no real money</p>
       </div>
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
@@ -628,17 +637,19 @@
                 <button
                   on:click={() => handleConnectWallet(wallet)}
                   disabled={loading}
-                  class="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-xl font-medium transition-all flex items-center justify-center gap-3"
+                  class="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-xl font-medium transition-all"
                 >
                   {#if loading && selectedWallet?.name === wallet.name}
-                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
+                    <span class="inline-flex items-center gap-2">
+                      <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                      Connecting...
+                    </span>
                   {:else}
-                    <img src={wallet.icon} alt={wallet.name} class="w-5 h-5" />
+                    Connect {wallet.name}
                   {/if}
-                  Connect {wallet.name}
                 </button>
               {/each}
             </div>
