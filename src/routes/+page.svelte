@@ -58,11 +58,11 @@
     <div class="absolute top-4 right-4 group">
       <div class="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help">
         <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-        <span class="text-xs font-medium text-yellow-400">Beta - Testnet</span>
+        <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
       </div>
       <!-- Tooltip -->
       <div class="absolute right-0 top-full mt-2 w-64 px-3 py-2 bg-zinc-900 border border-yellow-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-        This is a testnet version. We're using Solana devnet - no real money involved. Use Phantom wallet set to devnet mode.
+        This is a devnet version. No real money involved. Enable devnet in your Phantom wallet settings before using.
       </div>
     </div>
 

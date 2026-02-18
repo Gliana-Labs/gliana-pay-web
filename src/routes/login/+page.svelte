@@ -618,14 +618,13 @@
       <div class="flex justify-center mb-4">
         <div class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full">
           <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-          <span class="text-xs font-medium text-yellow-400">Beta - Testnet</span>
+          <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
         </div>
       </div>
 
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gradient">Streamer Login</h1>
         <p class="text-zinc-400 mt-2">Connect wallet to manage your tipping page</p>
-        <p class="text-xs text-yellow-400/70 mt-2">Using Solana devnet - no real money</p>
       </div>
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
