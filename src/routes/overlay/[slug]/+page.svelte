@@ -179,6 +179,11 @@
     await loadSettings();
     // Then load sound preference from URL param
     loadSoundPreference();
+
+    // Force reset before connecting
+    wsReconnectAttempts = 0;
+    wsReconnectDelay = 1000;
+
     // Connect WebSocket
     connectWebSocket();
 
@@ -205,6 +210,15 @@
         }
       }
     });
+
+    // Periodic connection check - reconnect if disconnected (backup for OBS)
+    setInterval(() => {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        console.log('[Overlay] Periodic check: not connected, reconnecting...');
+        wsReconnectAttempts = 0;
+        connectWebSocket();
+      }
+    }, 15000);
   });
 
   onDestroy(() => {
