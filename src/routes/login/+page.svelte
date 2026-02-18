@@ -355,7 +355,9 @@
       }
 
       saveSession();
-      window.location.href = `/${slug}`;
+      // Go to dashboard instead of redirecting to streamer page
+      showDashboard = true;
+      loadDashboardData();
     } catch (e: any) {
       console.error('Register error:', e);
       error = e.name === 'AbortError' ? 'Request timed out. Please try again.' : (e.message || 'Failed to register');
