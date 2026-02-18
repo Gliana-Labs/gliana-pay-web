@@ -9,6 +9,7 @@
   let socket: WebSocket | null = null;
   let isConnected = false;
   let isReconnecting = false;
+  let wsError = '';
   let currentTip: WSTipEvent['data'] | null = null;
   let showAlert = false;
   let alertSound: HTMLAudioElement | null = null;
@@ -101,6 +102,7 @@
   function connectWebSocket() {
     // Mark as reconnecting
     isReconnecting = true;
+    wsError = '';
 
     // Properly close existing connection
     if (socket) {
@@ -151,6 +153,7 @@
             console.log('Welcome:', message.message);
           } else if (message.type === 'error') {
             console.error('WebSocket error:', message.message);
+            wsError = message.message;
           }
         } catch (error) {
           console.error('Failed to parse message:', error);
@@ -345,23 +348,30 @@
 <!-- OBS Overlay - Transparent Background -->
 <div class="fixed inset-0 pointer-events-none overflow-hidden" style="background: transparent;">
   <!-- Connection Status - Debug info -->
-  <div class="absolute top-2 left-2 flex items-center gap-2">
-    <div class="text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
-      {#if isConnected}
-        🟢 Connected | {data.slug}
-      {:else if isReconnecting}
-        🟡 Reconnecting... | {data.slug}
-      {:else}
-        🔴 Disconnected | {data.slug}
+  <div class="absolute top-2 left-2 flex flex-col gap-1">
+    <div class="flex items-center gap-2">
+      <div class="text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
+        {#if isConnected}
+          🟢 Connected | {data.slug}
+        {:else if isReconnecting}
+          🟡 Reconnecting... | {data.slug}
+        {:else}
+          🔴 Disconnected | {data.slug}
+        {/if}
+      </div>
+      {#if !isConnected && !isReconnecting}
+        <button
+          on:click={() => { wsReconnectAttempts = 0; wsError = ''; connectWebSocket(); }}
+          class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto"
+        >
+          Reconnect
+        </button>
       {/if}
     </div>
-    {#if !isConnected && !isReconnecting}
-      <button
-        on:click={() => { wsReconnectAttempts = 0; connectWebSocket(); }}
-        class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto"
-      >
-        Reconnect
-      </button>
+    {#if wsError}
+      <div class="text-xs text-red-400 bg-black/70 px-2 py-1 rounded max-w-xs">
+        ⚠️ {wsError}
+      </div>
     {/if}
   </div>
 

@@ -112,15 +112,23 @@
 
   // Test alert
   let testInProgress = false;
+  let testAlertError = '';
 
   function testAlertWS() {
     if (testInProgress) return;
     testInProgress = true;
+    testAlertError = '';
 
     fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
       method: 'POST'
+    }).then(async (res) => {
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || data.message || `HTTP ${res.status}: ${res.statusText}`);
+      }
     }).catch(err => {
       console.error('Failed to send test alert:', err);
+      testAlertError = err.message || 'Failed to send test alert';
     }).finally(() => {
       setTimeout(() => {
         testInProgress = false;
@@ -326,9 +334,13 @@
               <span>Preview Overlay</span>
             </a>
 
-            <button on:click={testAlertWS} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline">
-              <span>Test Alert</span>
+            <button on:click={testAlertWS} disabled={testInProgress} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50">
+              <span>{testInProgress ? 'Sending...' : 'Test Alert'}</span>
             </button>
+
+            {#if testAlertError}
+              <p class="text-xs text-red-400 mt-2">{testAlertError}</p>
+            {/if}
 
             <p class="text-xs text-zinc-500 mt-3">
               <span class="text-yellow-500">Tip:</span> If settings don't update, right-click the Browser Source in OBS and select "Interact" then refresh the page, or remove and re-add the Browser Source.
