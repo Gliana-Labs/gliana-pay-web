@@ -193,6 +193,18 @@
 
     // Also refresh settings when window gains focus
     window.addEventListener('focus', loadSettings);
+
+    // Handle visibility change - reconnect when page becomes visible (important for OBS)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        console.log('[Overlay] Page visible again, checking connection...');
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+          console.log('[Overlay] Connection lost, reconnecting...');
+          wsReconnectAttempts = 0;
+          connectWebSocket();
+        }
+      }
+    });
   });
 
   onDestroy(() => {
@@ -298,8 +310,18 @@
 <!-- OBS Overlay - Transparent Background -->
 <div class="fixed inset-0 pointer-events-none overflow-hidden" style="background: transparent;">
   <!-- Connection Status - Debug info -->
-  <div class="absolute top-2 left-2 text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
-    {isConnected ? '🟢 Connected' : '🔴 Disconnected'} | {data.slug}
+  <div class="absolute top-2 left-2 flex items-center gap-2">
+    <div class="text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
+      {isConnected ? '🟢 Connected' : '🔴 Disconnected'} | {data.slug}
+    </div>
+    {#if !isConnected}
+      <button
+        on:click={() => { wsReconnectAttempts = 0; connectWebSocket(); }}
+        class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto"
+      >
+        Reconnect
+      </button>
+    {/if}
   </div>
 
   <!-- Enable Sound Button -->
