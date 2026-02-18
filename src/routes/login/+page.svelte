@@ -562,7 +562,7 @@
               </li>
             </ol>
 
-            <a href="/overlay/{slug || 'yourname'}{soundEnabled ? '?sound=1' : ''}" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
+            <a href="/overlay/{slug || 'yourname'}?sound=1" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
               <span>Preview Overlay</span>
             </a>
 

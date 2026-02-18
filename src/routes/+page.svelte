@@ -53,7 +53,7 @@
     <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[15%] right-[5%] w-16 h-16 opacity-25 float" style="animation-delay: 1.5s;" />
   </div>
 
-  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
+  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 pb-24 md:pb-0">
     <!-- Beta Badge with Tooltip -->
     <div class="absolute top-4 right-4 group">
       <div class="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help">
