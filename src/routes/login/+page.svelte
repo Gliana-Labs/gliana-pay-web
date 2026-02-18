@@ -628,6 +628,7 @@
           <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
         </div>
       </div>
+      <p class="text-xs text-yellow-400/70 text-center mb-4">Make sure your wallet is set to Devnet</p>
 
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gradient">Streamer Login</h1>
