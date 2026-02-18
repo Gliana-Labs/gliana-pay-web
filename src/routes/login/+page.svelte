@@ -423,13 +423,21 @@
     }
 
     // Set up Phantom connect listener for auto-redirect when user connects
-    // Only redirect if they have an existing account (checked via checkExisting)
     const phantom = getPhantomWallet();
     if (phantom) {
       phantom.on('connect', () => {
         walletAddress = phantom.publicKey?.toString() || '';
         connected = true;
-        // checkExisting will redirect to dashboard if account exists
+        checkExisting();
+      });
+    }
+
+    // Set up Solflare connect listener
+    const solflare = (window as any).solflare;
+    if (solflare) {
+      solflare.on('connect', () => {
+        walletAddress = solflare.publicKey?.toString() || '';
+        connected = true;
         checkExisting();
       });
     }
@@ -440,6 +448,10 @@
     const phantom = getPhantomWallet();
     if (phantom) {
       phantom.off('connect');
+    }
+    const solflare = (window as any).solflare;
+    if (solflare) {
+      solflare.off('connect');
     }
   });
 </script>
