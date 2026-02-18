@@ -280,6 +280,18 @@
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
   </div>
 
+  <!-- Beta Badge with Tooltip -->
+  <div class="absolute top-4 right-4 group z-20">
+    <div class="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help">
+      <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+      <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
+    </div>
+    <!-- Tooltip -->
+    <div class="absolute right-0 top-full mt-2 w-64 px-3 py-2 bg-zinc-900 border border-yellow-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+      This is a testnet version. No real money involved. Enable devnet in your wallet settings before using.
+    </div>
+  </div>
+
   <div class="relative z-10 max-w-xl mx-auto px-4 py-8">
     <div class="text-center mb-6">
       <div class="relative inline-block mb-4">
@@ -295,20 +307,6 @@
       </h1>
 
       <p class="text-zinc-400 text-sm max-w-xs mx-auto">Send a SOL tip and show your support with a custom message on their live stream</p>
-
-      <!-- Beta Devnet Badge with tooltip -->
-      <div class="mt-4">
-        <div class="relative inline-block group">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 text-xs font-medium cursor-help">
-            <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
-            Beta - Devnet
-          </span>
-          <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-zinc-900 border border-yellow-500/30 rounded-lg text-xs text-zinc-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-            Make sure your wallet is set to Devnet
-            <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-zinc-900"></div>
-          </div>
-        </div>
-      </div>
     </div>
 
     {#if data.error}
