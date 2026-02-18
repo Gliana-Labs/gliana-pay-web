@@ -53,6 +53,13 @@
   <FloatingIcons />
 
   <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 pb-32 pt-16">
+    <!-- Top Navigation -->
+    <nav class="absolute top-4 left-4 flex items-center gap-4 z-50">
+      <a href="/how" class="text-sm text-zinc-400 hover:text-white transition-colors">How</a>
+      <a href="/docs" class="text-sm text-zinc-400 hover:text-white transition-colors">Docs</a>
+      <a href="/faq" class="text-sm text-zinc-400 hover:text-white transition-colors">FAQ</a>
+    </nav>
+
     <!-- Beta Badge with Tooltip -->
     <div class="absolute top-4 right-4 group">
       <div class="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help">
