@@ -73,10 +73,11 @@ export async function connectWallet(wallet: WalletInfo): Promise<string | null> 
       walletName.set(wallet.name);
       return address;
     }
+    console.error('No address returned from wallet');
     return null;
   } catch (e: any) {
-    console.error('Wallet connection failed:', e);
-    return null;
+    console.error(`Wallet connection failed for ${wallet.name}:`, e?.message || e);
+    throw e; // Re-throw so UI can catch it
   }
 }
 
