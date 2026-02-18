@@ -411,9 +411,10 @@
     loadSession();
     checkWallets();
 
-    // Load dashboard data if already logged in
-    if (showDashboard && slug) {
-      loadDashboardData();
+    // If already logged in (has session with wallet and slug), redirect to dashboard
+    if (walletAddress && slug) {
+      window.location.href = '/dashboard';
+      return;
     }
 
     const phantom = getPhantomWallet();

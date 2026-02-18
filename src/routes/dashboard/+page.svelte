@@ -1,227 +1,348 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { disconnectWallet } from '$lib/wallet';
+  import type { WalletInfo } from '$lib/wallet';
 
-  // Mock data for demo
-  let streamer = {
-    id: 1,
-    slug: 'zekai',
-    wallet: '3VaXM8KmxfmK4Hb4RZhu3ZUWoJDEEMd8sjv9rk1e3keS',
-    name: 'Zetakai'
-  };
-
-  let donations = [
-    { id: 1, amount: 100000000, sender_name: 'Alice', message: 'Love your streams!', timestamp: '2024-01-15T10:30:00Z' },
-    { id: 2, amount: 50000000, sender_name: 'Bob', message: 'Keep it up!', timestamp: '2024-01-14T15:20:00Z' },
-    { id: 3, amount: 250000000, sender_name: 'Charlie', message: 'You\'re awesome!', timestamp: '2024-01-13T20:45:00Z' },
-  ];
-
-  let settings = {
-    min_amount: 1000000,
-    sound_url: 'https://cdn.gliana.app/alerts/default.mp3'
-  };
-
+  // Check auth
   let walletAddress = '';
-  let connected = false;
+  let slug = '';
+  let loading = true;
 
-  function getPhantomWallet() {
-    if (typeof window !== 'undefined') {
-      return (window as any).phantom?.solana;
-    }
-    return null;
+  const WORKER_URL = 'https://api.glianapay.com';
+
+  // Dashboard data
+  let totalReceived = 0;
+  let totalTips = 0;
+  let average = 0;
+  let donations: any[] = [];
+  let settingsLoading = false;
+  let settingsSaved = false;
+
+  // Settings
+  let minAmount = 0.001;
+  let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
+  let soundEnabled = false;
+
+  // Copy state
+  let copied = false;
+  async function copyPageUrl() {
+    const url = `https://glianapay.com/${slug}`;
+    await navigator.clipboard.writeText(url);
+    copied = true;
+    setTimeout(() => copied = false, 2000);
   }
 
-  async function connectWallet() {
-    const phantom = getPhantomWallet();
-    if (!phantom) return;
+  // Load session
+  function loadSession() {
+    if (typeof window === 'undefined') return;
+
+    const saved = localStorage.getItem('gliana_session');
+    if (saved) {
+      const session = JSON.parse(saved);
+      walletAddress = session.walletAddress || '';
+      slug = session.slug || '';
+    }
+  }
+
+  // Load dashboard data
+  async function loadDashboardData() {
+    if (!slug) return;
 
     try {
-      const response = await phantom.connect();
-      walletAddress = response.publicKey.toString();
-      connected = true;
+      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/donations`);
+      if (response.ok) {
+        const data = await response.json();
+        totalReceived = data.stats.totalReceived / 1e9;
+        totalTips = data.stats.totalTips;
+        average = data.stats.average / 1e9;
+        donations = data.donations || [];
+      }
     } catch (e) {
-      console.error(e);
+      console.error('Failed to load donations:', e);
+    }
+
+    try {
+      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.settings) {
+          minAmount = (data.settings.min_amount || 1000000) / 1e9;
+          soundUrl = data.settings.sound_url || 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load settings:', e);
     }
   }
 
-  function formatSOL(lamports: number) {
-    return (lamports / 1e9).toFixed(4);
+  // Save settings
+  let soundError = '';
+
+  async function saveSettings() {
+    soundError = '';
+
+    if (soundUrl && !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) && !soundUrl.includes('/media/sounds/')) {
+      soundError = 'URL should end with .mp3 or contain /media/sounds/';
+      return;
+    }
+
+    settingsLoading = true;
+    settingsSaved = false;
+
+    try {
+      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          min_amount: Math.floor(minAmount * 1e6),
+          sound_url: soundUrl
+        })
+      });
+
+      if (response.ok) {
+        settingsSaved = true;
+        setTimeout(() => settingsSaved = false, 3000);
+      }
+    } catch (e) {
+      console.error('Failed to save settings:', e);
+    } finally {
+      settingsLoading = false;
+    }
   }
 
-  function formatDate(timestamp: string) {
-    return new Date(timestamp).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+  // Test alert
+  let testInProgress = false;
+
+  function testAlertWS() {
+    if (testInProgress) return;
+    testInProgress = true;
+
+    fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
+      method: 'POST'
+    }).catch(err => {
+      console.error('Failed to send test alert:', err);
+    }).finally(() => {
+      setTimeout(() => {
+        testInProgress = false;
+      }, 2000);
     });
   }
 
-  $: totalReceived = donations.reduce((sum, d) => sum + d.amount, 0);
-  $: totalDonations = donations.length;
+  // Logout
+  function handleLogout() {
+    localStorage.removeItem('gliana_session');
+    window.location.href = '/';
+  }
+
+  // Go to homepage
+  function goToHomepage() {
+    window.location.href = '/';
+  }
 
   onMount(() => {
-    connectWallet();
+    loadSession();
+
+    if (!walletAddress || !slug) {
+      // Not logged in, redirect to login
+      window.location.href = '/login';
+      return;
+    }
+
+    loadDashboardData();
+    loading = false;
   });
 </script>
 
-<div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
-  <!-- Floating icons -->
-  <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[10%] left-[5%] w-16 h-16 opacity-25 float" />
-    <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[15%] right-[8%] w-16 h-16 opacity-25 float" style="animation-delay: 1s;" />
-    <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute bottom-[20%] left-[10%] w-14 h-14 opacity-20 float" style="animation-delay: 2s;" />
-    <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[15%] right-[5%] w-16 h-16 opacity-25 float" style="animation-delay: 1.5s;" />
-  </div>
+{#if !loading}
+  <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+    <!-- Floating icons -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <img src="/3dicons-dollar-dynamic-color.png" alt="" class="absolute top-[10%] left-[5%] w-16 h-16 opacity-25 float" />
+      <img src="/3dicons-wallet-dynamic-color.png" alt="" class="absolute top-[15%] right-[8%] w-16 h-16 opacity-25 float" style="animation-delay: 1s;" />
+      <img src="/3dicons-shield-dynamic-color.png" alt="" class="absolute bottom-[20%] left-[10%] w-14 h-14 opacity-20 float" style="animation-delay: 2s;" />
+      <img src="/3dicons-video-cam-dynamic-color.png" alt="" class="absolute bottom-[15%] right-[5%] w-16 h-16 opacity-25 float" style="animation-delay: 1.5s;" />
+    </div>
 
-  <!-- Header -->
-  <div class="border-b border-white/10">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2">
-        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
-        <span class="font-bold">GlianaPay</span>
-      </a>
-      <div class="flex items-center gap-4">
-        <a href="/{streamer.slug}" target="_blank" class="text-zinc-400 hover:text-white text-sm">
-          View Page →
-        </a>
-        <div class="text-sm text-zinc-400">
-          {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+    <!-- Header -->
+    <div class="border-b border-white/10">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <button on:click={goToHomepage} class="flex items-center gap-2">
+          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
+          <span class="font-bold">GlianaPay</span>
+        </button>
+        <div class="flex items-center gap-4">
+          <span class="text-zinc-400 text-sm">Dashboard</span>
+          <div class="text-sm text-zinc-400">
+            {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+          </div>
+          <button on:click={handleLogout} class="text-sm text-red-400 hover:text-red-300">Logout</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <div class="glass-card p-6 rounded-2xl border border-white/10">
-        <p class="text-zinc-400 text-sm">Total Received</p>
-        <p class="text-3xl font-bold text-gradient mt-1">{formatSOL(totalReceived)} SOL</p>
-      </div>
-      <div class="glass-card p-6 rounded-2xl border border-white/10">
-        <p class="text-zinc-400 text-sm">Total Tips</p>
-        <p class="text-3xl font-bold mt-1">{totalDonations}</p>
-      </div>
-      <div class="glass-card p-6 rounded-2xl border border-white/10">
-        <p class="text-zinc-400 text-sm">Average</p>
-        <p class="text-3xl font-bold mt-1">{formatSOL(totalReceived / totalDonations)} SOL</p>
-      </div>
-      <div class="glass-card p-6 rounded-2xl border border-white/10">
-        <p class="text-zinc-400 text-sm">Your Page</p>
-        <a href="/{streamer.slug}" target="_blank" class="text-xl font-bold text-purple-400 hover:underline mt-1 block">
-          /{streamer.slug}
-        </a>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Recent Donations -->
-      <div class="lg:col-span-2">
-        <div class="glass-card rounded-2xl border border-white/10 overflow-hidden">
-          <div class="p-4 border-b border-white/10">
-            <h2 class="font-bold text-lg">Recent Tips</h2>
-          </div>
-          <div class="divide-y divide-white/5">
-            {#each donations as donation}
-              <div class="p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="font-semibold">{donation.sender_name}</span>
-                    <span class="text-green-400 font-bold">{formatSOL(donation.amount)} SOL</span>
-                  </div>
-                  <p class="text-sm text-zinc-400 truncate">{donation.message}</p>
-                </div>
-                <span class="text-xs text-zinc-500">{formatDate(donation.timestamp)}</span>
-              </div>
-            {/each}
-          </div>
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="glass-card p-6 rounded-2xl border border-white/10">
+          <p class="text-zinc-400 text-sm">Total Received</p>
+          <p class="text-3xl font-bold text-gradient mt-1">{totalReceived.toFixed(3)} SOL</p>
         </div>
-      </div>
-
-      <!-- Settings -->
-      <div>
-        <div class="glass-card rounded-2xl border border-white/10 p-6">
-          <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            Settings
-          </h2>
-
-          <div class="space-y-4">
-            <div>
-              <label for="min-amount" class="block text-sm text-zinc-400 mb-2">
-                Minimum Tip Amount (SOL)
-              </label>
-              <input
-                type="number"
-                id="min-amount"
-                bind:value={settings.min_amount}
-                step="0.001"
-                min="0"
-                class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
-              />
-            </div>
-
-            <div>
-              <label for="sound-url" class="block text-sm text-zinc-400 mb-2">
-                Alert Sound URL
-              </label>
-              <input
-                type="url"
-                id="sound-url"
-                bind:value={settings.sound_url}
-                class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
-              />
-            </div>
-
-            <button class="w-full py-3 bg-purple-600 hover:bg-purple-500 rounded-xl font-semibold transition-all">
-              Save Settings
+        <div class="glass-card p-6 rounded-2xl border border-white/10">
+          <p class="text-zinc-400 text-sm">Total Tips</p>
+          <p class="text-3xl font-bold mt-1">{totalTips}</p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-white/10">
+          <p class="text-zinc-400 text-sm">Average</p>
+          <p class="text-3xl font-bold mt-1">{average.toFixed(3)} SOL</p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-white/10">
+          <p class="text-zinc-400 text-sm">Your Page</p>
+          <div class="flex items-center gap-2 mt-1">
+            <a href="/{slug || 'yourname'}" target="_blank" class="text-xl font-bold text-purple-400 hover:underline">
+              /{slug || 'yourname'}
+            </a>
+            <button on:click={copyPageUrl} class="text-xs bg-zinc-700 hover:bg-zinc-600 px-2 py-1 rounded transition-all">
+              {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
+          <p class="text-xs text-zinc-500 mt-1">Share this link to receive tips</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Recent Donations -->
+        <div class="lg:col-span-2">
+          <div class="glass-card rounded-2xl border border-white/10 overflow-hidden">
+            <div class="p-4 border-b border-white/10">
+              <h2 class="font-bold text-lg">Recent Tips</h2>
+            </div>
+            {#if donations.length > 0}
+              <div class="divide-y divide-white/5">
+                {#each donations as donation}
+                  <div class="p-4 flex items-center justify-between">
+                    <div>
+                      <p class="font-medium text-white">{donation.sender_name || 'Anonymous'}</p>
+                      <p class="text-sm text-zinc-500">{donation.message || 'No message'}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="font-bold text-green-400">{(donation.amount / 1e9).toFixed(3)} SOL</p>
+                      <p class="text-xs text-zinc-500">{new Date(donation.timestamp).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            {:else}
+              <div class="p-8 text-center text-zinc-500">
+                No tips yet. Share your page to start receiving tips!
+              </div>
+            {/if}
+          </div>
         </div>
 
-        <!-- OBS Instructions -->
-        <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
-          <h2 class="font-bold text-lg mb-4">📺 OBS Setup</h2>
-          <ol class="text-sm text-zinc-400 space-y-2">
-            <li>1. Add Browser Source in OBS</li>
-            <li>2. Enter this URL:</li>
-            <li class="font-mono text-xs text-purple-400 break-all">https://glianapay.com/overlay/{streamer.slug}</li>
-            <li>3. Set size to 1920x1080</li>
-          </ol>
+        <!-- Settings -->
+        <div>
+          <div class="glass-card rounded-2xl border border-white/10 p-6">
+            <h2 class="font-bold text-lg mb-4">Settings</h2>
+            <div class="space-y-4">
+              <div>
+                <label for="min-amount" class="block text-sm text-zinc-400 mb-2">Minimum (SOL)</label>
+                <input type="number" id="min-amount" bind:value={minAmount} step="0.001" min="0.001" class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white" />
+              </div>
+              <div>
+                <label for="sound" class="block text-sm text-zinc-400 mb-2">Alert Sound URL</label>
+                <div class="flex gap-2 items-center">
+                  <input type="url" id="sound" bind:value={soundUrl} class="flex-1 px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm" />
+                  <button on:click={() => soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3'} class="px-2 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 whitespace-nowrap">
+                    Default
+                  </button>
+                </div>
+              </div>
+              {#if soundError}
+                <p class="text-red-400 text-sm">{soundError}</p>
+              {/if}
+              <button on:click={saveSettings} disabled={settingsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all">
+                {#if settingsLoading}
+                  Saving...
+                {:else}
+                  Save Settings
+                {/if}
+              </button>
+              {#if settingsSaved}
+                <p class="text-green-400 text-sm text-center">Settings saved!</p>
+              {/if}
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
+            <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
+
+            <p class="text-sm text-zinc-400 mb-3">How to add tip alerts to your stream:</p>
+
+            <ol class="text-sm text-zinc-300 space-y-2 mb-4">
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">1.</span>
+                <span>In OBS, add a <strong>Browser Source</strong></span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">2.</span>
+                <span>Toggle sound below, copy URL, paste in Browser Source</span>
+              </li>
+            </ol>
+
+            <div class="mb-3">
+              <label class="flex items-center gap-2 text-sm text-zinc-300 mb-2">
+                <input type="checkbox" bind:checked={soundEnabled} class="w-4 h-4 accent-purple-500" />
+                Enable sound alerts
+              </label>
+            </div>
+
+            <div class="space-y-2 mb-3">
+              <div class="flex items-center gap-2">
+                <code class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all">
+                  https://glianapay.com/overlay/{slug}{soundEnabled ? '?sound=1' : ''}
+                </code>
+                <button on:click={() => navigator.clipboard.writeText(`https://glianapay.com/overlay/${slug}${soundEnabled ? '?sound=1' : ''}`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap">
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            <ol class="text-sm text-zinc-300 space-y-2 mb-3">
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">3.</span>
+                <span>Set Width: <strong>600</strong>, Height: <strong>400</strong></span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">4.</span>
+                <span>Check "Shutdown source when not visible"</span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">5.</span>
+                <span>Position the overlay in your scene</span>
+              </li>
+            </ol>
+
+            <a href="/overlay/{slug}?sound=1" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
+              <span>Preview Overlay</span>
+            </a>
+
+            <button on:click={testAlertWS} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline">
+              <span>Test Alert</span>
+            </button>
+
+            <p class="text-xs text-zinc-500 mt-3">
+              <span class="text-yellow-500">Tip:</span> If settings don't update, right-click the Browser Source in OBS and select "Interact" then refresh the page, or remove and re-add the Browser Source.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+{/if}
 
 <style>
-  .glass-card {
-    background: rgba(17, 17, 19, 0.8);
-    backdrop-filter: blur(12px);
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes gradient {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
+  .glass-card { background: rgba(17, 17, 19, 0.8); backdrop-filter: blur(12px); }
+  @keyframes gradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
   .text-gradient {
     background-image: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%);
     background-size: 200% 200%;
@@ -229,5 +350,12 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .float {
+    animation: float 3s ease-in-out infinite;
   }
 </style>
