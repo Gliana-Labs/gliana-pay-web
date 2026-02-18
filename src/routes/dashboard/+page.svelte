@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { slide } from 'svelte/transition';
   import { disconnectWallet } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
 
@@ -362,6 +363,7 @@
   <!-- Toast -->
   {#if toast}
     <div
+      transition:slide={{ duration: 300 }}
       class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 {toastType === 'success' ? 'bg-green-600' : 'bg-red-600'} text-white text-sm font-medium"
     >
       {toast}
