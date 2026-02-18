@@ -24,12 +24,12 @@ export function getAvailableWallets(): WalletInfo[] {
     });
   }
 
-  // Solflare
-  if ((window as any).solflare?.isSolflare) {
+  // Solflare - use solflare.solana for the provider
+  if ((window as any).solflare?.solana?.isSolflare || (window as any).solflare?.isSolflare) {
     wallets.push({
       name: 'Solflare',
       icon: 'https://www.svgrepo.com/show/475647/solflare.svg',
-      provider: (window as any).solflare
+      provider: (window as any).solflare.solana || (window as any).solflare
     });
   }
 
@@ -66,37 +66,38 @@ export function getAvailableWallets(): WalletInfo[] {
 // Connect to a specific wallet
 export async function connectWallet(wallet: WalletInfo): Promise<string | null> {
   try {
-    // For Solflare and some wallets, we may need to specify the network
-    const network = 'devnet';
+    console.log(`Connecting to ${wallet.name}...`);
+    console.log('Provider:', wallet.provider);
 
-    // Check if the wallet supports network specification
+    // Try to connect - the network (devnet/mainnet) should be set in the wallet's settings
+    // Most wallets handle network selection internally through their extension UI
     let response;
-    if (wallet.name === 'Solflare' && wallet.provider.connectWithNetwork) {
-      response = await wallet.provider.connectWithNetwork(network);
-    } else if (wallet.name === 'Phantom' && wallet.provider.connect) {
-      // Phantom may accept network parameter
-      try {
-        response = await wallet.provider.connect({ network });
-      } catch {
-        // Fall back to regular connect if network param not supported
-        response = await wallet.provider.connect();
-      }
-    } else {
+    try {
       response = await wallet.provider.connect();
+    } catch (connectErr: any) {
+      // If regular connect fails, try with network parameter for Phantom
+      if (wallet.name === 'Phantom') {
+        console.log('Trying Phantom with network param...');
+        response = await wallet.provider.connect({ network: 'devnet' });
+      } else {
+        throw connectErr;
+      }
     }
 
     const address = response.publicKey?.toString() || response.pubkey?.toString();
     if (address) {
       connectedWallet.set(address);
       walletName.set(wallet.name);
+      console.log(`Connected to ${wallet.name}: ${address}`);
       return address;
     }
     console.error('No address returned from wallet');
     return null;
   } catch (e: any) {
-    console.error(`Wallet connection failed for ${wallet.name}:`, e?.message || e);
+    console.error(`Wallet connection failed for ${wallet.name}:`, e);
     // Return a more specific error message
-    throw new Error(e?.message || `Failed to connect to ${wallet.name}`);
+    const errorMsg = e?.message || e?.toString() || `Failed to connect to ${wallet.name}`;
+    throw new Error(errorMsg);
   }
 }
 
