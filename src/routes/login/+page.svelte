@@ -394,6 +394,19 @@
     showDashboard = false;
   }
 
+  function goToHomepage() {
+    // Go to homepage without logging out
+    window.location.href = '/';
+  }
+
+  let copied = false;
+  async function copyPageUrl() {
+    const url = `https://glianapay.com/${slug}`;
+    await navigator.clipboard.writeText(url);
+    copied = true;
+    setTimeout(() => copied = false, 2000);
+  }
+
   onMount(() => {
     loadSession();
     checkWallets();
@@ -434,16 +447,16 @@
     <!-- Header -->
     <div class="border-b border-white/10">
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <button on:click={goToHome} class="flex items-center gap-2">
+        <button on:click={goToHomepage} class="flex items-center gap-2">
           <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
           <span class="font-bold">GlianaPay</span>
         </button>
         <div class="flex items-center gap-4">
-          <button on:click={goToHome} class="text-zinc-400 hover:text-white text-sm">My Page</button>
+          <span class="text-zinc-400 text-sm">Dashboard</span>
           <div class="text-sm text-zinc-400">
             {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
           </div>
-          <button on:click={handleDisconnect} class="text-sm text-red-400 hover:text-red-300">Logout</button>
+          <button on:click={() => { handleDisconnect(); window.location.href = '/'; }} class="text-sm text-red-400 hover:text-red-300">Logout</button>
         </div>
       </div>
     </div>
@@ -465,9 +478,15 @@
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Your Page</p>
-          <a href="/{slug || 'yourname'}" target="_blank" class="text-xl font-bold text-purple-400 hover:underline mt-1 block">
-            /{slug || 'yourname'}
-          </a>
+          <div class="flex items-center gap-2 mt-1">
+            <a href="/{slug || 'yourname'}" target="_blank" class="text-xl font-bold text-purple-400 hover:underline">
+              /{slug || 'yourname'}
+            </a>
+            <button on:click={copyPageUrl} class="text-xs bg-zinc-700 hover:bg-zinc-600 px-2 py-1 rounded transition-all">
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+          <p class="text-xs text-zinc-500 mt-1">Share this link to receive tips</p>
         </div>
       </div>
 
