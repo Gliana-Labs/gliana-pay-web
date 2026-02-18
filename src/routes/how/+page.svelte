@@ -20,14 +20,22 @@
   <FloatingIcons />
 
   <div class="relative z-10 min-h-screen px-4 py-16">
+    <!-- Back to Home -->
+    <a href="/" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-8">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Back to Home
+    </a>
+
     <!-- Header -->
     <div class="text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">
         <span class="text-gradient bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
           How to Use GlianaPay
         </span>
       </h1>
-      <p class="text-xl text-zinc-400 max-w-2xl mx-auto">
+      <p class="text-lg text-zinc-400 max-w-2xl mx-auto">
         Accept SOL tips on your stream in just a few simple steps
       </p>
     </div>
