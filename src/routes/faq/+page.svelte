@@ -75,16 +75,14 @@
   <div class="relative z-10 max-w-3xl mx-auto px-4 py-16">
     <!-- Header -->
     <div class="text-center mb-12">
-      <a href="/" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-8">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-        Back to Home
+      <a href="/" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-6">
+        <img src="/logo.svg" alt="GlianaPay" class="w-6 h-6 bg-transparent rounded-lg" />
+        ← Back
       </a>
-      <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
         Frequently Asked Questions
       </h1>
-      <p class="text-zinc-400 text-lg max-w-xl mx-auto">
+      <p class="text-zinc-400 text-base max-w-xl mx-auto">
         Everything you need to know about receiving crypto tips on your stream
       </p>
     </div>
@@ -135,9 +133,14 @@
     </div>
 
     <!-- Footer -->
-    <footer class="mt-16 pt-8 border-t border-zinc-800 text-center text-zinc-500 text-sm">
-      <p>&copy; {new Date().getFullYear()} GlianaPay. Powered by <a href="https://glianalabs.com" class="text-purple-400 hover:text-purple-300">GlianaLabs</a></p>
-    </footer>
+    <div class="mt-16 text-center">
+      <a href="https://glianalabs.com" target="_blank" class="flex items-center justify-center gap-2 hover:opacity-80 transition-opacity">
+        <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
+        <span class="text-zinc-600 text-xs">
+          &copy; {new Date().getFullYear()} by Gliana Labs
+        </span>
+      </a>
+    </div>
   </div>
 </div>
 
