@@ -8,6 +8,16 @@
   <title>How to Use - GlianaPay</title>
   <meta name="description" content="Learn how to use GlianaPay to accept SOL tips with real-time OBS alerts. Step-by-step guide for streamers to receive crypto donations." />
   <meta name="keywords" content="how to use GlianaPay, Solana tipping, crypto donations, OBS overlay, streamer tips guide" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="How to Use - GlianaPay" />
+  <meta property="og:description" content="Learn how to accept SOL tips on your stream with real-time OBS alerts." />
+  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:title" content="How to Use - GlianaPay" />
+  <meta name="twitter:description" content="Learn how to accept SOL tips on your stream with real-time OBS alerts." />
+  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">

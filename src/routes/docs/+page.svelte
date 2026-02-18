@@ -8,6 +8,16 @@
   <title>Documentation - GlianaPay</title>
   <meta name="description" content="Documentation for GlianaPay. Learn how to set up Solana tipping, configure OBS overlays, and accept crypto donations on your stream." />
   <meta name="keywords" content="GlianaPay documentation, Solana tipping docs, OBS overlay setup, crypto donation API, streamer tools" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Documentation - GlianaPay" />
+  <meta property="og:description" content="Complete documentation for GlianaPay tipping platform." />
+  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:title" content="Documentation - GlianaPay" />
+  <meta name="twitter:description" content="Complete documentation for GlianaPay tipping platform." />
+  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
