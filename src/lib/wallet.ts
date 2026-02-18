@@ -69,22 +69,32 @@ export async function connectWallet(wallet: WalletInfo): Promise<string | null> 
     console.log(`Connecting to ${wallet.name}...`);
     console.log('Provider:', wallet.provider);
 
-    // Try to connect - the network (devnet/mainnet) should be set in the wallet's settings
-    // Most wallets handle network selection internally through their extension UI
-    let response;
-    try {
-      response = await wallet.provider.connect();
-    } catch (connectErr: any) {
-      // If regular connect fails, try with network parameter for Phantom
-      if (wallet.name === 'Phantom') {
-        console.log('Trying Phantom with network param...');
-        response = await wallet.provider.connect({ network: 'devnet' });
-      } else {
-        throw connectErr;
+    let address: string | null = null;
+
+    // Solflare returns boolean from connect(), then we get publicKey from the provider
+    if (wallet.name === 'Solflare') {
+      const isConnected = await wallet.provider.connect();
+      console.log('Solflare isConnected:', isConnected);
+      if (isConnected && wallet.provider.publicKey) {
+        address = wallet.provider.publicKey.toString();
       }
+    } else {
+      // For Phantom and other wallets
+      let response;
+      try {
+        response = await wallet.provider.connect();
+      } catch (connectErr: any) {
+        // If regular connect fails, try with network parameter for Phantom
+        if (wallet.name === 'Phantom') {
+          console.log('Trying Phantom with network param...');
+          response = await wallet.provider.connect({ network: 'devnet' });
+        } else {
+          throw connectErr;
+        }
+      }
+      address = response?.publicKey?.toString() || response?.pubkey?.toString();
     }
 
-    const address = response.publicKey?.toString() || response.pubkey?.toString();
     if (address) {
       connectedWallet.set(address);
       walletName.set(wallet.name);
