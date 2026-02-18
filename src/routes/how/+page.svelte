@@ -1,6 +1,4 @@
 <script lang="ts">
-  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
-
   const currentYear = new Date().getFullYear();
 </script>
 
@@ -26,8 +24,6 @@
     <div class="absolute top-1/4 -left-32 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
     <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
   </div>
-
-  <FloatingIcons />
 
   <!-- Header -->
   <div class="relative z-10 flex items-center justify-between px-4 py-4">

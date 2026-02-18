@@ -1,9 +1,7 @@
 <script lang="ts">
   const icons = [
-    { src: '/3dicons-dollar-dynamic-color.png', alt: '', classes: 'top-[8%] left-[5%] w-20 h-20', delay: '0s' },
-    { src: '/3dicons-wallet-dynamic-color.png', alt: '', classes: 'top-[12%] right-[6%] w-20 h-20', delay: '1s' },
-    { src: '/3dicons-shield-dynamic-color.png', alt: '', classes: 'bottom-[25%] left-[8%] w-18 h-18', delay: '2s' },
-    { src: '/3dicons-video-cam-dynamic-color.png', alt: '', classes: 'bottom-[20%] right-[5%] w-20 h-20', delay: '1.5s' }
+    { src: '/3dicons-dollar-dynamic-color.png', alt: '', classes: 'top-[15%] left-[8%] w-28 h-28', delay: '0s' },
+    { src: '/3dicons-video-cam-dynamic-color.png', alt: '', classes: 'bottom-[25%] right-[10%] w-28 h-28', delay: '1.5s' }
   ];
 </script>
 

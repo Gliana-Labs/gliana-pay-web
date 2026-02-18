@@ -1,6 +1,4 @@
 <script lang="ts">
-  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
-
   let openIndex: number | null = null;
 
   const faqs = [
@@ -68,9 +66,6 @@
     <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
   </div>
-
-  <!-- Floating icons -->
-  <FloatingIcons />
 
   <!-- Header -->
   <div class="relative z-10 flex items-center justify-between px-4 py-4">
