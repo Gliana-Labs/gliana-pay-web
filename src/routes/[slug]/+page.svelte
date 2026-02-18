@@ -309,22 +309,24 @@
       </div>
     {:else}
       <!-- Viewer Wallet Connect -->
-      <div class="glass-card rounded-2xl p-4 border border-white/10 mb-4">
+      <div class="glass-card rounded-2xl p-5 border border-white/10 mb-4">
         {#if !viewerConnected}
           {#if availableWallets.length > 0}
-            <div class="space-y-2">
+            <div class="flex flex-col gap-3">
               {#each availableWallets as wallet}
                 <button
                   on:click={() => handleConnectWallet(wallet)}
-                  class="w-full py-3 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3"
+                  class="w-full py-3 px-5 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3 whitespace-nowrap"
                 >
-                  <img src={wallet.icon} alt={wallet.name} class="w-5 h-5" />
-                  Connect {wallet.name}
+                  {#if wallet.icon}
+                    <img src={wallet.icon} alt="" class="w-5 h-5 flex-shrink-0" />
+                  {/if}
+                  <span>Connect {wallet.name}</span>
                 </button>
               {/each}
             </div>
           {:else}
-            <button class="w-full py-3 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3">
+            <button class="w-full py-3 px-5 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3">
               <span>Connect Wallet</span>
             </button>
             <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a> or <a href="https://solflare.com/" target="_blank" class="text-purple-400">Solflare</a></p>
