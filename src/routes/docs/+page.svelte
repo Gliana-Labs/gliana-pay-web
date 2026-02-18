@@ -19,14 +19,14 @@
 
   <FloatingIcons />
 
-  <div class="relative z-10 min-h-screen px-4 py-16">
-    <!-- Back to Home -->
-    <a href="/" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-6">
-      <img src="/logo.svg" alt="GlianaPay" class="w-6 h-6 bg-transparent rounded-lg" />
-      ← Back
-    </a>
-
+  <div class="relative z-10 min-h-screen px-4 py-16 pb-32">
     <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <a href="/" class="flex items-center gap-2">
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
+      </a>
+      <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
+    </div>
     <div class="text-center mb-12">
       <h1 class="text-3xl md:text-4xl font-bold mb-4">
         <span class="text-gradient bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
@@ -79,8 +79,8 @@
     </div>
 
     <!-- Footer -->
-    <div class="mt-16 text-center">
-      <a href="https://glianalabs.com" target="_blank" class="flex items-center justify-center gap-2 hover:opacity-80 transition-opacity">
+    <div class="absolute bottom-6 left-0 right-0 flex justify-center">
+      <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
         <span class="text-zinc-600 text-xs">
           &copy; {currentYear} by Gliana Labs
