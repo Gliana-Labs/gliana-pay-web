@@ -18,7 +18,10 @@
 </svelte:head>
 
 <script lang="ts">
+  import { onMount } from 'svelte';
   import type { Streamer, AlertSettings } from '$lib/types';
+  import { getAvailableWallets, connectWallet as connectWalletUtil, disconnectWallet as disconnectWalletUtil } from '$lib/wallet';
+  import type { WalletInfo } from '$lib/wallet';
 
   export let data: {
     streamer?: Streamer;
@@ -34,9 +37,49 @@
   let status = '';
   let viewerWallet = '';
   let viewerConnected = false;
+  let availableWallets: WalletInfo[] = [];
+  let selectedWallet: WalletInfo | null = null;
+  let walletError = '';
 
   $: streamer = data.streamer;
   $: settings = data.settings;
+
+  onMount(() => {
+    checkWallets();
+  });
+
+  // Check available wallets
+  function checkWallets() {
+    if (typeof window !== 'undefined') {
+      availableWallets = getAvailableWallets();
+    }
+  }
+
+  // Connect to selected wallet
+  async function handleConnectWallet(wallet: WalletInfo) {
+    selectedWallet = wallet;
+    walletError = '';
+
+    const address = await connectWalletUtil(wallet);
+    if (address) {
+      viewerWallet = address;
+      viewerConnected = true;
+      if (!name) name = address.slice(0, 8);
+    } else {
+      walletError = `Failed to connect to ${wallet.name}`;
+      selectedWallet = null;
+    }
+  }
+
+  // Disconnect
+  async function handleDisconnect() {
+    if (selectedWallet) {
+      await disconnectWalletUtil(selectedWallet);
+    }
+    selectedWallet = null;
+    viewerConnected = false;
+    viewerWallet = '';
+  }
 
   // Wallet connection
   function getPhantomWallet() {
@@ -44,30 +87,6 @@
       return (window as any).phantom?.solana;
     }
     return null;
-  }
-
-  async function connectWallet() {
-    const phantom = getPhantomWallet();
-    if (!phantom) {
-      alert('Please install Phantom wallet');
-      return;
-    }
-    try {
-      const response = await phantom.connect();
-      viewerWallet = response.publicKey.toString();
-      viewerConnected = true;
-      // Pre-fill name if wallet connected
-      if (!name) name = viewerWallet.slice(0, 8);
-    } catch (e) {
-      console.error('Failed to connect:', e);
-    }
-  }
-
-  async function disconnectWallet() {
-    const phantom = getPhantomWallet();
-    if (phantom) await phantom.disconnect();
-    viewerWallet = '';
-    viewerConnected = false;
   }
 
   async function generatePayment() {
@@ -284,13 +303,31 @@
       <!-- Viewer Wallet Connect -->
       <div class="glass-card rounded-2xl p-4 border border-white/10 mb-4">
         {#if !viewerConnected}
-          <button on:click={connectWallet} class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
-            Connect Wallet to Tip
-          </button>
+          {#if availableWallets.length > 0}
+            <div class="space-y-2">
+              {#each availableWallets as wallet}
+                <button
+                  on:click={() => handleConnectWallet(wallet)}
+                  class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+                >
+                  <img src={wallet.icon} alt={wallet.name} class="w-4 h-4" />
+                  Connect {wallet.name} to Tip
+                </button>
+              {/each}
+            </div>
+          {:else}
+            <button on:click={connectWallet} class="w-full py-2 px-4 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
+              Connect Wallet to Tip
+            </button>
+            <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a></p>
+          {/if}
+          {#if walletError}
+            <p class="text-red-400 text-xs mt-2 text-center">{walletError}</p>
+          {/if}
         {:else}
           <div class="flex items-center justify-between">
             <span class="text-sm text-zinc-400">Connected: {viewerWallet.slice(0, 6)}...{viewerWallet.slice(-4)}</span>
-            <button on:click={disconnectWallet} class="text-xs text-red-400">Disconnect</button>
+            <button on:click={handleDisconnect} class="text-xs text-red-400">Disconnect</button>
           </div>
         {/if}
       </div>

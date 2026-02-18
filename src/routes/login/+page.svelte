@@ -1,16 +1,16 @@
 <svelte:head>
   <title>Login - GlianaPay | Web3 Tipping for Streamers</title>
-  <meta name="description" content="Connect your Phantom wallet to create and manage your GlianaPay tipping page. Accept SOL tips with real-time OBS alerts." />
-  <meta name="keywords" content="login, streamer, wallet connect, Phantom, Solana, tips, donations" />
+  <meta name="description" content="Connect your wallet to create and manage your GlianaPay tipping page. Accept SOL tips with real-time OBS alerts." />
+  <meta name="keywords" content="login, streamer, wallet connect, Phantom, Solflare, Solana, tips, donations, Web3" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Login - GlianaPay" />
-  <meta property="og:description" content="Connect your Phantom wallet to create and manage your tipping page." />
+  <meta property="og:description" content="Connect your wallet to create and manage your tipping page." />
   <meta property="og:image" content="https://glianapay.com/og-image.png" />
 
   <!-- Twitter -->
   <meta name="twitter:title" content="Login - GlianaPay" />
-  <meta name="twitter:description" content="Connect your Phantom wallet to create and manage your tipping page." />
+  <meta name="twitter:description" content="Connect your wallet to create and manage your tipping page." />
   <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
   <meta name="twitter:site" content="@glianalabs" />
   <meta name="twitter:creator" content="@glianalabs" />
@@ -18,6 +18,8 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { getAvailableWallets, connectWallet, disconnectWallet } from '$lib/wallet';
+  import type { WalletInfo } from '$lib/wallet';
 
   let connected = false;
   let walletAddress = '';
@@ -230,7 +232,52 @@
     });
   }
 
-  // Check if Phantom is available
+  // Available wallets
+  let availableWallets: WalletInfo[] = [];
+  let selectedWallet: WalletInfo | null = null;
+
+  // Check available wallets
+  function checkWallets() {
+    if (typeof window !== 'undefined') {
+      availableWallets = getAvailableWallets();
+    }
+  }
+
+  // Connect to selected wallet
+  async function handleConnectWallet(wallet: WalletInfo) {
+    selectedWallet = wallet;
+    loading = true;
+    error = '';
+
+    const address = await connectWallet(wallet);
+    if (address) {
+      walletAddress = address;
+      connected = true;
+      saveSession();
+    } else {
+      error = `Failed to connect to ${wallet.name}`;
+      selectedWallet = null;
+    }
+    loading = false;
+  }
+
+  // Disconnect
+  async function handleDisconnect() {
+    if (selectedWallet) {
+      await disconnectWallet(selectedWallet);
+    }
+    selectedWallet = null;
+    connected = false;
+    walletAddress = '';
+    name = '';
+    slug = '';
+    showDashboard = false;
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('gliana_session');
+    }
+  }
+
+  // Legacy function for compatibility
   function getPhantomWallet() {
     if (typeof window !== 'undefined') {
       return (window as any).phantom?.solana;
@@ -264,43 +311,6 @@
         name,
         slug
       }));
-    }
-  }
-
-  async function connectWallet() {
-    const phantom = getPhantomWallet();
-    if (!phantom) {
-      error = 'Phantom wallet not found. Please install Phantom wallet.';
-      return;
-    }
-
-    loading = true;
-    error = '';
-
-    try {
-      const response = await phantom.connect();
-      walletAddress = response.publicKey.toString();
-      connected = true;
-      saveSession();
-    } catch (e: any) {
-      error = e.message || 'Failed to connect wallet';
-    } finally {
-      loading = false;
-    }
-  }
-
-  async function disconnectWallet() {
-    const phantom = getPhantomWallet();
-    if (phantom) {
-      await phantom.disconnect();
-    }
-    connected = false;
-    walletAddress = '';
-    name = '';
-    slug = '';
-    showDashboard = false;
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('gliana_session');
     }
   }
 
@@ -375,6 +385,7 @@
 
   onMount(() => {
     loadSession();
+    checkWallets();
 
     // Load dashboard data if already logged in
     if (showDashboard && slug) {
@@ -421,7 +432,7 @@
           <div class="text-sm text-zinc-400">
             {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
           </div>
-          <button on:click={disconnectWallet} class="text-sm text-red-400 hover:text-red-300">Logout</button>
+          <button on:click={handleDisconnect} class="text-sm text-red-400 hover:text-red-300">Logout</button>
         </div>
       </div>
     </div>
@@ -610,23 +621,41 @@
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
         {#if !connected}
-          <button
-            on:click={connectWallet}
-            disabled={loading}
-            class="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
-          >
-            {#if loading}
-              <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-              </svg>
-            {:else}
-              {/if}
-            Connect Phantom Wallet
-          </button>
-          <p class="text-xs text-zinc-500 mt-4 text-center">
-            Don't have Phantom? <a href="https://phantom.app/" target="_blank" class="text-purple-400 hover:underline">Get it here</a>
-          </p>
+          {#if availableWallets.length > 0}
+            <p class="text-sm text-zinc-400 mb-4 text-center">Select a wallet to connect</p>
+            <div class="space-y-3">
+              {#each availableWallets as wallet}
+                <button
+                  on:click={() => handleConnectWallet(wallet)}
+                  disabled={loading}
+                  class="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-xl font-medium transition-all flex items-center justify-center gap-3"
+                >
+                  {#if loading && selectedWallet?.name === wallet.name}
+                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                  {:else}
+                    <img src={wallet.icon} alt={wallet.name} class="w-5 h-5" />
+                  {/if}
+                  Connect {wallet.name}
+                </button>
+              {/each}
+            </div>
+          {:else}
+            <p class="text-sm text-zinc-400 mb-4 text-center">No wallet extension found</p>
+            <div class="space-y-2">
+              <a href="https://phantom.app/" target="_blank" class="block w-full py-3 px-4 bg-purple-600 hover:bg-purple-500 rounded-xl font-medium text-center transition-all">
+                Install Phantom
+              </a>
+              <a href="https://solflare.com/" target="_blank" class="block w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 rounded-xl font-medium text-center transition-all">
+                Install Solflare
+              </a>
+            </div>
+          {/if}
+          {#if error}
+            <p class="mt-3 text-red-400 text-sm text-center">{error}</p>
+          {/if}
         {:else}
           <div class="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
             <div class="flex items-center justify-between">
@@ -634,7 +663,7 @@
                 <p class="text-green-400 text-sm">✓ Wallet connected</p>
                 <p class="font-mono text-xs mt-1 text-zinc-400">{walletAddress.slice(0, 8)}...{walletAddress.slice(-4)}</p>
               </div>
-              <button on:click={disconnectWallet} class="text-xs text-red-400 hover:text-red-300">Disconnect</button>
+              <button on:click={handleDisconnect} class="text-xs text-red-400 hover:text-red-300">Disconnect</button>
             </div>
           </div>
 
