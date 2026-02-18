@@ -416,30 +416,8 @@
       return;
     }
 
-    // Only set up Phantom listener if no session exists
-    const phantom = getPhantomWallet();
-    if (phantom && phantom.isConnected) {
-      // Wallet already connected from before - clear session first to avoid loop
-      localStorage.removeItem('gliana_session');
-    }
-
-    if (phantom) {
-      // Set up connect listener
-      phantom.on('connect', () => {
-        walletAddress = phantom.publicKey?.toString() || '';
-        connected = true;
-        // Don't auto-save - only check if account exists
-        checkExisting();
-      });
-    }
-  });
-
-  // Cleanup on destroy
-  onDestroy(() => {
-    const phantom = getPhantomWallet();
-    if (phantom) {
-      phantom.off('connect');
-    }
+    // If user visits login after logout, clear any stale session
+    // and don't auto-redirect - let user explicitly connect wallet
   });
 </script>
 
