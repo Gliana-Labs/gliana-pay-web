@@ -123,15 +123,15 @@
   }
 
   async function payWithWallet() {
-    if (!streamer || !viewerConnected || !viewerWallet) return;
+    if (!streamer || !viewerConnected || !viewerWallet || !selectedWallet) return;
 
     isLoading = true;
     status = 'Preparing transaction...';
 
     try {
-      const phantom = getPhantomWallet();
-      if (!phantom) {
-        status = 'Phantom wallet not found';
+      const provider = selectedWallet.provider;
+      if (!provider) {
+        status = 'Wallet provider not found';
         return;
       }
 
@@ -160,7 +160,7 @@
       );
 
       // Request Phantom to sign and send
-      const signedTx = await phantom.signAndSendTransaction(transaction);
+      const signedTx = await provider.signAndSendTransaction(transaction);
 
       status = 'Payment sent! Waiting for confirmation...';
 
@@ -312,22 +312,20 @@
       <div class="glass-card rounded-2xl p-5 border border-white/10 mb-4">
         {#if !viewerConnected}
           {#if availableWallets.length > 0}
-            <div class="flex flex-col gap-3">
+            <div class="space-y-3">
               {#each availableWallets as wallet}
                 <button
                   on:click={() => handleConnectWallet(wallet)}
-                  class="w-full py-3 px-5 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3 whitespace-nowrap"
+                  disabled={isLoading}
+                  class="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-xl font-medium transition-all"
                 >
-                  {#if wallet.icon}
-                    <img src={wallet.icon} alt="" class="w-5 h-5 flex-shrink-0" />
-                  {/if}
-                  <span>Connect {wallet.name}</span>
+                  Connect {wallet.name}
                 </button>
               {/each}
             </div>
           {:else}
-            <button class="w-full py-3 px-5 bg-purple-600/50 hover:bg-purple-600 rounded-lg font-medium transition-all flex items-center justify-center gap-3">
-              <span>Connect Wallet</span>
+            <button class="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 rounded-xl font-medium transition-all">
+              Connect Wallet
             </button>
             <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a> or <a href="https://solflare.com/" target="_blank" class="text-purple-400">Solflare</a></p>
           {/if}
