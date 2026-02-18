@@ -10,13 +10,27 @@
 
   const WORKER_URL = 'https://api.glianapay.com';
 
+  // Toast notifications
+  let toast = '';
+  let toastType: 'success' | 'error' | '' = '';
+  let toastTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  function showToast(message: string, type: 'success' | 'error' = 'error') {
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toast = message;
+    toastType = type;
+    toastTimeout = setTimeout(() => {
+      toast = '';
+      toastType = '';
+    }, 5000);
+  }
+
   // Dashboard data
   let totalReceived = 0;
   let totalTips = 0;
   let average = 0;
   let donations: any[] = [];
   let settingsLoading = false;
-  let settingsSaved = false;
 
   // Settings
   let minAmount = 0.001;
@@ -87,7 +101,6 @@
     }
 
     settingsLoading = true;
-    settingsSaved = false;
 
     try {
       const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/settings`, {
@@ -100,11 +113,14 @@
       });
 
       if (response.ok) {
-        settingsSaved = true;
-        setTimeout(() => settingsSaved = false, 3000);
+        showToast('Settings saved!', 'success');
+      } else {
+        const data = await response.json().catch(() => ({}));
+        showToast(data.error || 'Failed to save settings', 'error');
       }
     } catch (e) {
       console.error('Failed to save settings:', e);
+      showToast('Failed to save settings', 'error');
     } finally {
       settingsLoading = false;
     }
@@ -112,12 +128,10 @@
 
   // Test alert
   let testInProgress = false;
-  let testAlertError = '';
 
   function testAlertWS() {
     if (testInProgress) return;
     testInProgress = true;
-    testAlertError = '';
 
     fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
       method: 'POST'
@@ -126,9 +140,10 @@
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || data.message || `HTTP ${res.status}: ${res.statusText}`);
       }
+      showToast('Test alert sent!', 'success');
     }).catch(err => {
       console.error('Failed to send test alert:', err);
-      testAlertError = err.message || 'Failed to send test alert';
+      showToast(err.message || 'Failed to send test alert', 'error');
     }).finally(() => {
       setTimeout(() => {
         testInProgress = false;
@@ -275,9 +290,6 @@
                   Save Settings
                 {/if}
               </button>
-              {#if settingsSaved}
-                <p class="text-green-400 text-sm text-center">Settings saved!</p>
-              {/if}
             </div>
           </div>
 
@@ -338,10 +350,6 @@
               <span>{testInProgress ? 'Sending...' : 'Test Alert'}</span>
             </button>
 
-            {#if testAlertError}
-              <p class="text-xs text-red-400 mt-2">{testAlertError}</p>
-            {/if}
-
             <p class="text-xs text-zinc-500 mt-3">
               <span class="text-yellow-500">Tip:</span> If settings don't update, right-click the Browser Source in OBS and select "Interact" then refresh the page, or remove and re-add the Browser Source.
             </p>
@@ -350,6 +358,15 @@
       </div>
     </div>
   </div>
+
+  <!-- Toast -->
+  {#if toast}
+    <div
+      class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-3 rounded-lg shadow-lg z-50 {toastType === 'success' ? 'bg-green-600' : 'bg-red-600'} text-white text-sm font-medium"
+    >
+      {toast}
+    </div>
+  {/if}
 {/if}
 
 <style>
