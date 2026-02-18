@@ -16,7 +16,7 @@
   <enhanced:img
     src={icon.src}
     alt={icon.alt}
-    class="absolute pointer-events-none overflow-hidden {icon.classes} opacity-25 float"
+    class="absolute pointer-events-none overflow-hidden {icon.classes} opacity-40 float"
     style="animation-delay: {icon.delay};"
   />
 {/each}
