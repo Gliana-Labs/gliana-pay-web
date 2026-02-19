@@ -145,16 +145,23 @@
   function testAlertWS() {
     if (testInProgress) return;
     testInProgress = true;
-contact
+
+    // Safety timeout to reset state
+    const safetyTimeout = setTimeout(() => {
+      testInProgress = false;
+    }, 10000);
+
     fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
       method: 'POST'
     }).then(async (res) => {
+      clearTimeout(safetyTimeout);
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || data.message || `HTTP ${res.status}: ${res.statusText}`);
       }
       showToast('Test alert sent!', 'success');
     }).catch(err => {
+      clearTimeout(safetyTimeout);
       console.error('Failed to send test alert:', err);
       showToast(err.message || 'Failed to send test alert', 'error');
     }).finally(() => {
