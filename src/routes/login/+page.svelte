@@ -511,26 +511,6 @@
       return;
     }
 
-    // Set up Phantom connect listener for auto-redirect when user connects
-    const phantom = getPhantomWallet();
-    if (phantom) {
-      phantom.on('connect', () => {
-        walletAddress = phantom.publicKey?.toString() || '';
-        connected = true;
-        checkExisting();
-      });
-    }
-
-    // Set up Solflare connect listener
-    const solflare = (window as any).solflare;
-    if (solflare) {
-      solflare.on('connect', () => {
-        walletAddress = solflare.publicKey?.toString() || '';
-        connected = true;
-        checkExisting();
-      });
-    }
-
     // Check for wallet connection when user returns to tab (mobile workflow)
     const handleFocus = async () => {
       // Don't auto-reconnect if user just logged out
