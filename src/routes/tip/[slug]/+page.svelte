@@ -332,18 +332,16 @@
                 </button>
               {/each}
             </div>
-            <!-- Mobile Tip -->
+          {:else}
+            <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
+              Connect Wallet
+            </button>
             {#if isMobile}
-              <div class="mt-3 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+              <div class="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
                 <p class="text-xs text-purple-300">Mobile?</p>
                 <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
               </div>
             {/if}
-          {:else if !isMobile}
-            <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
-              Connect Wallet
-            </button>
-            <p class="text-xs text-zinc-500 mt-2 text-center">No wallet found. <a href="https://phantom.app/" target="_blank" class="text-purple-400">Install Phantom</a> or <a href="https://solflare.com/" target="_blank" class="text-purple-400">Solflare</a></p>
           {/if}
           {#if walletError}
             <p class="text-red-400 text-xs mt-2 text-center">{walletError}</p>
@@ -355,6 +353,7 @@
           </div>
         {/if}
       </div>
+
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
         <form on:submit={handleSubmit} class="space-y-5">
