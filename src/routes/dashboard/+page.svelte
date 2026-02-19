@@ -73,8 +73,26 @@
 
   // Verify wallet is still connected (prevent session hijacking)
   function verifyWalletConnection() {
+    // Check any wallet (Phantom, Solflare, Backpack, etc.)
     const phantom = (window as any).solana;
-    if (!phantom?.isConnected || phantom?.publicKey?.toString() !== walletAddress) {
+    const solflare = (window as any).solflare;
+    const backpack = (window as any).backpack;
+
+    let isConnected = false;
+    let connectedAddress = '';
+
+    if (phantom?.isConnected) {
+      isConnected = true;
+      connectedAddress = phantom.publicKey?.toString();
+    } else if (solflare?.isConnected) {
+      isConnected = true;
+      connectedAddress = solflare.publicKey?.toString();
+    } else if (backpack?.isConnected) {
+      isConnected = true;
+      connectedAddress = backpack.publicKey?.toString();
+    }
+
+    if (!isConnected || connectedAddress !== walletAddress) {
       // Wallet not connected or different - clear session
       localStorage.removeItem('gliana_session');
       window.location.href = '/';
