@@ -27,6 +27,7 @@
     duration: string;
     opacity: string;
     rotation: string;
+    rotationAmount: string;
     startX: string;
     startY: string;
     endX: string;
@@ -67,9 +68,10 @@
           top: startY,
           size: `${30 + Math.random() * 40}`,
           delay: `${Math.random() * 8}s`,
-          duration: `${4 + Math.random() * 4}s`,
+          duration: `${5 + Math.random() * 8}s`,
           opacity: `${0.05 + Math.random() * 0.08}`,
           rotation: `${(angle * 180 / Math.PI)}`,
+          rotationAmount: `${Math.random() > 0.5 ? 0 : 90 + Math.random() * 90}`,
           vx: vx,
           vy: vy
         };
@@ -105,6 +107,7 @@
         duration: `${15 + Math.random() * 10}s`,
         opacity: `${0.15 + Math.random() * 0.2}`,
         rotation: `${Math.random() * 360}`,
+        rotationAmount: `${Math.random() > 0.5 ? 0 : 90 + Math.random() * 90}`,
         startX: '',
         startY: '',
         endX: '',
@@ -149,6 +152,7 @@
         animation-delay: {icon.delay};
         animation-duration: {icon.duration};
         --rotation: {icon.rotation}deg;
+        --rotation-amount: {icon.rotationAmount}deg;
         {animation === 'fountain'
           ? `left: ${icon.left}; top: ${icon.top}; --x-spread: ${icon.startX}; --y-spread: ${icon.startY};`
           : `left: 50%; top: 50%; --vx: ${icon.vx || 0}; --vy: ${icon.vy || 0};`}
@@ -198,7 +202,7 @@
       opacity: var(--opacity, 0.3);
     }
     100% {
-      transform: translate(calc(-50% + var(--x-spread, 0vw)), calc(-50% + var(--y-spread, 0vh))) rotate(calc(var(--rotation, 0deg) + 360deg)) scale(0.5);
+      transform: translate(calc(-50% + var(--x-spread, 0vw)), calc(-50% + var(--y-spread, 0vh))) rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg))) scale(0.5);
       opacity: 0;
     }
   }
@@ -215,7 +219,7 @@
       opacity: var(--opacity, 0.3);
     }
     100% {
-      transform: translateY(100vh) rotate(calc(var(--rotation, 0deg) + 360deg));
+      transform: translateY(100vh) rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg)));
       opacity: 0;
     }
   }
@@ -229,7 +233,7 @@
       opacity: var(--opacity, 0.25);
     }
     100% {
-      transform: translate(calc(-50% + var(--vx) * 80vw), calc(-50% + var(--vy) * 80vh)) rotate(var(--rotation, 0deg)) scale(3);
+      transform: translate(calc(-50% + var(--vx) * 80vw), calc(-50% + var(--vy) * 80vh)) rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg))) scale(3);
       opacity: 0;
     }
   }
