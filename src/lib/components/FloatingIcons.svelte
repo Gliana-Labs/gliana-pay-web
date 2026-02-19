@@ -44,9 +44,9 @@
 
   function createIcons(targetPos: { left: string; top: string }) {
     if (animation === 'fountain') {
-      icons = Array.from({ length: 25 }, (_, i) => {
+      icons = Array.from({ length: 20 }, (_, i) => {
         const angle = Math.random() * Math.PI * 2;
-        const distance = 40 + Math.random() * 30;
+        const distance = 5 + Math.random() * 30;
         const xSpread = Math.cos(angle) * distance;
         const ySpread = Math.sin(angle) * distance;
 
@@ -54,7 +54,7 @@
           src: iconFiles[i % iconFiles.length],
           left: targetPos.left,
           top: targetPos.top,
-          size: `${80 + Math.random() * 45}`,
+          size: `${40 + Math.random() * 30}`,
           delay: `${Math.random() * 15}s`,
           duration: `${20 + Math.random() * 15}s`,
           opacity: `${0.12 + Math.random() * 0.15}`,
