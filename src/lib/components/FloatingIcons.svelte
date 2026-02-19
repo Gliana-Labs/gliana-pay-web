@@ -101,9 +101,10 @@
         };
       });
     } else {
+      // Rain mode - evenly distributed across width
       icons = Array.from({ length: 10 }, (_, i) => ({
         src: iconFiles[i % iconFiles.length],
-        left: `${Math.random() * 100}%`,
+        left: `${(i / 10) * 100 + 5}%`,
         size: `${30 + Math.random() * 40}`,
         delay: `${Math.random() * 10}s`,
         duration: `${15 + Math.random() * 10}s`,
@@ -157,6 +158,8 @@
         --rotation-amount: {icon.rotationAmount}deg;
         {animation === 'fountain'
           ? `left: ${icon.left}; top: ${icon.top}; --x-spread: ${icon.startX}; --y-spread: ${icon.startY};`
+          : animation === 'rain'
+          ? `left: ${icon.left}; top: -100px;`
           : `left: 50%; top: 50%; --vx: ${icon.vx || 0}; --vy: ${icon.vy || 0};`}
       "
       loading="eager"
