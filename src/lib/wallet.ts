@@ -134,10 +134,21 @@ export async function connectWallet(wallet: WalletInfo): Promise<string | null> 
 }
 
 // Disconnect wallet
-export async function disconnectWallet(wallet: WalletInfo): Promise<void> {
+export async function disconnectWallet(wallet?: WalletInfo): Promise<void> {
   try {
-    if (wallet.provider.disconnect) {
+    if (wallet?.provider?.disconnect) {
       await wallet.provider.disconnect();
+    }
+    // Also disconnect from window if no specific wallet provided
+    if (typeof window !== 'undefined') {
+      const solana = (window as any).solana;
+      if (solana?.disconnect) {
+        try { await solana.disconnect(); } catch {}
+      }
+      const solflare = (window as any).solflare;
+      if (solflare?.disconnect) {
+        try { await solflare.disconnect(); } catch {}
+      }
     }
     connectedWallet.set('');
     walletName.set('');
