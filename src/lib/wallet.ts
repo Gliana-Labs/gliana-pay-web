@@ -167,15 +167,19 @@ export async function signMessage(wallet: WalletInfo, message: string): Promise<
     // Try different sign methods
     if (wallet.provider.signMessage) {
       // Phantom, Solflare, Backpack support this
-      signature = await wallet.provider.signMessage(encodedMessage, 'utf8');
+      const result = await wallet.provider.signMessage(encodedMessage, 'utf8');
+      // Handle different return formats
+      signature = result instanceof Uint8Array ? result : new Uint8Array(result);
     } else if (wallet.provider.sign) {
       // Legacy method
-      signature = await wallet.provider.sign(encodedMessage);
+      const result = await wallet.provider.sign(encodedMessage);
+      signature = result instanceof Uint8Array ? result : new Uint8Array(result);
     }
 
-    if (signature) {
-      // Convert to base64
-      const signatureBase64 = btoa(String.fromCharCode(...signature));
+    if (signature && signature.length > 0) {
+      // Convert to base64 safely
+      const signatureArray = Array.from(signature);
+      const signatureBase64 = btoa(String.fromCharCode(...signatureArray));
       return { signature: signatureBase64, message };
     }
 
