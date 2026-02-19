@@ -50,7 +50,7 @@
   function createIcons(targetPos: { left: string; top: string }) {
     if (animation === 'spaceship') {
       // Hyperspace mode - icons streak from circular area in center outward
-      icons = Array.from({ length: 30 }, (_, i) => {
+      icons = Array.from({ length: 15 }, (_, i) => {
         // Random angle 360 degrees
         const angle = Math.random() * Math.PI * 2;
         // Random radius from center (circular distribution)
@@ -65,7 +65,7 @@
           src: iconFiles[i % iconFiles.length],
           left: startX,
           top: startY,
-          size: `${15 + Math.random() * 25}`,
+          size: `${30 + Math.random() * 40}`,
           delay: `${Math.random() * 8}s`,
           duration: `${4 + Math.random() * 4}s`,
           opacity: `${0.05 + Math.random() * 0.08}`,
@@ -222,14 +222,14 @@
 
   @keyframes spaceship {
     0% {
-      transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(0.3);
+      transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(0.1);
       opacity: 0;
     }
     5% {
       opacity: var(--opacity, 0.25);
     }
     100% {
-      transform: translate(calc(-50% + var(--vx) * 80vw), calc(-50% + var(--vy) * 80vh)) rotate(var(--rotation, 0deg)) scale(4);
+      transform: translate(calc(-50% + var(--vx) * 80vw), calc(-50% + var(--vy) * 80vh)) rotate(var(--rotation, 0deg)) scale(3);
       opacity: 0;
     }
   }
