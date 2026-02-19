@@ -29,6 +29,7 @@
   let error = '';
   let name = '';
   let slug = '';
+  let hasExistingAccount = false;
   let activeWalletType: 'phantom' | 'solflare' | null = null;
   let turnstileToken = '';
   let turnstileContainer: HTMLDivElement;
@@ -85,8 +86,8 @@
     });
   }
 
-  // Load Turnstile when wallet connects (form becomes visible)
-  $: if (typeof window !== 'undefined' && connected && turnstileContainer && !turnstileLoaded) {
+  // Load Turnstile when wallet connects (form becomes visible), but not for existing users
+  $: if (typeof window !== 'undefined' && connected && turnstileContainer && !turnstileLoaded && !hasExistingAccount) {
     turnstileLoaded = true;
     loadTurnstile();
   }
@@ -465,15 +466,10 @@
 
   async function checkExisting() {
     if (!walletAddress) return;
-    // Don't auto-redirect if we just logged out
+    // Don't check if we just logged out
     const justLoggedOut = sessionStorage.getItem('gliana_just_logged_out');
     if (justLoggedOut) {
       sessionStorage.removeItem('gliana_just_logged_out');
-      return;
-    }
-    // Don't auto-redirect if there's a current session
-    const saved = localStorage.getItem('gliana_session');
-    if (saved) {
       return;
     }
     try {
@@ -482,13 +478,19 @@
         const data = await response.json();
         name = data.streamer.name;
         slug = data.streamer.slug;
+        hasExistingAccount = true;
         saveSession();
-        // Redirect to dashboard
-        window.location.replace('/dashboard');
+      } else {
+        hasExistingAccount = false;
       }
     } catch (e) {
-      // No existing account
+      hasExistingAccount = false;
     }
+  }
+
+  function handleLogin() {
+    saveSession();
+    window.location.replace('/dashboard');
   }
 
   function goToHomepage() {
@@ -687,14 +689,18 @@
               <p class="text-xs text-zinc-500 mt-1">Your page: glianapay.com/tip/{slug || 'yourname'}</p>
             </div>
 
-            <!-- Turnstile Widget -->
-            <div class="flex justify-center">
-              <div bind:this={turnstileContainer} class="cf-turnstile"></div>
-            </div>
+            <!-- Turnstile Widget - only show for new users -->
+            {#if !hasExistingAccount}
+              <div class="flex justify-center">
+                <div bind:this={turnstileContainer} class="cf-turnstile"></div>
+              </div>
+            {/if}
 
-            <button on:click={register} disabled={loading || !name || !slug || !turnstileToken} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
+            <button on:click={hasExistingAccount ? handleLogin : register} disabled={loading || !name || !slug || (hasExistingAccount && false)} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
               {#if loading}
-                Setting up...
+                {hasExistingAccount ? 'Logging in...' : 'Setting up...'}
+              {:else if hasExistingAccount}
+                Login to Dashboard →
               {:else}
                 Create My Page →
               {/if}
