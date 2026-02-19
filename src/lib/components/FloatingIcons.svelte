@@ -55,8 +55,8 @@
           left: targetPos.left,
           top: targetPos.top,
           size: `${80 + Math.random() * 45}`,
-          delay: `${Math.random() * 8}s`,
-          duration: `${5 + Math.random() * 4}s`,
+          delay: `${Math.random() * 15}s`,
+          duration: `${20 + Math.random() * 15}s`,
           opacity: `${0.12 + Math.random() * 0.15}`,
           xSpread: xSpread,
           ySpread: ySpread,
@@ -68,8 +68,8 @@
         src: iconFiles[i % iconFiles.length],
         left: `${Math.random() * 100}%`,
         size: `${30 + Math.random() * 40}`,
-        delay: `${Math.random() * 5}s`,
-        duration: `${3 + Math.random() * 4}s`,
+        delay: `${Math.random() * 10}s`,
+        duration: `${15 + Math.random() * 10}s`,
         opacity: `${0.15 + Math.random() * 0.2}`,
         rotation: `${Math.random() * 360}`
       }));
