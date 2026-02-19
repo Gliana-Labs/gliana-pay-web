@@ -34,28 +34,31 @@
     <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
   </div>
 
-  <div class="relative z-10 max-w-3xl mx-auto px-4 py-4 flex-1 overflow-y-auto">
+  <div class="relative z-10 max-w-3xl mx-auto px-4 py-8 flex-1 overflow-y-auto">
     <!-- Header -->
-    <div class="text-center mb-6">
+    <div class="text-center mb-12">
       <h1 class="text-2xl md:text-3xl font-bold mb-2">
         <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
           How to Use
         </span>
       </h1>
+      <p class="text-zinc-400 text-base max-w-xl mx-auto">
+        Learn how to set up your tipping page and start receiving SOL tips from viewers with real-time OBS alerts.
+      </p>
     </div>
 
     <!-- Steps - Accordion Style -->
     <div class="space-y-3">
       <!-- Step 1 -->
       <div class="glass-card p-4 rounded-xl border border-white/10">
-        <div class="flex items-center gap-3">
+        <div class="flex items-start gap-3">
           <div class="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
             1
           </div>
-          <div>
+          <div class="flex-1">
             <h2 class="font-semibold text-base">Create Your Tipping Page</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Go to <a href="/login" class="text-purple-400">/login</a>, connect your wallet, choose a unique slug.
+              Go to <a href="/login" class="text-purple-400 hover:underline">/login</a>, connect your Phantom or Solflare wallet, and choose a unique URL slug (e.g., your stream name). This creates your personal tipping page at glianapay.com/your-slug.
             </p>
           </div>
         </div>
@@ -63,14 +66,14 @@
 
       <!-- Step 2 -->
       <div class="glass-card p-4 rounded-xl border border-white/10">
-        <div class="flex items-center gap-3">
+        <div class="flex items-start gap-3">
           <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
             2
           </div>
-          <div>
-            <h2 class="font-semibold text-base">Customize Settings</h2>
+          <div class="flex-1">
+            <h2 class="font-semibold text-base">Configure Alert Settings</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Set minimum tip amount, alert message, and sound in your dashboard.
+              In your dashboard, set the minimum tip amount to trigger alerts (default: 0.01 SOL), customize your alert message, and choose a sound effect. You can also upload a custom image to display with each tip.
             </p>
           </div>
         </div>
@@ -78,14 +81,14 @@
 
       <!-- Step 3 -->
       <div class="glass-card p-4 rounded-xl border border-white/10">
-        <div class="flex items-center gap-3">
+        <div class="flex items-start gap-3">
           <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
             3
           </div>
-          <div>
-            <h2 class="font-semibold text-base">Add OBS Overlay</h2>
+          <div class="flex-1">
+            <h2 class="font-semibold text-base">Set Up OBS Overlay</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Copy your overlay URL and add as Browser Source in OBS.
+              Copy your overlay URL from the dashboard and add it as a Browser Source in OBS. Position it in your scene where you want tips to appear. The overlay shows tipper name, amount, and message in real-time.
             </p>
           </div>
         </div>
@@ -93,14 +96,14 @@
 
       <!-- Step 4 -->
       <div class="glass-card p-4 rounded-xl border border-white/10">
-        <div class="flex items-center gap-3">
+        <div class="flex items-start gap-3">
           <div class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
             4
           </div>
-          <div>
+          <div class="flex-1">
             <h2 class="font-semibold text-base">Share Your Link</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Share glianapay.com/your-slug with viewers.
+              Share your tipping page link (glianapay.com/your-slug) with your viewers. You can add it to your stream bio, chat commands, or anywhere your audience can find it. Viewers can tip using any Solana wallet.
             </p>
           </div>
         </div>
@@ -108,14 +111,14 @@
 
       <!-- Step 5 -->
       <div class="glass-card p-4 rounded-xl border border-white/10">
-        <div class="flex items-center gap-3">
+        <div class="flex items-start gap-3">
           <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-cyan-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
             5
           </div>
-          <div>
-            <h2 class="font-semibold text-base">Receive Alerts</h2>
+          <div class="flex-1">
+            <h2 class="font-semibold text-base">Receive Real-Time Alerts</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Get real-time OBS alerts when viewers tip!
+              When viewers send tips, you'll get instant OBS notifications showing their name, the amount (in SOL), and their message. Tips work on Solana devnet for testing - switch to mainnet when ready for real SOL!
             </p>
           </div>
         </div>

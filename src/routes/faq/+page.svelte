@@ -77,8 +77,10 @@
 
   <div class="relative z-10 max-w-3xl mx-auto px-4 py-8 flex-1">
     <div class="text-center mb-12">
-      <h1 class="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-        Frequently Asked Questions
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">
+        <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+          Frequently Asked Questions
+        </span>
       </h1>
       <p class="text-zinc-400 text-base max-w-xl mx-auto">
         Everything you need to know about receiving crypto tips on your stream

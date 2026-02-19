@@ -442,10 +442,15 @@
 
   async function checkExisting() {
     if (!walletAddress) return;
-    // Don't auto-redirect if we just logged out (no current session)
+    // Don't auto-redirect if we just logged out
+    const justLoggedOut = sessionStorage.getItem('gliana_just_logged_out');
+    if (justLoggedOut) {
+      sessionStorage.removeItem('gliana_just_logged_out');
+      return;
+    }
+    // Don't auto-redirect if there's a current session
     const saved = localStorage.getItem('gliana_session');
     if (saved) {
-      // Session exists, don't auto-redirect
       return;
     }
     try {
@@ -478,6 +483,8 @@
 
   onMount(() => {
     mounted = true;
+    // Clear the just-logged-out flag
+    sessionStorage.removeItem('gliana_just_logged_out');
     loadSession();
     checkWallets();
 
@@ -671,7 +678,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="px-4 py-4">
+    <div class="relative md:absolute md:bottom-6 left-0 px-4 py-6 md:py-0">
       <a href="mailto:support@glianapay.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
     </div>
   </div>
