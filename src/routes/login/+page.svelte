@@ -261,21 +261,20 @@
     loading = true;
     error = '';
 
-    // First disconnect all other wallets to prevent auto-reconnect
-    try {
-      const solana = (window as any).solana;
-      if (solana?.disconnect) {
-        try { await solana.disconnect(); } catch {}
+    // First disconnect all wallets aggressively to prevent Phantom auto-reconnect
+    const disconnectAll = async () => {
+      const walletsToDisconnect = ['solana', 'solflare', 'backpack', 'glow', 'slope'];
+      for (const w of walletsToDisconnect) {
+        const provider = (window as any)[w];
+        if (provider?.disconnect) {
+          try { await provider.disconnect(); } catch {}
+        }
       }
-      const solflare = (window as any).solflare;
-      if (solflare?.disconnect) {
-        try { await solflare.disconnect(); } catch {}
-      }
-      const backpack = (window as any).backpack;
-      if (backpack?.disconnect) {
-        try { await backpack.disconnect(); } catch {}
-      }
-    } catch {}
+    };
+    await disconnectAll();
+
+    // Small delay to let disconnection settle
+    await new Promise(r => setTimeout(r, 100));
 
     try {
       const address = await connectWallet(wallet);
