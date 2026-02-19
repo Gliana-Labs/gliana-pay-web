@@ -133,6 +133,12 @@
     z-index: 0;
   }
 
+  @media (max-width: 1024px) {
+    .floating-icons {
+      display: none;
+    }
+  }
+
   .fountain-icon {
     animation: fountain ease-out infinite;
   }

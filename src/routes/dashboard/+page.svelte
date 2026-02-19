@@ -145,7 +145,7 @@
   function testAlertWS() {
     if (testInProgress) return;
     testInProgress = true;
-
+contact
     fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
       method: 'POST'
     }).then(async (res) => {
@@ -373,6 +373,11 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="absolute bottom-6 left-0 px-4">
+      <a href="mailto:support@glianapay.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
     </div>
   </div>
 

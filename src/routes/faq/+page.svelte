@@ -115,7 +115,7 @@
     </div>
 
     <!-- CTA -->
-    <div class="mt-12 text-center">
+    <div class="mt-12 text-center space-y-3">
       <p class="text-zinc-400 mb-4">Still have questions?</p>
       <a
         href="https://twitter.com/glianalabs"
@@ -128,18 +128,21 @@
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
         </svg>
       </a>
+      <a
+        href="mailto:support@glianapay.com"
+        class="inline-flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-lg font-medium transition-all"
+      >
+        Email Support
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </a>
     </div>
   </div>
 
   <!-- Footer -->
-  <div class="absolute bottom-6 left-0 right-0 flex justify-center">
-    <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-      <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
-      <span class="text-zinc-600 text-xs">
-        &copy; {new Date().getFullYear()} by Gliana Labs
-      </span>
-    </a>
-  </div>
+  <div class="absolute bottom-6 left-0 right-0 h-6"></div>
 </div>
 
 <style>

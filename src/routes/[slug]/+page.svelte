@@ -277,7 +277,7 @@
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
   </div>
 
-  <!-- Beta Badge with Tooltip -->
+  <!-- Beta Badge -->
   <div class="absolute top-4 right-4 group z-20">
     <div class="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help">
       <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
@@ -416,6 +416,11 @@
         <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
       </div>
     {/if}
+  </div>
+
+  <!-- Footer -->
+  <div class="absolute bottom-6 left-0 px-4">
+    <a href="mailto:support@glianapay.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
   </div>
 </div>
 

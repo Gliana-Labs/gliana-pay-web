@@ -18,11 +18,12 @@
   <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
 </svelte:head>
 
-<div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+<div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">
   <!-- Animated Background -->
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute top-1/4 -left-32 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
     <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
   </div>
 
   <!-- Header -->
@@ -33,7 +34,7 @@
     <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
   </div>
 
-  <div class="relative z-10 max-w-3xl mx-auto px-4 py-8 pb-32">
+  <div class="relative z-10 max-w-3xl mx-auto px-4 py-8 flex-1">
     <!-- Header -->
     <div class="text-center mb-12">
       <h1 class="text-3xl md:text-4xl font-bold mb-4">
@@ -125,7 +126,7 @@
     </div>
 
     <!-- CTA -->
-    <div class="text-center mt-12 mb-24">
+    <div class="text-center mt-12 mb-8">
       <a
         href="/login"
         class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold transition-all transform hover:scale-[1.02] shadow-lg shadow-purple-500/30"
@@ -136,14 +137,7 @@
   </div>
 
   <!-- Footer -->
-  <div class="absolute bottom-6 left-0 right-0 flex justify-center">
-    <a href="https://glianalabs.com" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-      <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
-      <span class="text-zinc-600 text-xs">
-        &copy; {currentYear} by Gliana Labs
-      </span>
-    </a>
-  </div>
+  <div class="h-6"></div>
 </div>
 
 <style>
