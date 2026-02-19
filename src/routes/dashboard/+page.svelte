@@ -204,7 +204,7 @@ contact
     <!-- Header -->
     <div class="border-b border-white/10 relative z-10">
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <button on:click={goToHomepage} class="flex items-center gap-2">
+        <button on:click={goToHomepage} class="flex items-center gap-2 cursor-pointer">
           <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
           <span class="font-bold hidden md:inline">GlianaPay</span>
         </button>
@@ -213,7 +213,7 @@ contact
           <div class="text-sm text-zinc-400">
             {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
           </div>
-          <button on:click={handleLogout} class="text-sm text-red-400 hover:text-red-300">Logout</button>
+          <button on:click={handleLogout} class="text-sm text-red-400 hover:text-red-300 cursor-pointer">Logout</button>
         </div>
       </div>
     </div>
@@ -239,7 +239,7 @@ contact
             <a href="/{slug || 'yourname'}" target="_blank" class="text-xl font-bold text-purple-400 hover:underline">
               /{slug || 'yourname'}
             </a>
-            <button on:click={copyPageUrl} class="text-xs bg-zinc-700 hover:bg-zinc-600 px-2 py-1 rounded transition-all">
+            <button on:click={copyPageUrl} class="text-xs bg-zinc-700 hover:bg-zinc-600 px-2 py-1 rounded transition-all cursor-pointer">
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
@@ -292,7 +292,7 @@ contact
                   <input type="url" id="sound" bind:value={soundUrl} placeholder="https://example.com/sound.mp3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm" />
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-zinc-500">Recommended: short MP3 URLs</span>
-                    <button on:click={() => soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3'} class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300">
+                    <button on:click={() => soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3'} class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer">
                       Default
                     </button>
                   </div>
@@ -301,7 +301,7 @@ contact
               {#if soundError}
                 <p class="text-red-400 text-sm">{soundError}</p>
               {/if}
-              <button on:click={saveSettings} disabled={settingsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all">
+              <button on:click={saveSettings} disabled={settingsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer">
                 {#if settingsLoading}
                   Saving...
                 {:else}
@@ -339,7 +339,7 @@ contact
                 <code class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all">
                   https://glianapay.com/overlay/{slug}{soundEnabled ? '?sound=1' : ''}
                 </code>
-                <button on:click={() => navigator.clipboard.writeText(`https://glianapay.com/overlay/${slug}${soundEnabled ? '?sound=1' : ''}`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap">
+                <button on:click={() => navigator.clipboard.writeText(`https://glianapay.com/overlay/${slug}${soundEnabled ? '?sound=1' : ''}`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer">
                   Copy
                 </button>
               </div>
@@ -364,7 +364,7 @@ contact
               <span>Preview Overlay</span>
             </a>
 
-            <button on:click={testAlertWS} disabled={testInProgress} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50">
+            <button on:click={testAlertWS} disabled={testInProgress} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50 cursor-pointer">
               <span>{testInProgress ? 'Sending...' : 'Test Alert'}</span>
             </button>
 
