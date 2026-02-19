@@ -241,6 +241,17 @@
   function checkWallets() {
     if (typeof window !== 'undefined') {
       availableWallets = getAvailableWallets();
+
+      // On mobile, check if window.solana becomes available after returning from wallet app
+      if (availableWallets.length === 0 && (window as any).solana) {
+        // Re-check after a short delay (user may have just returned from wallet app)
+        setTimeout(() => {
+          availableWallets = getAvailableWallets();
+          if (availableWallets.length > 0 && !loading) {
+            handleConnectWallet(availableWallets[0]);
+          }
+        }, 1000);
+      }
     }
   }
 
@@ -268,6 +279,57 @@
       if (!connected) {
         selectedWallet = null;
       }
+    }
+  }
+
+  // Handle mobile deep link connection
+  async function handleMobileConnect(walletType: 'phantom' | 'solflare') {
+    loading = true;
+    error = '';
+
+    // Save return URL for reconnection after wallet connects
+    sessionStorage.setItem('pendingWalletConnect', walletType);
+
+    try {
+      const wallets = getAvailableWallets();
+      if (wallets.length > 0) {
+        // Try connecting with detected wallet
+        await handleConnectWallet(wallets[0]);
+      } else {
+        // No wallet found - use deep link with connection params
+        const currentUrl = encodeURIComponent(window.location.href);
+
+        if (walletType === 'phantom') {
+          // Phantom deep link with app URL - triggers connection prompt
+          window.location.href = `phantom://v1/connect?appUrl=${currentUrl}`;
+        } else {
+          // Solflare deep link
+          window.location.href = `solflare://connect`;
+        }
+
+        // Wait and check for connection after user returns from wallet
+        setTimeout(async () => {
+          const walletsAfter = getAvailableWallets();
+          if (walletsAfter.length > 0) {
+            const address = await connectWallet(walletsAfter[0]);
+            if (address) {
+              walletAddress = address;
+              connected = true;
+              saveSession();
+              await checkExisting();
+            } else {
+              loading = false;
+              error = 'Connection was not approved. Please try again.';
+            }
+          } else {
+            loading = false;
+            error = 'Could not connect. Please try again or install a wallet.';
+          }
+        }, 2000);
+      }
+    } catch (e: any) {
+      loading = false;
+      error = e?.message || 'Failed to connect';
     }
   }
 
@@ -408,7 +470,7 @@
 
   let copied = false;
   async function copyPageUrl() {
-    const url = `https://glianapay.com/${slug}`;
+    const url = `https://glianapay.com/tip/${slug}`;
     await navigator.clipboard.writeText(url);
     copied = true;
     setTimeout(() => copied = false, 2000);
@@ -445,6 +507,31 @@
         checkExisting();
       });
     }
+
+    // Check for wallet connection when user returns to tab (mobile workflow)
+    const handleFocus = async () => {
+      const wallets = getAvailableWallets();
+      if (wallets.length > 0 && !connected) {
+        try {
+          const address = await connectWallet(wallets[0]);
+          if (address) {
+            walletAddress = address;
+            connected = true;
+            saveSession();
+            await checkExisting();
+          }
+        } catch (e) {
+          console.log('Auto-reconnect failed:', e);
+        }
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
   });
 
   // Cleanup on destroy
@@ -466,9 +553,9 @@
   </div>
 {:else}
   <!-- Login View -->
-  <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+  <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">
 
-    <div class="absolute inset-0 overflow-hidden">
+    <div class="fixed inset-0 overflow-hidden">
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
       <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
     </div>
@@ -481,7 +568,7 @@
       <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
     </div>
 
-    <div class="relative z-10 max-w-md mx-auto px-4 py-8">
+    <div class="relative z-10 max-w-xl mx-auto px-4 pt-20 pb-8 flex-1 overflow-y-auto">
       <!-- Beta - Devnet Badge -->
       <div class="flex justify-center mb-4">
         <div class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full">
@@ -499,7 +586,6 @@
       <div class="glass-card rounded-2xl p-6 border border-white/10">
         {#if !connected}
           {#if availableWallets.length > 0}
-            <p class="text-sm text-zinc-400 mb-4 text-center">Select a wallet to connect</p>
             <div class="space-y-3">
               {#each availableWallets as wallet}
                 <button
@@ -521,27 +607,21 @@
                 </button>
               {/each}
             </div>
-            <!-- Powered by Solana -->
-            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2">
-              <span class="text-xs text-zinc-500">Powered by</span>
-              <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
-            </div>
           {:else}
-            <p class="text-sm text-zinc-400 mb-4 text-center">No wallet extension found</p>
-            <div class="space-y-2">
-              <a href="https://phantom.app/" target="_blank" class="block w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium text-center transition-all border border-purple-500/50 hover:border-purple-400">
-                Install Phantom
-              </a>
-              <a href="https://solflare.com/" target="_blank" class="block w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium text-center transition-all border border-yellow-500/50 hover:border-yellow-400">
-                Install Solflare
-              </a>
-            </div>
-            <!-- Powered by Solana -->
-            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2">
-              <span class="text-xs text-zinc-500">Powered by</span>
-              <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
+            <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
+              Connect Wallet
+            </button>
+            <!-- Mobile tip -->
+            <div class="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+              <p class="text-xs text-purple-300">Mobile?</p>
+              <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
             </div>
           {/if}
+          <!-- Powered by Solana -->
+          <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2">
+            <span class="text-xs text-zinc-500">Powered by</span>
+            <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
+          </div>
         {:else}
           <div class="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
             <div class="flex items-center justify-between">
@@ -562,7 +642,7 @@
             <div>
               <label for="slug" class="block text-sm font-medium text-zinc-300 mb-2">Your Page URL</label>
               <input type="text" id="slug" bind:value={slug} placeholder="yourname" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
-              <p class="text-xs text-zinc-500 mt-1">Your page: glianapay.com/{slug || 'yourname'}</p>
+              <p class="text-xs text-zinc-500 mt-1">Your page: glianapay.com/tip/{slug || 'yourname'}</p>
             </div>
 
             <!-- Turnstile Widget -->
@@ -591,7 +671,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="absolute bottom-6 left-0 px-4">
+    <div class="px-4 py-4">
       <a href="mailto:support@glianapay.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
     </div>
   </div>

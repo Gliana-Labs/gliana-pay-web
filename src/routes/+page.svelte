@@ -21,7 +21,7 @@
     const cleanSlug = slug.trim().toLowerCase();
     // Validate slug format (alphanumeric and hyphens only)
     if (cleanSlug && /^[a-zA-Z0-9-]+$/.test(cleanSlug)) {
-      window.location.href = `/${cleanSlug}`;
+      window.location.href = `/tip/${cleanSlug}`;
     }
   }
 </script>

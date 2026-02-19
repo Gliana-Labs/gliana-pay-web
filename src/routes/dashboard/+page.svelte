@@ -46,7 +46,7 @@
   // Copy state
   let copied = false;
   async function copyPageUrl() {
-    const url = `https://glianapay.com/${slug}`;
+    const url = `https://glianapay.com/tip/${slug}`;
     await navigator.clipboard.writeText(url);
     copied = true;
     setTimeout(() => copied = false, 2000);

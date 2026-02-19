@@ -15,7 +15,7 @@ export function getAvailableWallets(): WalletInfo[] {
 
   const wallets: WalletInfo[] = [];
 
-  // Phantom
+  // Phantom (browser extension or mobile in-app browser)
   if ((window as any).phantom?.solana?.isPhantom) {
     wallets.push({
       name: 'Phantom',
@@ -57,6 +57,28 @@ export function getAvailableWallets(): WalletInfo[] {
       name: 'Ledger',
       icon: 'https://www.svgrepo.com/show/374121/ledger.svg',
       provider: (window as any).ledger.solana
+    });
+  }
+
+  // Generic window.solana (mobile in-app browsers - fallback)
+  // Only add if no other wallet found, as this could be any wallet
+  if (wallets.length === 0 && (window as any).solana?.isConnected !== undefined) {
+    const solana = (window as any).solana;
+    // Try to detect wallet name from the provider
+    let name = 'Wallet';
+    let icon = 'https://www.svgrepo.com/show/374171/phantom.svg';
+
+    if (solana.isPhantom) {
+      name = 'Phantom';
+    } else if (solana.isSolflare) {
+      name = 'Solflare';
+      icon = 'https://www.svgrepo.com/show/475647/solflare.svg';
+    }
+
+    wallets.push({
+      name,
+      icon,
+      provider: solana
     });
   }
 
