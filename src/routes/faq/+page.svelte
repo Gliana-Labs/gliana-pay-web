@@ -108,7 +108,7 @@
             </svg>
           </button>
           {#if openIndex === index}
-            <div class="px-6 pb-5 text-zinc-300 leading-relaxed animate-fade-in">
+            <div class="px-6 pb-5 text-zinc-300 leading-relaxed">
               {faq.answer}
             </div>
           {/if}
