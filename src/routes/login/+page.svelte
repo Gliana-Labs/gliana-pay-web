@@ -89,6 +89,9 @@
         name = data.streamer.name;
         slug = data.streamer.slug;
         hasExistingAccount = true;
+        // Auto-redirect for existing users (no button click needed)
+        saveSession(true);
+        window.location.replace('/dashboard');
       } else {
         hasExistingAccount = false;
       }
