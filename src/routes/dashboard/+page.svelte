@@ -172,7 +172,10 @@
   }
 
   // Logout
-  function handleLogout() {
+  async function handleLogout() {
+    // Disconnect wallet first
+    await disconnectWallet();
+    // Clear local data
     localStorage.removeItem('gliana_session');
     sessionStorage.setItem('gliana_just_logged_out', '1');
     window.location.href = '/';
