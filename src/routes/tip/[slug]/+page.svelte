@@ -351,7 +351,10 @@
 
       <!-- Mobile Tip -->
       {#if isMobile}
-        <p class="text-xs text-zinc-400 mt-3 text-center">Open this page in your wallet's in-app browser for best experience.</p>
+        <div class="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+          <p class="text-xs text-purple-300">Mobile?</p>
+          <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
+        </div>
       {/if}
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
