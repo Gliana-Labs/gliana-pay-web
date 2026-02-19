@@ -59,10 +59,10 @@
 
     <!-- Grid pattern -->
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
-  </div>
 
-  <!-- Floating icons -->
-  <FloatingIcons targetId="logo-wrapper" />
+    <!-- Floating icons -->
+    <FloatingIcons animation="spaceship" targetId="logo-wrapper" />
+  </div>
 
   <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 pb-32 pt-16">
     <!-- Top Navigation -->

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  export let animation: 'fountain' | 'rain' = 'fountain';
+  export let animation: 'fountain' | 'rain' | 'spaceship' = 'fountain';
   export let targetId: string = '';
 
   const iconFiles = [
@@ -21,11 +21,16 @@
   let icons: Array<{
     src: string;
     left: string;
+    top: string;
     size: string;
     delay: string;
     duration: string;
     opacity: string;
     rotation: string;
+    startX: string;
+    startY: string;
+    endX: string;
+    endY: string;
   }> = [];
 
   function getTargetPosition() {
@@ -43,7 +48,33 @@
   }
 
   function createIcons(targetPos: { left: string; top: string }) {
-    if (animation === 'fountain') {
+    if (animation === 'spaceship') {
+      // Hyperspace mode - icons streak from circular area in center outward
+      icons = Array.from({ length: 30 }, (_, i) => {
+        // Random angle 360 degrees
+        const angle = Math.random() * Math.PI * 2;
+        // Random radius from center (circular distribution)
+        const radius = 15 + Math.random() * 25;
+        const startX = `calc(50% + ${Math.cos(angle) * radius}vw)`;
+        const startY = `calc(50% + ${Math.sin(angle) * radius}vh)`;
+        // Direction for movement
+        const vx = Math.cos(angle);
+        const vy = Math.sin(angle);
+
+        return {
+          src: iconFiles[i % iconFiles.length],
+          left: startX,
+          top: startY,
+          size: `${15 + Math.random() * 25}`,
+          delay: `${Math.random() * 8}s`,
+          duration: `${4 + Math.random() * 4}s`,
+          opacity: `${0.05 + Math.random() * 0.08}`,
+          rotation: `${(angle * 180 / Math.PI)}`,
+          vx: vx,
+          vy: vy
+        };
+      });
+    } else if (animation === 'fountain') {
       icons = Array.from({ length: 20 }, (_, i) => {
         const angle = Math.random() * Math.PI * 2;
         const distance = 5 + Math.random() * 30;
@@ -58,9 +89,11 @@
           delay: `${Math.random() * 15}s`,
           duration: `${20 + Math.random() * 15}s`,
           opacity: `${0.12 + Math.random() * 0.15}`,
-          xSpread: xSpread,
-          ySpread: ySpread,
-          rotation: `${Math.random() * 360}`
+          rotation: `${Math.random() * 360}`,
+          startX: '',
+          startY: '',
+          endX: '',
+          endY: ''
         };
       });
     } else {
@@ -71,7 +104,11 @@
         delay: `${Math.random() * 10}s`,
         duration: `${15 + Math.random() * 10}s`,
         opacity: `${0.15 + Math.random() * 0.2}`,
-        rotation: `${Math.random() * 360}`
+        rotation: `${Math.random() * 360}`,
+        startX: '',
+        startY: '',
+        endX: '',
+        endY: ''
       }));
     }
   }
@@ -81,7 +118,6 @@
     createIcons(targetPos);
     ready = true;
 
-    // Update position on resize
     const handleResize = () => {
       if (animation === 'fountain' && targetId) {
         const newPos = getTargetPosition();
@@ -114,8 +150,8 @@
         animation-duration: {icon.duration};
         --rotation: {icon.rotation}deg;
         {animation === 'fountain'
-          ? `left: ${icon.left}; top: ${icon.top}; --x-spread: ${icon.xSpread}vw; --y-spread: ${icon.ySpread}vh;`
-          : `left: ${icon.left}; top: -100px;`}
+          ? `left: ${icon.left}; top: ${icon.top}; --x-spread: ${icon.startX}; --y-spread: ${icon.startY};`
+          : `left: 50%; top: 50%; --vx: ${icon.vx || 0}; --vy: ${icon.vy || 0};`}
       "
       loading="eager"
       decoding="async"
@@ -148,6 +184,11 @@
     top: -100px;
   }
 
+  .spaceship-icon {
+    animation: spaceship ease-in-out infinite;
+    transform-origin: center center;
+  }
+
   @keyframes fountain {
     0% {
       transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(0.4);
@@ -175,6 +216,20 @@
     }
     100% {
       transform: translateY(100vh) rotate(calc(var(--rotation, 0deg) + 360deg));
+      opacity: 0;
+    }
+  }
+
+  @keyframes spaceship {
+    0% {
+      transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(0.3);
+      opacity: 0;
+    }
+    5% {
+      opacity: var(--opacity, 0.25);
+    }
+    100% {
+      transform: translate(calc(-50% + var(--vx) * 80vw), calc(-50% + var(--vy) * 80vh)) rotate(var(--rotation, 0deg)) scale(4);
       opacity: 0;
     }
   }
