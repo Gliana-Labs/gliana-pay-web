@@ -320,13 +320,6 @@
       <!-- Viewer Wallet Connect -->
       <div class="glass-card rounded-2xl p-5 border border-white/10 mb-4">
         {#if !viewerConnected}
-          <!-- Mobile Tip -->
-          {#if isMobile}
-            <div class="mb-3 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-              <p class="text-xs text-purple-300">Mobile?</p>
-              <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
-            </div>
-          {/if}
           {#if availableWallets.length > 0}
             <div class="space-y-3">
               {#each availableWallets as wallet}
@@ -339,6 +332,13 @@
                 </button>
               {/each}
             </div>
+            <!-- Mobile Tip -->
+            {#if isMobile}
+              <div class="mt-3 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                <p class="text-xs text-purple-300">Mobile?</p>
+                <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
+              </div>
+            {/if}
           {:else if !isMobile}
             <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
               Connect Wallet
