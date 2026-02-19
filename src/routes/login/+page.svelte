@@ -29,7 +29,7 @@
   let error = '';
   let name = '';
   let slug = '';
-  let userInitiatedConnection = false;
+  let activeWalletType: 'phantom' | 'solflare' | null = null;
   let turnstileToken = '';
   let turnstileContainer: HTMLDivElement;
   let turnstileWidgetId: string | null = null;
@@ -277,8 +277,8 @@
     // Small delay to let disconnection settle
     await new Promise(r => setTimeout(r, 100));
 
-    // Mark that user initiated connection - this enables auto-redirect
-    userInitiatedConnection = true;
+    // Set active wallet type - this enables the specific listener
+    activeWalletType = wallet.name.toLowerCase().includes('phantom') ? 'phantom' : 'solflare';
 
     try {
       const address = await connectWallet(wallet);
@@ -308,6 +308,8 @@
 
     // Save return URL for reconnection after wallet connects
     sessionStorage.setItem('pendingWalletConnect', walletType);
+    // Set active wallet type for the listeners
+    activeWalletType = walletType;
 
     try {
       const wallets = getAvailableWallets();
@@ -362,7 +364,7 @@
     walletAddress = '';
     name = '';
     slug = '';
-    userInitiatedConnection = false;
+    activeWalletType = null;
     if (typeof window !== 'undefined') {
       localStorage.removeItem('gliana_session');
       sessionStorage.setItem('gliana_just_logged_out', '1');
@@ -516,11 +518,11 @@
       return;
     }
 
-    // Set up Phantom connect listener - only when user initiated connection
+    // Set up Phantom connect listener - only when Phantom connect was initiated
     const phantom = getPhantomWallet();
     if (phantom) {
       phantom.on('connect', () => {
-        if (!userInitiatedConnection) return;
+        if (activeWalletType !== 'phantom') return;
         walletAddress = phantom.publicKey?.toString() || '';
         connected = true;
         saveSession();
@@ -528,11 +530,11 @@
       });
     }
 
-    // Set up Solflare connect listener - only when user initiated connection
+    // Set up Solflare connect listener - only when Solflare connect was initiated
     const solflare = (window as any).solflare;
     if (solflare) {
       solflare.on('connect', () => {
-        if (!userInitiatedConnection) return;
+        if (activeWalletType !== 'solflare') return;
         walletAddress = solflare.publicKey?.toString() || '';
         connected = true;
         saveSession();
@@ -546,8 +548,8 @@
       if (sessionStorage.getItem('gliana_just_logged_out')) {
         return;
       }
-      // Only auto-reconnect if user has initiated a connection (clicked a connect button)
-      if (!userInitiatedConnection) {
+      // Only auto-reconnect if user has initiated a connection
+      if (!activeWalletType) {
         return;
       }
       const wallets = getAvailableWallets();
