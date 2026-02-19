@@ -516,6 +516,30 @@
       return;
     }
 
+    // Set up Phantom connect listener - only when user initiated connection
+    const phantom = getPhantomWallet();
+    if (phantom) {
+      phantom.on('connect', () => {
+        if (!userInitiatedConnection) return;
+        walletAddress = phantom.publicKey?.toString() || '';
+        connected = true;
+        saveSession();
+        checkExisting();
+      });
+    }
+
+    // Set up Solflare connect listener - only when user initiated connection
+    const solflare = (window as any).solflare;
+    if (solflare) {
+      solflare.on('connect', () => {
+        if (!userInitiatedConnection) return;
+        walletAddress = solflare.publicKey?.toString() || '';
+        connected = true;
+        saveSession();
+        checkExisting();
+      });
+    }
+
     // Check for wallet connection when user returns to tab (mobile workflow)
     const handleFocus = async () => {
       // Don't auto-reconnect if user just logged out
