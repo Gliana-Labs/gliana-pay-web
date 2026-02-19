@@ -49,7 +49,7 @@
         walletAddress = address;
         connected = true;
         await checkExistingUser();
-        saveSession(true); // true = wallet verified
+        saveSession();
       } else {
         error = 'Connection failed. Please try again.';
       }
@@ -90,7 +90,7 @@
         slug = data.streamer.slug;
         hasExistingAccount = true;
         // Auto-redirect for existing users (no button click needed)
-        saveSession(true);
+        saveSession();
         window.location.replace('/dashboard');
       } else {
         hasExistingAccount = false;
@@ -137,7 +137,7 @@
         throw new Error(data.error || 'Failed to create');
       }
 
-      saveSession(true);
+      saveSession();
       window.location.replace('/dashboard');
     } catch (e: any) {
       error = e.message || 'Failed to register';
@@ -148,20 +148,20 @@
 
   // Login for existing user
   function login() {
-    saveSession(true);
+    saveSession();
     window.location.replace('/dashboard');
   }
 
   // Session management
-  function saveSession(verified = false) {
-    localStorage.setItem('gliana_session', JSON.stringify({ walletAddress, name, slug, verified: verified || hasExistingAccount }));
+  function saveSession() {
+    localStorage.setItem('gliana_session', JSON.stringify({ walletAddress, name, slug }));
   }
 
   function loadSession() {
     const saved = localStorage.getItem('gliana_session');
     if (saved) {
       const session = JSON.parse(saved);
-      if (session.name && session.slug && session.verified) {
+      if (session.name && session.slug) {
         window.location.replace('/dashboard');
       }
     }
