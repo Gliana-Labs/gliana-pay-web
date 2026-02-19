@@ -59,13 +59,6 @@
     const saved = localStorage.getItem('gliana_session');
     if (saved) {
       const session = JSON.parse(saved);
-      // Verify session is marked as verified (wallet actually connected)
-      if (!session.verified) {
-        // Not verified, clear and go back to login
-        localStorage.removeItem('gliana_session');
-        window.location.href = '/';
-        return;
-      }
       walletAddress = session.walletAddress || '';
       slug = session.slug || '';
     }
