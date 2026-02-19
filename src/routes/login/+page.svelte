@@ -65,8 +65,6 @@
 
   // Verify wallet ownership with message signing
   async function verifyOwnership() {
-    console.log('verifyOwnership called', { walletAddress, selectedWallet: selectedWallet?.name });
-
     if (!walletAddress || !selectedWallet) {
       error = 'Wallet not connected. Please reconnect.';
       return;
@@ -79,8 +77,6 @@
       // Create a unique message with timestamp
       const timestamp = Date.now();
       const message = `Login to GlianaPay at ${timestamp}`;
-
-      console.log('Calling signMessage with wallet:', selectedWallet.name);
 
       // Ask user to sign the message
       const result = await signMessage(selectedWallet, message);

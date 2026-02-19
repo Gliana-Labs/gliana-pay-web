@@ -160,39 +160,34 @@ export async function disconnectWallet(wallet?: WalletInfo): Promise<void> {
 // Sign a message with the wallet (for authentication)
 export async function signMessage(wallet: WalletInfo, message: string): Promise<{ signature: string; message: string } | null> {
   try {
-    console.log('Signing message with wallet:', wallet.name);
-    console.log('Wallet provider methods:', Object.keys(wallet.provider));
-
     const encodedMessage = new TextEncoder().encode(message);
 
     let signature: Uint8Array | null = null;
 
     // Try different sign methods
     if (wallet.provider.signMessage) {
-      console.log('Using signMessage method');
       // Phantom, Solflare, Backpack support this
       const result = await wallet.provider.signMessage(encodedMessage, 'utf8');
-      console.log('signMessage result type:', result.constructor.name, 'length:', result.length);
-      // Handle different return formats
-      signature = result instanceof Uint8Array ? result : new Uint8Array(result);
+      // Handle different return formats: Phantom returns { signature: Uint8Array }
+      if (result && typeof result === 'object' && 'signature' in result) {
+        const sig = result.signature;
+        signature = sig instanceof Uint8Array ? sig : new Uint8Array(sig as any);
+      } else if (result instanceof Uint8Array) {
+        signature = result;
+      }
     } else if (wallet.provider.sign) {
-      console.log('Using sign method (legacy)');
       // Legacy method
       const result = await wallet.provider.sign(encodedMessage);
       signature = result instanceof Uint8Array ? result : new Uint8Array(result);
-    } else {
-      console.error('No sign method available on wallet provider');
     }
 
     if (signature && signature.length > 0) {
-      console.log('Signature obtained, length:', signature.length);
       // Convert to base64 safely
       const signatureArray = Array.from(signature);
       const signatureBase64 = btoa(String.fromCharCode(...signatureArray));
       return { signature: signatureBase64, message };
     }
 
-    console.warn('No signature obtained');
     return null;
   } catch (e) {
     console.error('Message signing failed:', e);
