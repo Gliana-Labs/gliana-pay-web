@@ -51,11 +51,13 @@
   function createIcons(targetPos: { left: string; top: string }) {
     if (animation === 'spaceship') {
       // Hyperspace mode - icons streak from circular area in center outward
+      // Use evenly spaced angles with varying radii for more even distribution
       icons = Array.from({ length: 15 }, (_, i) => {
-        // Random angle 360 degrees
-        const angle = Math.random() * Math.PI * 2;
-        // Random radius from center (circular distribution)
-        const radius = 15 + Math.random() * 25;
+        // Evenly space angles across 360 degrees
+        const angle = (i / 15) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+        // Use concentric rings for more even spread: 15, 22, 29, 36 (4 rings)
+        const ringIndex = i % 4;
+        const radius = 15 + ringIndex * 7 + Math.random() * 5;
         const startX = `calc(50% + ${Math.cos(angle) * radius}vw)`;
         const startY = `calc(50% + ${Math.sin(angle) * radius}vh)`;
         // Direction for movement
