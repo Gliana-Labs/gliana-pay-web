@@ -678,25 +678,26 @@
           </div>
 
           <div class="space-y-4">
-            <div>
-              <label for="name" class="block text-sm font-medium text-zinc-300 mb-2">Display Name</label>
-              <input type="text" id="name" bind:value={name} placeholder="Your Name" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
-            </div>
-
-            <div>
-              <label for="slug" class="block text-sm font-medium text-zinc-300 mb-2">Your Page URL</label>
-              <input type="text" id="slug" bind:value={slug} placeholder="yourname" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
-              <p class="text-xs text-zinc-500 mt-1">Your page: glianapay.com/tip/{slug || 'yourname'}</p>
-            </div>
-
-            <!-- Turnstile Widget - only show for new users -->
+            <!-- Only show inputs for new users -->
             {#if !hasExistingAccount}
+              <div>
+                <label for="name" class="block text-sm font-medium text-zinc-300 mb-2">Display Name</label>
+                <input type="text" id="name" bind:value={name} placeholder="Your Name" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
+              </div>
+
+              <div>
+                <label for="slug" class="block text-sm font-medium text-zinc-300 mb-2">Your Page URL</label>
+                <input type="text" id="slug" bind:value={slug} placeholder="yourname" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
+                <p class="text-xs text-zinc-500 mt-1">Your page: glianapay.com/tip/{slug || 'yourname'}</p>
+              </div>
+
+              <!-- Turnstile Widget -->
               <div class="flex justify-center">
                 <div bind:this={turnstileContainer} class="cf-turnstile"></div>
               </div>
             {/if}
 
-            <button on:click={hasExistingAccount ? handleLogin : register} disabled={loading || !name || !slug || (hasExistingAccount && false)} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
+            <button on:click={hasExistingAccount ? handleLogin : register} disabled={loading || (!hasExistingAccount && (!name || !slug))} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
               {#if loading}
                 {hasExistingAccount ? 'Logging in...' : 'Setting up...'}
               {:else if hasExistingAccount}
