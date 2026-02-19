@@ -1,28 +1,10 @@
-<svelte:head>
-  <title>Login - GlianaPay</title>
-  <meta name="description" content="Connect your wallet to create and manage your GlianaPay tipping page. Accept SOL tips with real-time OBS alerts." />
-  <meta name="keywords" content="login, streamer, wallet connect, Phantom, Solflare, Solana, tips, donations, Web3" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Login - GlianaPay" />
-  <meta property="og:description" content="Connect your wallet to create and manage your tipping page." />
-  <meta property="og:image" content="https://glianapay.com/og-image.png" />
-
-  <!-- Twitter -->
-  <meta name="twitter:title" content="Login - GlianaPay" />
-  <meta name="twitter:description" content="Connect your wallet to create and manage your tipping page." />
-  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
-  <meta name="twitter:site" content="@glianalabs" />
-  <meta name="twitter:creator" content="@glianalabs" />
-</svelte:head>
-
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   import { getAvailableWallets, connectWallet, disconnectWallet } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
 
+  // Simple state
   let mounted = false;
-  let isLoggedIn = false;
   let connected = false;
   let walletAddress = '';
   let loading = false;
@@ -30,399 +12,105 @@
   let name = '';
   let slug = '';
   let hasExistingAccount = false;
-  let activeWalletType: 'phantom' | 'solflare' | null = null;
+
+  // Turnstile
   let turnstileToken = '';
   let turnstileContainer: HTMLDivElement;
   let turnstileWidgetId: string | null = null;
-  let turnstileLoaded = false;
-
-  // Turnstile site key - get from https://dash.cloudflare.com/ -> Turnstile
   const TURNSTILE_SITE_KEY = '0x4AAAAAACd6patp0WteLo73';
-
-  // Load Turnstile and render widget
-  function loadTurnstile() {
-    if (typeof window === 'undefined') return;
-
-    // Define callback first
-    (window as any).turnstileCallback = (token: string) => {
-      turnstileToken = token;
-      console.log('Turnstile token received');
-    };
-
-    // If already loaded, render immediately
-    if ((window as any).turnstile) {
-      renderTurnstile();
-      return;
-    }
-
-    // Load script
-    const script = document.createElement('script');
-    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      renderTurnstile();
-    };
-    document.head.appendChild(script);
-  }
-
-  function renderTurnstile() {
-    if (!turnstileContainer || !(window as any).turnstile) return;
-
-    // Remove old widget if exists
-    if (turnstileWidgetId) {
-      try {
-        (window as any).turnstile.remove(turnstileWidgetId);
-      } catch (e) {}
-    }
-
-    // Render new widget
-    turnstileWidgetId = (window as any).turnstile.render(turnstileContainer, {
-      sitekey: TURNSTILE_SITE_KEY,
-      callback: (token: string) => {
-        turnstileToken = token;
-        console.log('Turnstile token received');
-      }
-    });
-  }
-
-  // Load Turnstile when wallet connects (form becomes visible), but not for existing users
-  $: if (typeof window !== 'undefined' && connected && turnstileContainer && !turnstileLoaded && !hasExistingAccount) {
-    turnstileLoaded = true;
-    loadTurnstile();
-  }
-
-  // Dashboard data
-  let totalReceived = 0;
-  let totalTips = 0;
-  let average = 0;
-  let donations: any[] = [];
-  let settingsLoading = false;
-  let settingsSaved = false;
-
-  // Settings
-  let minAmount = 0.001;
-  let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
-  let soundEnabled = false;
 
   const WORKER_URL = 'https://api.glianapay.com';
 
-  // Load dashboard data
-  async function loadDashboardData() {
-    if (!slug) return;
+  // ============ WALLET FUNCTIONS ============
 
-    try {
-      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/donations`);
-      if (response.ok) {
-        const data = await response.json();
-        totalReceived = data.stats.totalReceived / 1e9; // Convert lamports to SOL
-        totalTips = data.stats.totalTips;
-        average = data.stats.average / 1e9;
-        donations = data.donations || [];
-      }
-    } catch (e) {
-      console.error('Failed to load donations:', e);
-    }
+  // Get Phantom directly
+  function getPhantom() {
+    return (window as any).solana;
+  }
 
-    // Load settings
-    try {
-      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}`);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Loaded streamer settings:', data.settings);
-        if (data.settings) {
-          minAmount = (data.settings.min_amount || 1000000) / 1e9;
-          soundUrl = data.settings.sound_url || 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
-          console.log('Sound URL set to:', soundUrl);
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load settings:', e);
+  // Check if wallet already connected on page load
+  async function checkExistingConnection() {
+    const phantom = getPhantom();
+    if (phantom?.isConnected && phantom.publicKey) {
+      walletAddress = phantom.publicKey.toString();
+      connected = true;
+      await checkExistingUser();
     }
   }
 
-  // Save settings
-  let soundError = '';
-
-  async function saveSettings() {
-    soundError = '';
-
-    // Validate sound URL
-    if (soundUrl && !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) && !soundUrl.includes('/media/sounds/')) {
-      soundError = 'URL should end with .mp3 or contain /media/sounds/';
-      return;
-    }
-
-    console.log('saveSettings called, slug:', slug, 'minAmount:', minAmount, 'soundUrl:', soundUrl);
-    settingsLoading = true;
-    settingsSaved = false;
-
-    try {
-      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/settings`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          min_amount: Math.floor(minAmount * 1e6),
-          sound_url: soundUrl
-        })
-      });
-
-      console.log('Settings response:', response.status);
-      if (response.ok) {
-        settingsSaved = true;
-        setTimeout(() => settingsSaved = false, 3000);
-      } else {
-        const err = await response.json();
-        console.error('Settings save error:', err);
-      }
-    } catch (e) {
-      console.error('Failed to save settings:', e);
-    } finally {
-      settingsLoading = false;
-    }
-  }
-
-  // Test alert via postMessage (new tab)
-  let testAlertInProgress = false;
-
-  function testAlert() {
-    if (testAlertInProgress) return;
-    testAlertInProgress = true;
-
-    const testWindow = window.open(`/overlay/${slug}`, 'GlianaPayOverlay', 'width=600,height=400');
-    setTimeout(() => {
-      if (testWindow) {
-        testWindow.postMessage({
-          type: 'tip',
-          data: {
-            tx_hash: 'test_' + Date.now(),
-            amount: 100000000,
-            sender: walletAddress || 'TestUser',
-            sender_name: 'Test User',
-            message: 'Test tip! 🎉',
-            timestamp: new Date().toISOString(),
-            streamer_slug: slug
-          }
-        }, '*');
-      }
-      testAlertInProgress = false;
-    }, 1000);
-  }
-
-  // Test alert via WebSocket (for OBS) - simplified
-  let testInProgress = false;
-
-  function testAlertWS() {
-    if (testInProgress) {
-      console.log('Test already in progress');
-      return;
-    }
-    testInProgress = true;
-
-    // Just call the API directly - no need for WebSocket on client
-    // The DO will broadcast to connected viewers
-    fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
-      method: 'POST'
-    }).then(() => {
-      console.log('Test alert sent via WebSocket');
-    }).catch(err => {
-      console.error('Failed to send test alert:', err);
-    }).finally(() => {
-      // Allow next test after delay
-      setTimeout(() => {
-        testInProgress = false;
-      }, 2000);
-    });
-  }
-
-  // Available wallets
-  let availableWallets: WalletInfo[] = [];
-  let selectedWallet: WalletInfo | null = null;
-
-  // Check available wallets
-  function checkWallets() {
-    if (typeof window !== 'undefined') {
-      availableWallets = getAvailableWallets();
-
-      // On mobile, check if window.solana becomes available after returning from wallet app
-      if (availableWallets.length === 0 && (window as any).solana) {
-        // Re-check after a short delay (user may have just returned from wallet app)
-        setTimeout(() => {
-          availableWallets = getAvailableWallets();
-          if (availableWallets.length > 0 && !loading) {
-            handleConnectWallet(availableWallets[0]);
-          }
-        }, 1000);
-      }
-    }
-  }
-
-  // Connect to selected wallet
-  async function handleConnectWallet(wallet: WalletInfo) {
-    selectedWallet = wallet;
+  // Connect wallet - simple and direct
+  async function handleConnect(wallet: WalletInfo) {
     loading = true;
     error = '';
-
-    // First disconnect all wallets aggressively to prevent Phantom auto-reconnect
-    const disconnectAll = async () => {
-      const walletsToDisconnect = ['solana', 'solflare', 'backpack', 'glow', 'slope'];
-      for (const w of walletsToDisconnect) {
-        const provider = (window as any)[w];
-        if (provider?.disconnect) {
-          try { await provider.disconnect(); } catch {}
-        }
-      }
-    };
-    await disconnectAll();
-
-    // Small delay to let disconnection settle
-    await new Promise(r => setTimeout(r, 100));
-
-    // Set active wallet type - this enables the specific listener
-    activeWalletType = wallet.name.toLowerCase().includes('phantom') ? 'phantom' : 'solflare';
 
     try {
       const address = await connectWallet(wallet);
       if (address) {
         walletAddress = address;
         connected = true;
+        await checkExistingUser();
         saveSession();
-        // Check if user already has an account
-        await checkExisting();
       } else {
-        error = `Failed to connect to ${wallet.name}. Please try again.`;
+        error = 'Connection failed. Please try again.';
       }
     } catch (e: any) {
-      error = e?.message || `Failed to connect to ${wallet.name}`;
+      error = e?.message || 'Failed to connect';
     } finally {
       loading = false;
-      if (!connected) {
-        selectedWallet = null;
-      }
     }
   }
 
-  // Handle mobile deep link connection
-  async function handleMobileConnect(walletType: 'phantom' | 'solflare') {
-    loading = true;
-    error = '';
-
-    // Save return URL for reconnection after wallet connects
-    sessionStorage.setItem('pendingWalletConnect', walletType);
-    // Set active wallet type for the listeners
-    activeWalletType = walletType;
-
-    try {
-      const wallets = getAvailableWallets();
-      if (wallets.length > 0) {
-        // Try connecting with detected wallet
-        await handleConnectWallet(wallets[0]);
-      } else {
-        // No wallet found - use deep link with connection params
-        const currentUrl = encodeURIComponent(window.location.href);
-
-        if (walletType === 'phantom') {
-          // Phantom deep link with app URL - triggers connection prompt
-          window.location.href = `phantom://v1/connect?appUrl=${currentUrl}`;
-        } else {
-          // Solflare deep link
-          window.location.href = `solflare://connect`;
-        }
-
-        // Wait and check for connection after user returns from wallet
-        setTimeout(async () => {
-          const walletsAfter = getAvailableWallets();
-          if (walletsAfter.length > 0) {
-            const address = await connectWallet(walletsAfter[0]);
-            if (address) {
-              walletAddress = address;
-              connected = true;
-              saveSession();
-              await checkExisting();
-            } else {
-              loading = false;
-              error = 'Connection was not approved. Please try again.';
-            }
-          } else {
-            loading = false;
-            error = 'Could not connect. Please try again or install a wallet.';
-          }
-        }, 2000);
-      }
-    } catch (e: any) {
-      loading = false;
-      error = e?.message || 'Failed to connect';
-    }
-  }
-
-  // Disconnect
+  // Disconnect wallet
   async function handleDisconnect() {
-    if (selectedWallet) {
-      await disconnectWallet(selectedWallet);
+    const phantom = getPhantom();
+    if (phantom) {
+      try { await phantom.disconnect(); } catch {}
     }
-    selectedWallet = null;
+    // Also clear local state
     connected = false;
     walletAddress = '';
     name = '';
     slug = '';
-    activeWalletType = null;
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('gliana_session');
-      sessionStorage.setItem('gliana_just_logged_out', '1');
-    }
+    hasExistingAccount = false;
+    localStorage.removeItem('gliana_session');
+    sessionStorage.setItem('gliana_just_logged_out', '1');
   }
 
-  // Legacy function for compatibility
-  function getPhantomWallet() {
-    if (typeof window !== 'undefined') {
-      return (window as any).phantom?.solana;
-    }
-    return null;
-  }
+  // ============ USER FUNCTIONS ============
 
-  // Load saved session
-  function loadSession() {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('gliana_session');
-      if (saved) {
-        const session = JSON.parse(saved);
-        walletAddress = session.walletAddress || '';
-        name = session.name || '';
-        slug = session.slug || '';
-        connected = !!walletAddress;
-        // If already registered (has name & slug), go to dashboard
-        if (name && slug) {
-          window.location.replace('/dashboard');
-        }
+  // Check if user already exists in DB
+  async function checkExistingUser() {
+    if (!walletAddress) return;
+
+    try {
+      const response = await fetch(`${WORKER_URL}/api/streamer/wallet/${walletAddress}`);
+      if (response.ok) {
+        const data = await response.json();
+        name = data.streamer.name;
+        slug = data.streamer.slug;
+        hasExistingAccount = true;
+      } else {
+        hasExistingAccount = false;
       }
+    } catch {
+      hasExistingAccount = false;
     }
   }
 
-  // Save session
-  function saveSession() {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('gliana_session', JSON.stringify({
-        walletAddress,
-        name,
-        slug
-      }));
-    }
-  }
-
+  // Register new user
   async function register() {
-    if (!connected || !name || !slug) {
-      error = 'Please connect wallet and fill all fields';
+    if (!name || !slug) {
+      error = 'Please fill in all fields';
       return;
     }
 
-    // Validate slug format (alphanumeric and hyphens only)
     if (!/^[a-zA-Z0-9-]+$/.test(slug)) {
       error = 'URL can only contain letters, numbers, and hyphens';
       return;
     }
 
     if (slug.length < 3 || slug.length > 30) {
-      error = 'URL must be between 3 and 30 characters';
+      error = 'URL must be 3-30 characters';
       return;
     }
 
@@ -430,10 +118,6 @@
     error = '';
 
     try {
-      // Save to worker database
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-
       const response = await fetch(`${WORKER_URL}/api/streamer/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -442,152 +126,97 @@
           name,
           slug,
           turnstile_token: turnstileToken
-        }),
-        signal: controller.signal
+        })
       });
-
-      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to create streamer');
+        throw new Error(data.error || 'Failed to create');
       }
 
       saveSession();
-      // Go to dashboard
       window.location.replace('/dashboard');
     } catch (e: any) {
-      console.error('Register error:', e);
-      error = e.name === 'AbortError' ? 'Request timed out. Please try again.' : (e.message || 'Failed to register');
+      error = e.message || 'Failed to register';
     } finally {
       loading = false;
     }
   }
 
-  async function checkExisting() {
-    if (!walletAddress) return;
-    // Don't check if we just logged out
-    const justLoggedOut = sessionStorage.getItem('gliana_just_logged_out');
-    if (justLoggedOut) {
-      sessionStorage.removeItem('gliana_just_logged_out');
-      return;
-    }
-    try {
-      const response = await fetch(`${WORKER_URL}/api/streamer/wallet/${walletAddress}`);
-      if (response.ok) {
-        const data = await response.json();
-        name = data.streamer.name;
-        slug = data.streamer.slug;
-        hasExistingAccount = true;
-        saveSession();
-      } else {
-        hasExistingAccount = false;
-      }
-    } catch (e) {
-      hasExistingAccount = false;
-    }
-  }
-
-  function handleLogin() {
+  // Login for existing user
+  function login() {
     saveSession();
     window.location.replace('/dashboard');
   }
 
-  function goToHomepage() {
-    // Go to homepage without logging out
-    window.location.href = '/';
+  // Session management
+  function saveSession() {
+    localStorage.setItem('gliana_session', JSON.stringify({ walletAddress, name, slug }));
   }
 
-  let copied = false;
-  async function copyPageUrl() {
-    const url = `https://glianapay.com/tip/${slug}`;
-    await navigator.clipboard.writeText(url);
-    copied = true;
-    setTimeout(() => copied = false, 2000);
+  function loadSession() {
+    const saved = localStorage.getItem('gliana_session');
+    if (saved) {
+      const session = JSON.parse(saved);
+      if (session.name && session.slug) {
+        window.location.replace('/dashboard');
+      }
+    }
   }
+
+  // Turnstile
+  function loadTurnstile() {
+    if (!turnstileContainer || !(window as any).turnstile) return;
+
+    if (turnstileWidgetId) {
+      try { (window as any).turnstile.remove(turnstileWidgetId); } catch {}
+    }
+
+    turnstileWidgetId = (window as any).turnstile.render(turnstileContainer, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: (token: string) => { turnstileToken = token; }
+    });
+  }
+
+  function initTurnstile() {
+    if (typeof window === 'undefined') return;
+
+    (window as any).turnstileCallback = (token: string) => {
+      turnstileToken = token;
+    };
+
+    if ((window as any).turnstile) {
+      loadTurnstile();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      script.onload = loadTurnstile;
+      document.head.appendChild(script);
+    }
+  }
+
+  // ============ LIFECYCLE ============
+
+  let availableWallets: WalletInfo[] = [];
 
   onMount(() => {
     mounted = true;
-    // Clear the just-logged-out flag
     sessionStorage.removeItem('gliana_just_logged_out');
     loadSession();
-    checkWallets();
 
-    // If already logged in, hide login form and redirect
-    if (walletAddress && slug) {
-      isLoggedIn = true;
-      window.location.replace('/dashboard');
-      return;
-    }
+    // Check for already connected wallet
+    checkExistingConnection();
 
-    // Set up Phantom connect listener - only when Phantom connect was initiated
-    const phantom = getPhantomWallet();
-    if (phantom) {
-      phantom.on('connect', () => {
-        if (activeWalletType !== 'phantom') return;
-        walletAddress = phantom.publicKey?.toString() || '';
-        connected = true;
-        saveSession();
-        checkExisting();
-      });
-    }
+    // Get available wallets
+    availableWallets = getAvailableWallets();
 
-    // Set up Solflare connect listener - only when Solflare connect was initiated
-    const solflare = (window as any).solflare;
-    if (solflare) {
-      solflare.on('connect', () => {
-        if (activeWalletType !== 'solflare') return;
-        walletAddress = solflare.publicKey?.toString() || '';
-        connected = true;
-        saveSession();
-        checkExisting();
-      });
-    }
-
-    // Check for wallet connection when user returns to tab (mobile workflow)
-    const handleFocus = async () => {
-      // Don't auto-reconnect if user just logged out
-      if (sessionStorage.getItem('gliana_just_logged_out')) {
-        return;
+    // Load Turnstile when form becomes visible
+    const checkTurnstile = setInterval(() => {
+      if (connected && !hasExistingAccount && turnstileContainer && !(window as any).turnstile) {
+        initTurnstile();
       }
-      // Only auto-reconnect if user has initiated a connection
-      if (!activeWalletType) {
-        return;
-      }
-      const wallets = getAvailableWallets();
-      if (wallets.length > 0 && !connected) {
-        try {
-          const address = await connectWallet(wallets[0]);
-          if (address) {
-            walletAddress = address;
-            connected = true;
-            saveSession();
-            await checkExisting();
-          }
-        } catch (e) {
-          console.log('Auto-reconnect failed:', e);
-        }
-      }
-    };
-
-    window.addEventListener('focus', handleFocus);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-    };
-  });
-
-  // Cleanup on destroy
-  onDestroy(() => {
-    const phantom = getPhantomWallet();
-    if (phantom) {
-      phantom.off('connect');
-    }
-    const solflare = (window as any).solflare;
-    if (solflare) {
-      solflare.off('connect');
-    }
+      if (connected) clearInterval(checkTurnstile);
+    }, 100);
   });
 </script>
 
@@ -596,9 +225,8 @@
     <div class="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
   </div>
 {:else}
-  <!-- Login View -->
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">
-
+    <!-- Background -->
     <div class="fixed inset-0 overflow-hidden">
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
       <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
@@ -612,8 +240,8 @@
       <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
     </div>
 
-    <div class="relative z-10 max-w-xl mx-auto px-4 pt-20 pb-8 flex-1 overflow-y-auto">
-      <!-- Beta - Devnet Badge -->
+    <div class="relative z-10 max-w-xl mx-auto px-4 pt-20 pb-8 flex-1">
+      <!-- Beta Badge -->
       <div class="flex justify-center mb-4">
         <div class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full">
           <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
@@ -629,44 +257,24 @@
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
         {#if !connected}
-          {#if availableWallets.length > 0}
-            <div class="space-y-3">
-              {#each availableWallets as wallet}
-                <button
-                  on:click={() => handleConnectWallet(wallet)}
-                  disabled={loading}
-                  class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400"
-                >
-                  {#if loading && selectedWallet?.name === wallet.name}
-                    <span class="inline-flex items-center gap-2">
-                      <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                      </svg>
-                      Connecting...
-                    </span>
-                  {:else}
-                    Connect {wallet.name}
-                  {/if}
-                </button>
-              {/each}
-            </div>
-          {:else}
-            <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
-              Connect Wallet
-            </button>
-            <!-- Mobile tip -->
-            <div class="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-              <p class="text-xs text-purple-300">Mobile?</p>
-              <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
-            </div>
-          {/if}
-          <!-- Powered by Solana -->
-          <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2">
-            <span class="text-xs text-zinc-500">Powered by</span>
-            <img src="/solana-pay/Color=White.svg" alt="Solana" class="h-4" />
+          <!-- Connect Wallet -->
+          <div class="space-y-3">
+            {#each availableWallets as wallet}
+              <button
+                on:click={() => handleConnect(wallet)}
+                disabled={loading}
+                class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400"
+              >
+                {loading ? 'Connecting...' : `Connect ${wallet.name}`}
+              </button>
+            {/each}
           </div>
+
+          {#if availableWallets.length === 0}
+            <p class="text-center text-zinc-400 text-sm">No wallet found. Please install Phantom or Solflare.</p>
+          {/if}
         {:else}
+          <!-- Connected -->
           <div class="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
             <div class="flex items-center justify-between">
               <div>
@@ -677,9 +285,9 @@
             </div>
           </div>
 
-          <div class="space-y-4">
-            <!-- Only show inputs for new users -->
-            {#if !hasExistingAccount}
+          <!-- Form -->
+          {#if !hasExistingAccount}
+            <div class="space-y-4">
               <div>
                 <label for="name" class="block text-sm font-medium text-zinc-300 mb-2">Display Name</label>
                 <input type="text" id="name" bind:value={name} placeholder="Your Name" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
@@ -688,25 +296,31 @@
               <div>
                 <label for="slug" class="block text-sm font-medium text-zinc-300 mb-2">Your Page URL</label>
                 <input type="text" id="slug" bind:value={slug} placeholder="yourname" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
-                <p class="text-xs text-zinc-500 mt-1">Your page: glianapay.com/tip/{slug || 'yourname'}</p>
+                <p class="text-xs text-zinc-500 mt-1">glianapay.com/tip/{slug || 'yourname'}</p>
               </div>
 
-              <!-- Turnstile Widget -->
+              <!-- Turnstile -->
               <div class="flex justify-center">
                 <div bind:this={turnstileContainer} class="cf-turnstile"></div>
               </div>
-            {/if}
 
-            <button on:click={hasExistingAccount ? handleLogin : register} disabled={loading || (!hasExistingAccount && (!name || !slug))} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all">
-              {#if loading}
-                {hasExistingAccount ? 'Logging in...' : 'Setting up...'}
-              {:else if hasExistingAccount}
-                Login to Dashboard →
-              {:else}
-                Create My Page →
-              {/if}
+              <button
+                on:click={register}
+                disabled={loading || !name || !slug}
+                class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all"
+              >
+                {loading ? 'Setting up...' : 'Create My Page →'}
+              </button>
+            </div>
+          {:else}
+            <!-- Existing user -->
+            <button
+              on:click={login}
+              class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-xl font-bold transition-all"
+            >
+              Login to Dashboard →
             </button>
-          </div>
+          {/if}
         {/if}
 
         {#if error}
@@ -721,7 +335,7 @@
 
     <!-- Footer -->
     <div class="relative md:absolute md:bottom-6 left-0 px-4 py-6 md:py-0">
-      <a href="mailto:support@glianapay.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
+      <a href="mailto:support@glianalabs.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
     </div>
   </div>
 {/if}
