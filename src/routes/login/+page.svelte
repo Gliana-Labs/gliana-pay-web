@@ -345,6 +345,7 @@
     slug = '';
     if (typeof window !== 'undefined') {
       localStorage.removeItem('gliana_session');
+      sessionStorage.setItem('gliana_just_logged_out', '1');
     }
   }
 
@@ -517,6 +518,10 @@
 
     // Check for wallet connection when user returns to tab (mobile workflow)
     const handleFocus = async () => {
+      // Don't auto-reconnect if user just logged out
+      if (sessionStorage.getItem('gliana_just_logged_out')) {
+        return;
+      }
       const wallets = getAvailableWallets();
       if (wallets.length > 0 && !connected) {
         try {
