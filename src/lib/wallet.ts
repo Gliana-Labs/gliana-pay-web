@@ -156,3 +156,32 @@ export async function disconnectWallet(wallet?: WalletInfo): Promise<void> {
     console.error('Disconnect failed:', e);
   }
 }
+
+// Sign a message with the wallet (for authentication)
+export async function signMessage(wallet: WalletInfo, message: string): Promise<{ signature: string; message: string } | null> {
+  try {
+    const encodedMessage = new TextEncoder().encode(message);
+
+    let signature: Uint8Array | null = null;
+
+    // Try different sign methods
+    if (wallet.provider.signMessage) {
+      // Phantom, Solflare, Backpack support this
+      signature = await wallet.provider.signMessage(encodedMessage, 'utf8');
+    } else if (wallet.provider.sign) {
+      // Legacy method
+      signature = await wallet.provider.sign(encodedMessage);
+    }
+
+    if (signature) {
+      // Convert to base64
+      const signatureBase64 = btoa(String.fromCharCode(...signature));
+      return { signature: signatureBase64, message };
+    }
+
+    return null;
+  } catch (e) {
+    console.error('Message signing failed:', e);
+    return null;
+  }
+}

@@ -1,17 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getAvailableWallets, connectWallet, disconnectWallet } from '$lib/wallet';
+  import { getAvailableWallets, connectWallet, disconnectWallet, signMessage } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
 
   // Simple state
   let mounted = false;
   let connected = false;
   let walletAddress = '';
+  let selectedWallet: WalletInfo | null = null;
   let loading = false;
   let error = '';
   let name = '';
   let slug = '';
   let hasExistingAccount = false;
+  let isVerified = false; // Message signing verified
 
   // Turnstile
   let turnstileToken = '';
@@ -42,6 +44,7 @@
   async function handleConnect(wallet: WalletInfo) {
     loading = true;
     error = '';
+    selectedWallet = wallet;
 
     try {
       const address = await connectWallet(wallet);
@@ -49,12 +52,70 @@
         walletAddress = address;
         connected = true;
         await checkExistingUser();
-        saveSession();
+        // Don't save session yet - must verify with message signing first
       } else {
         error = 'Connection failed. Please try again.';
       }
     } catch (e: any) {
       error = e?.message || 'Failed to connect';
+    } finally {
+      loading = false;
+    }
+  }
+
+  // Verify wallet ownership with message signing
+  async function verifyOwnership() {
+    if (!walletAddress || !selectedWallet) return;
+
+    loading = true;
+    error = '';
+
+    try {
+      // Create a unique message with timestamp
+      const timestamp = Date.now();
+      const message = `Login to GlianaPay at ${timestamp}`;
+
+      // Ask user to sign the message
+      const result = await signMessage(selectedWallet, message);
+
+      if (!result) {
+        error = 'Signature failed. Please try again.';
+        loading = false;
+        return;
+      }
+
+      // Send to backend for verification
+      const response = await fetch(`${WORKER_URL}/api/login/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wallet: walletAddress,
+          message: result.message,
+          signature: result.signature
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Verification failed');
+      }
+
+      const data = await response.json();
+
+      if (data.verified) {
+        isVerified = true;
+        // Update name and slug from verified response
+        if (data.streamer) {
+          name = data.streamer.name;
+          slug = data.streamer.slug;
+        }
+        saveSession();
+        // Redirect to dashboard
+        window.location.replace('/dashboard');
+      } else {
+        error = data.error || 'Verification failed. Please try again.';
+      }
+    } catch (e: any) {
+      error = e.message || 'Failed to verify ownership';
     } finally {
       loading = false;
     }
@@ -69,6 +130,8 @@
     // Also clear local state
     connected = false;
     walletAddress = '';
+    selectedWallet = null;
+    isVerified = false;
     name = '';
     slug = '';
     hasExistingAccount = false;
@@ -97,7 +160,7 @@
     }
   }
 
-  // Register new user
+  // Register new user - also verify ownership
   async function register() {
     if (!name || !slug) {
       error = 'Please fill in all fields';
@@ -118,6 +181,7 @@
     error = '';
 
     try {
+      // First create the streamer
       const response = await fetch(`${WORKER_URL}/api/streamer/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -134,19 +198,12 @@
         throw new Error(data.error || 'Failed to create');
       }
 
-      saveSession();
-      window.location.replace('/dashboard');
+      // Now verify ownership before going to dashboard
+      await verifyOwnership();
     } catch (e: any) {
       error = e.message || 'Failed to register';
-    } finally {
       loading = false;
     }
-  }
-
-  // Login for existing user
-  function login() {
-    saveSession();
-    window.location.replace('/dashboard');
   }
 
   // Session management
@@ -313,12 +370,13 @@
               </button>
             </div>
           {:else}
-            <!-- Existing user -->
+            <!-- Existing user - must verify ownership first -->
             <button
-              on:click={login}
-              class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-xl font-bold transition-all"
+              on:click={verifyOwnership}
+              disabled={loading}
+              class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold transition-all"
             >
-              Login to Dashboard →
+              {loading ? 'Verifying...' : 'Login to Dashboard →'}
             </button>
           {/if}
         {/if}
