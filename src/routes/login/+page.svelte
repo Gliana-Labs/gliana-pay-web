@@ -29,6 +29,7 @@
   let error = '';
   let name = '';
   let slug = '';
+  let userInitiatedConnection = false;
   let turnstileToken = '';
   let turnstileContainer: HTMLDivElement;
   let turnstileWidgetId: string | null = null;
@@ -276,6 +277,9 @@
     // Small delay to let disconnection settle
     await new Promise(r => setTimeout(r, 100));
 
+    // Mark that user initiated connection - this enables auto-redirect
+    userInitiatedConnection = true;
+
     try {
       const address = await connectWallet(wallet);
       if (address) {
@@ -358,6 +362,7 @@
     walletAddress = '';
     name = '';
     slug = '';
+    userInitiatedConnection = false;
     if (typeof window !== 'undefined') {
       localStorage.removeItem('gliana_session');
       sessionStorage.setItem('gliana_just_logged_out', '1');
@@ -515,6 +520,10 @@
     const handleFocus = async () => {
       // Don't auto-reconnect if user just logged out
       if (sessionStorage.getItem('gliana_just_logged_out')) {
+        return;
+      }
+      // Only auto-reconnect if user has initiated a connection (clicked a connect button)
+      if (!userInitiatedConnection) {
         return;
       }
       const wallets = getAvailableWallets();
