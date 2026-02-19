@@ -44,11 +44,15 @@
   $: streamer = data.streamer;
   $: settings = data.settings;
 
+  let isMobile = false;
+
   onMount(() => {
     // Small delay to ensure wallet extensions are loaded
     setTimeout(checkWallets, 100);
     // Re-check wallets when window gains focus (e.g., after installing extension)
     window.addEventListener('focus', checkWallets);
+    // Check if mobile
+    isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     return () => window.removeEventListener('focus', checkWallets);
   });
 
@@ -344,6 +348,11 @@
           </div>
         {/if}
       </div>
+
+      <!-- Mobile Tip -->
+      {#if isMobile}
+        <p class="text-xs text-zinc-400 mt-3 text-center">Open this page in your wallet's in-app browser for best experience.</p>
+      {/if}
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
         <form on:submit={handleSubmit} class="space-y-5">
