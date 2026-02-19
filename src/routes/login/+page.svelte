@@ -261,6 +261,22 @@
     loading = true;
     error = '';
 
+    // First disconnect all other wallets to prevent auto-reconnect
+    try {
+      const solana = (window as any).solana;
+      if (solana?.disconnect) {
+        try { await solana.disconnect(); } catch {}
+      }
+      const solflare = (window as any).solflare;
+      if (solflare?.disconnect) {
+        try { await solflare.disconnect(); } catch {}
+      }
+      const backpack = (window as any).backpack;
+      if (backpack?.disconnect) {
+        try { await backpack.disconnect(); } catch {}
+      }
+    } catch {}
+
     try {
       const address = await connectWallet(wallet);
       if (address) {
