@@ -205,10 +205,10 @@ contact
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <button on:click={goToHomepage} class="flex items-center gap-2">
           <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
-          <span class="font-bold">GlianaPay</span>
+          <span class="font-bold hidden md:inline">GlianaPay</span>
         </button>
-        <div class="flex items-center gap-4">
-          <span class="text-zinc-400 text-sm">Dashboard</span>
+        <div class="flex items-center gap-2 md:gap-4">
+          <span class="text-zinc-400 text-sm hidden md:inline">Dashboard</span>
           <div class="text-sm text-zinc-400">
             {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
           </div>
@@ -376,7 +376,7 @@ contact
     </div>
 
     <!-- Footer -->
-    <div class="absolute bottom-6 left-0 px-4">
+    <div class="relative md:absolute md:bottom-6 left-0 px-4 py-6 md:py-0">
       <a href="mailto:support@glianapay.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
     </div>
   </div>
