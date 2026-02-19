@@ -54,7 +54,7 @@
           src: iconFiles[i % iconFiles.length],
           left: targetPos.left,
           top: targetPos.top,
-          size: `${80 + Math.random() * 50}`,
+          size: `${80 + Math.random() * 45}`,
           delay: `${Math.random() * 8}s`,
           duration: `${5 + Math.random() * 4}s`,
           opacity: `${0.12 + Math.random() * 0.15}`,
