@@ -27,7 +27,7 @@
 </script>
 
 <svelte:head>
-  <title>GlianaPay - Web3 Tipping for Streamers</title>
+  <title>GlianaPay</title>
   <meta name="description" content="Accept SOL tips with real-time OBS alerts. The easiest way for streamers to receive cryptocurrency donations. Powered by Solana blockchain." />
   <meta name="keywords" content="streamer tips, Solana tips, crypto donations, OBS overlay, live streaming, Web3 payments, creator monetization" />
 

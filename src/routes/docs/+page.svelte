@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-  <title>Documentation - GlianaPay</title>
+  <title>Docs - GlianaPay</title>
   <meta name="description" content="Documentation for GlianaPay. Learn how to set up Solana tipping, configure OBS overlays, and accept crypto donations on your stream." />
   <meta name="keywords" content="GlianaPay documentation, Solana tipping docs, OBS overlay setup, crypto donation API, streamer tools" />
 

@@ -1,5 +1,5 @@
 <svelte:head>
-  <title>Login - GlianaPay | Web3 Tipping for Streamers</title>
+  <title>Login - GlianaPay</title>
   <meta name="description" content="Connect your wallet to create and manage your GlianaPay tipping page. Accept SOL tips with real-time OBS alerts." />
   <meta name="keywords" content="login, streamer, wallet connect, Phantom, Solflare, Solana, tips, donations, Web3" />
 

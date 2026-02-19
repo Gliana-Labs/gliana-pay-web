@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Dashboard - GlianaPay</title>
+</svelte:head>
+
 <script lang="ts">
   import FloatingIcons from '$lib/components/FloatingIcons.svelte';
   import { onMount } from 'svelte';

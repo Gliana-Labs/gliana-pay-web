@@ -42,7 +42,7 @@
 </script>
 
 <svelte:head>
-  <title>FAQ - GlianaPay | Web3 Tipping for Streamers</title>
+  <title>FAQ - GlianaPay</title>
   <meta name="description" content="Frequently asked questions about GlianaPay. Learn how to accept Solana tips, set up OBS alerts, and start monetizing your stream with cryptocurrency." />
   <meta name="keywords" content="FAQ, Solana tipping, crypto donations, streamer tips, OBS alerts, cryptocurrency, Web3, FAQ" />
 

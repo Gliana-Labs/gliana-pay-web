@@ -25,6 +25,7 @@
     delay: string;
     duration: string;
     opacity: string;
+    rotation: string;
   }> = [];
 
   function getTargetPosition() {
@@ -43,7 +44,7 @@
 
   function createIcons(targetPos: { left: string; top: string }) {
     if (animation === 'fountain') {
-      icons = Array.from({ length: 20 }, (_, i) => {
+      icons = Array.from({ length: 25 }, (_, i) => {
         const angle = Math.random() * Math.PI * 2;
         const distance = 40 + Math.random() * 30;
         const xSpread = Math.cos(angle) * distance;
@@ -53,12 +54,13 @@
           src: iconFiles[i % iconFiles.length],
           left: targetPos.left,
           top: targetPos.top,
-          size: `${60 + Math.random() * 40}`,
+          size: `${80 + Math.random() * 50}`,
           delay: `${Math.random() * 8}s`,
           duration: `${5 + Math.random() * 4}s`,
           opacity: `${0.12 + Math.random() * 0.15}`,
           xSpread: xSpread,
-          ySpread: ySpread
+          ySpread: ySpread,
+          rotation: `${Math.random() * 360}`
         };
       });
     } else {
@@ -68,7 +70,8 @@
         size: `${30 + Math.random() * 40}`,
         delay: `${Math.random() * 5}s`,
         duration: `${3 + Math.random() * 4}s`,
-        opacity: `${0.15 + Math.random() * 0.2}`
+        opacity: `${0.15 + Math.random() * 0.2}`,
+        rotation: `${Math.random() * 360}`
       }));
     }
   }
@@ -109,6 +112,7 @@
         opacity: 0;
         animation-delay: {icon.delay};
         animation-duration: {icon.duration};
+        --rotation: {icon.rotation}deg;
         {animation === 'fountain'
           ? `left: ${icon.left}; top: ${icon.top}; --x-spread: ${icon.xSpread}vw; --y-spread: ${icon.ySpread}vh;`
           : `left: ${icon.left}; top: -100px;`}
@@ -140,21 +144,21 @@
 
   @keyframes fountain {
     0% {
-      transform: translate(-50%, -50%) scale(0.4);
+      transform: translate(-50%, -50%) rotate(var(--rotation, 0deg)) scale(0.4);
       opacity: 0;
     }
     10% {
       opacity: var(--opacity, 0.3);
     }
     100% {
-      transform: translate(calc(-50% + var(--x-spread, 0vw)), calc(-50% + var(--y-spread, 0vh))) scale(0.5);
+      transform: translate(calc(-50% + var(--x-spread, 0vw)), calc(-50% + var(--y-spread, 0vh))) rotate(calc(var(--rotation, 0deg) + 360deg)) scale(0.5);
       opacity: 0;
     }
   }
 
   @keyframes rain {
     0% {
-      transform: translateY(0);
+      transform: translateY(0) rotate(var(--rotation, 0deg));
       opacity: 0;
     }
     10% {
@@ -164,7 +168,7 @@
       opacity: var(--opacity, 0.3);
     }
     100% {
-      transform: translateY(100vh);
+      transform: translateY(100vh) rotate(calc(var(--rotation, 0deg) + 360deg));
       opacity: 0;
     }
   }

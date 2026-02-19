@@ -337,7 +337,7 @@
 </script>
 
 <svelte:head>
-  <title>Alert Overlay - {data.slug}</title>
+  <title>Overlay - {data.slug}</title>
 </svelte:head>
 
 <!-- Hidden audio element -->
