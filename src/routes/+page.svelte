@@ -1,8 +1,20 @@
 <script lang="ts">
   import FloatingIcons from '$lib/components/FloatingIcons.svelte';
+  import { onMount } from 'svelte';
 
   let slug = '';
+  let isLoggedIn = false;
   const currentYear = new Date().getFullYear();
+
+  onMount(() => {
+    const saved = localStorage.getItem('gliana_session');
+    if (saved) {
+      const session = JSON.parse(saved);
+      if (session.walletAddress && session.slug) {
+        isLoggedIn = true;
+      }
+    }
+  });
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -50,7 +62,7 @@
   </div>
 
   <!-- Floating icons -->
-  <FloatingIcons />
+  <FloatingIcons targetId="logo-wrapper" />
 
   <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 pb-32 pt-16">
     <!-- Top Navigation -->
@@ -73,9 +85,9 @@
     </div>
 
     <!-- Logo & Title -->
-    <div class="text-center mb-12">
+    <div class="text-center mb-12" id="logo-container">
       <!-- Animated Logo -->
-      <div class="relative inline-block mb-6">
+      <div class="relative inline-block mb-6" id="logo-wrapper">
         <img
           src="/logo.svg"
           alt="GlianaPay"
@@ -157,12 +169,21 @@
 
     <!-- CTA -->
     <div class="mt-12">
-      <a
-        href="/login"
-        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all"
-      >
-        Start Tipping Page
-      </a>
+      {#if isLoggedIn}
+        <a
+          href="/dashboard"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all"
+        >
+          Go to Dashboard
+        </a>
+      {:else}
+        <a
+          href="/login"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all"
+        >
+          Start Tipping Page
+        </a>
+      {/if}
     </div>
 
     <!-- Footer -->

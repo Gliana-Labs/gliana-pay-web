@@ -17,11 +17,12 @@
 </svelte:head>
 
 <script lang="ts">
-  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
   import { onMount, onDestroy } from 'svelte';
   import { getAvailableWallets, connectWallet, disconnectWallet } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
 
+  let mounted = false;
+  let isLoggedIn = false;
   let connected = false;
   let walletAddress = '';
   let loading = false;
@@ -84,7 +85,7 @@
   }
 
   // Load Turnstile when wallet connects (form becomes visible)
-  $: if (connected && turnstileContainer && !turnstileLoaded) {
+  $: if (typeof window !== 'undefined' && connected && turnstileContainer && !turnstileLoaded) {
     turnstileLoaded = true;
     loadTurnstile();
   }
@@ -305,7 +306,7 @@
         connected = !!walletAddress;
         // If already registered (has name & slug), go to dashboard
         if (name && slug) {
-          window.location.href = '/dashboard';
+          window.location.replace('/dashboard');
         }
       }
     }
@@ -368,7 +369,7 @@
 
       saveSession();
       // Go to dashboard
-      window.location.href = '/dashboard';
+      window.location.replace('/dashboard');
     } catch (e: any) {
       console.error('Register error:', e);
       error = e.name === 'AbortError' ? 'Request timed out. Please try again.' : (e.message || 'Failed to register');
@@ -393,7 +394,7 @@
         slug = data.streamer.slug;
         saveSession();
         // Redirect to dashboard
-        window.location.href = '/dashboard';
+        window.location.replace('/dashboard');
       }
     } catch (e) {
       // No existing account
@@ -414,12 +415,14 @@
   }
 
   onMount(() => {
+    mounted = true;
     loadSession();
     checkWallets();
 
-    // If already logged in (has valid session with wallet and slug), redirect to dashboard
+    // If already logged in, hide login form and redirect
     if (walletAddress && slug) {
-      window.location.href = '/dashboard';
+      isLoggedIn = true;
+      window.location.replace('/dashboard');
       return;
     }
 
@@ -457,11 +460,13 @@
   });
 </script>
 
-<div>
+{#if !mounted}
+  <div class="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+    <div class="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+{:else}
   <!-- Login View -->
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
-    <!-- Floating icons -->
-    <FloatingIcons />
 
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
@@ -585,7 +590,7 @@
       </p>
     </div>
   </div>
-</div>
+{/if}
 
 <style>
   .glass-card { background: rgba(17, 17, 19, 0.8); backdrop-filter: blur(12px); }

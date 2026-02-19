@@ -18,7 +18,6 @@
 </svelte:head>
 
 <script lang="ts">
-  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
   import { onMount } from 'svelte';
   import type { Streamer, AlertSettings } from '$lib/types';
   import { getAvailableWallets, connectWallet as connectWalletUtil, disconnectWallet as disconnectWalletUtil } from '$lib/wallet';
@@ -273,9 +272,6 @@
 </script>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
-  <!-- Floating icons -->
-  <FloatingIcons />
-
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>

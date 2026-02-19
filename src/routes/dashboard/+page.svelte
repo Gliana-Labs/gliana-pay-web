@@ -187,11 +187,17 @@
 
 {#if !loading}
   <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
-    <!-- Floating icons -->
-    <FloatingIcons />
+    <!-- Animated Background -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
+      <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+    </div>
+
+    <!-- Floating Icons (Rain) -->
+    <FloatingIcons animation="rain" />
 
     <!-- Header -->
-    <div class="border-b border-white/10">
+    <div class="border-b border-white/10 relative z-10">
       <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <button on:click={goToHomepage} class="flex items-center gap-2">
           <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
