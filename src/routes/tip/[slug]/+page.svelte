@@ -19,16 +19,15 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import type { Streamer, AlertSettings } from '$lib/types';
   import { getAvailableWallets, connectWallet as connectWalletUtil, disconnectWallet as disconnectWalletUtil } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
   import { WORKER_URL } from '$lib/config';
 
-  let { data } = $props();
-
-  // Streamer data loaded server-side via service binding
-  let streamer: Streamer | undefined = data.streamer ?? undefined;
-  let settings: AlertSettings | null | undefined = data.settings ?? undefined;
+  // Client-side data (populated in onMount)
+  let streamer: Streamer | undefined = undefined;
+  let settings: AlertSettings | null | undefined = undefined;
   let loadError = '';
 
   let name = '';
@@ -46,21 +45,20 @@
   let isMobile = false;
 
   onMount(async () => {
-    // If server-side loading didn't return streamer data, retry client-side
-    if (!streamer) {
-      try {
-        const response = await fetch(`/api/streamer/${data.slug}`);
-        if (response.ok) {
-          const result = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
-          streamer = result.streamer;
-          settings = result.settings;
-        } else {
-          loadError = 'Streamer not found';
-        }
-      } catch (e) {
-        console.error('Failed to load streamer:', e);
+    // Fetch streamer data
+    const slug = $page.params.slug;
+    try {
+      const response = await fetch(`/api/streamer/${slug}`);
+      if (response.ok) {
+        const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
+        streamer = data.streamer;
+        settings = data.settings;
+      } else {
         loadError = 'Streamer not found';
       }
+    } catch (e) {
+      console.error('Failed to load streamer:', e);
+      loadError = 'Streamer not found';
     }
 
     // Small delay to ensure wallet extensions are loaded
