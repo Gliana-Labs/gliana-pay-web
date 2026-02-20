@@ -327,9 +327,13 @@
         <p class="text-zinc-500">{loadError}</p>
       </div>
     {:else if !streamer}
-      <div class="glass-card rounded-2xl p-8 text-center">
-        <div class="text-6xl mb-4">⏳</div>
-        <h2 class="text-2xl font-bold text-white mb-2">Loading...</h2>
+      <div class="glass-card rounded-2xl p-10 text-center">
+        <!-- Animated spinner ring -->
+        <div class="flex justify-center mb-5">
+          <div class="w-12 h-12 rounded-full border-[3px] border-white/10 border-t-cyan-400 animate-spin"></div>
+        </div>
+        <h2 class="text-lg font-semibold text-white/80 mb-1">Loading streamer…</h2>
+        <p class="text-sm text-zinc-500">Hang tight, we're getting everything ready</p>
       </div>
     {:else}
       <!-- Viewer Wallet Connect -->
