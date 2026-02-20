@@ -30,11 +30,25 @@
     return (window as any).solana;
   }
 
+  function getBackpack() {
+    return (window as any).backpack?.solana;
+  }
+
   // Check if wallet already connected on page load
   async function checkExistingConnection() {
+    // Check Phantom
     const phantom = getPhantom();
     if (phantom?.isConnected && phantom.publicKey) {
       walletAddress = phantom.publicKey.toString();
+      connected = true;
+      await checkExistingUser();
+      return;
+    }
+
+    // Check Backpack
+    const backpack = getBackpack();
+    if (backpack?.isConnected && backpack.publicKey) {
+      walletAddress = backpack.publicKey.toString();
       connected = true;
       await checkExistingUser();
     }
