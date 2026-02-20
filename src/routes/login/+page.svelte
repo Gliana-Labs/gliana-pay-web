@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { getAvailableWallets, connectWallet, disconnectWallet, signMessage } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
+  import { WORKER_URL } from '$lib/config';
 
   // Simple state
   let mounted = false;
@@ -20,8 +21,6 @@
   let turnstileContainer: HTMLDivElement;
   let turnstileWidgetId: string | null = null;
   const TURNSTILE_SITE_KEY = '0x4AAAAAACd6patp0WteLo73';
-
-  const WORKER_URL = 'https://api.glianapay.com';
 
   // ============ WALLET FUNCTIONS ============
 

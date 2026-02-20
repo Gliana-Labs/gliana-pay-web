@@ -70,15 +70,11 @@ export function getAvailableWallets(): WalletInfo[] {
 // Connect to a specific wallet
 export async function connectWallet(wallet: WalletInfo): Promise<string | null> {
   try {
-    console.log(`Connecting to ${wallet.name}...`);
-    console.log('Provider:', wallet.provider);
-
     let address: string | null = null;
 
     // Solflare returns boolean from connect(), then we get publicKey from the provider
     if (wallet.name === 'Solflare') {
       const isConnected = await wallet.provider.connect();
-      console.log('Solflare isConnected:', isConnected);
       if (isConnected && wallet.provider.publicKey) {
         address = wallet.provider.publicKey.toString();
       }
@@ -90,7 +86,6 @@ export async function connectWallet(wallet: WalletInfo): Promise<string | null> 
       } catch (connectErr: any) {
         // If regular connect fails, try with network parameter for Phantom
         if (wallet.name === 'Phantom') {
-          console.log('Trying Phantom with network param...');
           response = await wallet.provider.connect({ network: 'devnet' });
         } else {
           throw connectErr;
@@ -102,7 +97,6 @@ export async function connectWallet(wallet: WalletInfo): Promise<string | null> 
     if (address) {
       connectedWallet.set(address);
       walletName.set(wallet.name);
-      console.log(`Connected to ${wallet.name}: ${address}`);
       return address;
     }
     console.error('No address returned from wallet');

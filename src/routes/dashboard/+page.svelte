@@ -8,13 +8,12 @@
   import { slide } from 'svelte/transition';
   import { disconnectWallet } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
+  import { WORKER_URL } from '$lib/config';
 
   // Check auth
   let walletAddress = '';
   let slug = '';
   let loading = true;
-
-  const WORKER_URL = 'https://api.glianapay.com';
 
   // Toast notifications
   let toast = '';
@@ -152,7 +151,7 @@
       testInProgress = false;
     }, 10000);
 
-    fetch(`https://api.glianapay.com/api/test-alert/${slug}`, {
+    fetch(`${WORKER_URL}/api/test-alert/${slug}`, {
       method: 'POST'
     }).then(async (res) => {
       clearTimeout(safetyTimeout);

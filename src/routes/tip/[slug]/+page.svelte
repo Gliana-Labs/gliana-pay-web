@@ -22,6 +22,7 @@
   import type { Streamer, AlertSettings } from '$lib/types';
   import { getAvailableWallets, connectWallet as connectWalletUtil, disconnectWallet as disconnectWalletUtil } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
+  import { WORKER_URL } from '$lib/config';
 
   export let data: {
     streamer?: Streamer;
@@ -178,7 +179,6 @@
       status = 'Payment confirmed! Sending alert to streamer... (please don\'t close this page)';
 
       // Record tip and broadcast to streamer's overlay (with retry)
-      console.log('[TipPage] Recording tip and broadcasting to streamer:', signedTx.signature);
       const tipData = {
         slug: streamer.slug,
         tx_hash: signedTx.signature,
@@ -191,7 +191,7 @@
       // Retry up to 3 times
       for (let attempt = 1; attempt <= 3; attempt++) {
         try {
-          const res = await fetch('https://api.glianapay.com/api/tip/record', {
+          const res = await fetch(`${WORKER_URL}/api/tip/record`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(tipData)
@@ -199,7 +199,6 @@
           if (res.ok) {
             status = 'Alert sent to streamer! Thank you for your tip! 🎉';
             qrCodeUrl = ''; // Hide QR only after success
-            console.log('[TipPage] Tip recorded successfully');
             break;
           }
         } catch (e) {
@@ -229,7 +228,6 @@
 
   function sendTipToOverlay(txHash: string, amountLamports: number) {
     if (!streamer) return;
-    console.log('[TipPage] Opening overlay for:', streamer.slug);
 
     const overlayWindow = window.open(`/overlay/${streamer.slug}`, 'GlianaPayOverlay', 'width=600,height=400');
 
@@ -241,7 +239,6 @@
 
     setTimeout(() => {
       if (overlayWindow) {
-        console.log('[TipPage] Sending tip data to overlay:', { tx_hash: txHash, amount: amountLamports });
         overlayWindow.postMessage({
           type: 'tip',
           data: {

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import type { WSTipEvent, WSMessage } from '$lib/types';
+  import { WORKER_HOST } from '$lib/config';
 
   export let data: {
     slug: string;
@@ -29,7 +30,6 @@
     // Only enable sound if URL param says so - ignore localStorage
     if (urlSound === '1' || urlSound === 'true') {
       soundEnabled = true;
-      console.log('Sound enabled via URL parameter');
     }
 
     // Preload the sound if enabled
@@ -40,7 +40,6 @@
   }
 
   function enableSound() {
-    console.log('Enable sound clicked, soundUrl:', soundUrl);
     soundEnabled = true;
     soundLoading = true;
 
@@ -55,7 +54,6 @@
 
     alertSound.play()
       .then(() => {
-        console.log('Sound enabled and playing');
       })
       .catch((e) => {
         console.error('Failed to play sound:', e);
@@ -68,14 +66,11 @@
   // Fetch streamer settings on mount
   async function loadSettings() {
     try {
-      console.log('[Overlay] Loading settings for slug:', data.slug);
       const response = await fetch(`https://${WORKER_HOST}/api/streamer/${data.slug}/settings`);
       if (response.ok) {
         const result = await response.json();
-        console.log('[Overlay] Settings response:', result);
         if (result.settings?.sound_url) {
           soundUrl = result.settings.sound_url;
-          console.log('[Overlay] Sound URL from settings:', soundUrl);
         }
         // Preload sound after getting URL
         if (soundEnabled) {
@@ -89,7 +84,6 @@
   }
 
   const ALERT_DURATION = 5000;
-  const WORKER_HOST = 'api.glianapay.com';
 
   function formatSOL(lamports: number): string {
     return (lamports / 1e9).toFixed(4);
@@ -118,7 +112,6 @@
     }
 
     wsUrl = `wss://${WORKER_HOST}/ws/${data.slug}`;
-    console.log('Connecting to WebSocket:', wsUrl);
 
     try {
       socket = new WebSocket(wsUrl);
@@ -127,13 +120,11 @@
       // Connection timeout - fail fast
       wsConnectionTimeout = setTimeout(() => {
         if (socket && socket.readyState !== WebSocket.OPEN) {
-          console.log('WebSocket connection timeout, closing...');
           socket.close();
         }
       }, 10000);
 
       socket.onopen = () => {
-        console.log('WebSocket connected');
         isConnected = true;
         isReconnecting = false;
         wsReconnectAttempts = 0;
@@ -150,7 +141,6 @@
           if (message.type === 'tip') {
             handleTip(message.data as WSTipEvent['data']);
           } else if (message.type === 'welcome') {
-            console.log('Welcome:', message.message);
           } else if (message.type === 'error') {
             console.error('WebSocket error:', message.message);
             wsError = message.message;
@@ -161,7 +151,6 @@
       };
 
       socket.onclose = () => {
-        console.log('WebSocket closed, reconnecting...');
         isConnected = false;
         isReconnecting = true;
         if (wsConnectionTimeout) {
@@ -171,7 +160,6 @@
         // Exponential backoff
         wsReconnectAttempts++;
         const delay = Math.min(wsReconnectDelay * Math.pow(1.5, wsReconnectAttempts - 1), 30000);
-        console.log(`Reconnecting in ${delay}ms (attempt ${wsReconnectAttempts})`);
         setTimeout(connectWebSocket, delay);
       };
 
@@ -207,7 +195,6 @@
 
     // Poll settings every 30 seconds to pick up updates (for OBS which caches pages)
     refreshInterval = setInterval(async () => {
-      console.log('[Overlay] Polling for settings update...');
       await loadSettings();
     }, 30000);
 
@@ -220,7 +207,6 @@
     // Periodic connection check - reconnect if disconnected (backup for OBS)
     connectionCheckInterval = setInterval(() => {
       if (!socket || socket.readyState !== WebSocket.OPEN) {
-        console.log('[Overlay] Periodic check: not connected, reconnecting...');
         wsReconnectAttempts = 0;
         connectWebSocket();
       }
@@ -229,9 +215,7 @@
 
   function handleVisibilityChange() {
     if (document.visibilityState === 'visible') {
-      console.log('[Overlay] Page visible again, checking connection...');
       if (!socket || socket.readyState !== WebSocket.OPEN) {
-        console.log('[Overlay] Connection lost, reconnecting...');
         wsReconnectAttempts = 0;
         connectWebSocket();
       }
@@ -264,7 +248,6 @@
   function handleTip(tipData: WSTipEvent['data']) {
     // Add to queue
     alertQueue.push(tipData);
-    console.log('Alert queued, queue length:', alertQueue.length);
 
     // Process queue if not currently showing
     if (!isShowingAlert) {
@@ -285,7 +268,6 @@
 
     // Play sound
     if (soundEnabled && soundUrl) {
-      console.log('Playing alert sound for tip:', tipData);
       playSound();
     }
 
@@ -306,7 +288,6 @@
       return;
     }
 
-    console.log('Playing sound from URL:', soundUrl);
 
     // Use preloaded audio if available, otherwise create new
     if (alertSound) {
@@ -327,10 +308,8 @@
   }
 
   function handleMessage(event: MessageEvent) {
-    console.log('[Overlay] Received postMessage:', event.data);
     // Accept test messages from parent
     if (event.data && event.data.type === 'tip') {
-      console.log('[Overlay] Received tip data:', event.data.data);
       handleTip(event.data.data);
     }
   }

@@ -5,7 +5,7 @@ Frontend application for GlianaPay - a Web3 tipping platform for streamers built
 ## Features
 
 - **Streamer Pages** - Custom tipping pages for each streamer
-- **Multi-wallet Support** - Phantom, Solflare, Backpack, Ledger
+- **Multi-wallet Support** - Phantom, Solflare
 - **QR Code Payments** - Easy mobile payments via QR scan
 - **Real-time Alerts** - Instant notifications on OBS overlay
 - **Dashboard** - Streamer stats, settings, and management
