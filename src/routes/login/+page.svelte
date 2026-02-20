@@ -40,6 +40,11 @@
     const phantom = getPhantom();
     if (phantom?.isConnected && phantom.publicKey) {
       walletAddress = phantom.publicKey.toString();
+      selectedWallet = {
+        name: 'Phantom',
+        icon: 'https://www.svgrepo.com/show/374171/phantom.svg',
+        provider: phantom
+      };
       connected = true;
       await checkExistingUser();
       return;
@@ -49,6 +54,11 @@
     const backpack = getBackpack();
     if (backpack?.isConnected && backpack.publicKey) {
       walletAddress = backpack.publicKey.toString();
+      selectedWallet = {
+        name: 'Backpack',
+        icon: 'https://www.svgrepo.com/show/528352/backpack.svg',
+        provider: backpack
+      };
       connected = true;
       await checkExistingUser();
     }
