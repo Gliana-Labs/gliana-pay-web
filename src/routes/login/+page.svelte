@@ -45,14 +45,14 @@
       return;
     }
 
-    // Check Backpack
-    const backpack = getBackpack();
-    if (backpack?.isConnected && backpack.publicKey) {
-      walletAddress = backpack.publicKey.toString();
+    // Check Backpack - get fresh provider directly from window
+    const backpackWindow = (window as any).backpack;
+    if (backpackWindow?.solana?.isConnected && backpackWindow.solana.publicKey) {
+      walletAddress = backpackWindow.solana.publicKey.toString();
       selectedWallet = {
         name: 'Backpack',
         icon: 'https://backpack.app/favicon.ico',
-        provider: backpack
+        provider: backpackWindow.solana
       };
       connected = true;
       await checkExistingUser();

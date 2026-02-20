@@ -155,29 +155,38 @@ export async function signMessage(wallet: WalletInfo, message: string): Promise<
 
     let signature: Uint8Array | null = null;
 
-    // Try different sign methods
+    // Try signMessage with standard approach first
     if (wallet.provider.signMessage) {
-      // Try different display formats and message formats for different wallets
-      const displayOptions = ['utf8', 'hex'];
-      const messageOptions = [encodedMessage, message];
-
-      for (const display of displayOptions) {
-        for (const msg of messageOptions) {
+      try {
+        const result = await wallet.provider.signMessage(encodedMessage, 'utf8');
+        // Handle different return formats: Phantom returns { signature: Uint8Array }
+        if (result && typeof result === 'object' && 'signature' in result) {
+          signature = result.signature instanceof Uint8Array ? result.signature : new Uint8Array(result.signature as any);
+        } else if (result instanceof Uint8Array) {
+          signature = result;
+        }
+      } catch (e) {
+        // Try with string message
+        try {
+          const result = await wallet.provider.signMessage(message, 'utf8');
+          if (result && typeof result === 'object' && 'signature' in result) {
+            signature = result.signature instanceof Uint8Array ? result.signature : new Uint8Array(result.signature as any);
+          } else if (result instanceof Uint8Array) {
+            signature = result;
+          }
+        } catch (e2) {
+          // Try hex
           try {
-            const result = await wallet.provider.signMessage(msg, display);
-            // Handle different return formats: Phantom returns { signature: Uint8Array }
+            const result = await wallet.provider.signMessage(encodedMessage, 'hex');
             if (result && typeof result === 'object' && 'signature' in result) {
-              const sig = result.signature;
-              signature = sig instanceof Uint8Array ? sig : new Uint8Array(sig as any);
+              signature = result.signature instanceof Uint8Array ? result.signature : new Uint8Array(result.signature as any);
             } else if (result instanceof Uint8Array) {
               signature = result;
             }
-            if (signature) break;
-          } catch (e) {
-            // Try next option
+          } catch (e3) {
+            // All failed
           }
         }
-        if (signature) break;
       }
     } else if (wallet.provider.sign) {
       // Legacy method
