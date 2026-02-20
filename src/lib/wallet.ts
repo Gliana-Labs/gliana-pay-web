@@ -19,7 +19,7 @@ export function getAvailableWallets(): WalletInfo[] {
   if ((window as any).phantom?.solana?.isPhantom) {
     wallets.push({
       name: 'Phantom',
-      icon: 'https://www.svgrepo.com/show/374171/phantom.svg',
+      icon: 'https://phantom.app/favicon.ico',
       provider: (window as any).phantom.solana
     });
   }
@@ -28,7 +28,7 @@ export function getAvailableWallets(): WalletInfo[] {
   if ((window as any).solflare?.solana?.isSolflare || (window as any).solflare?.isSolflare) {
     wallets.push({
       name: 'Solflare',
-      icon: 'https://www.svgrepo.com/show/475647/solflare.svg',
+      icon: 'https://solflare.com/favicon.ico',
       provider: (window as any).solflare.solana || (window as any).solflare
     });
   }
@@ -37,7 +37,7 @@ export function getAvailableWallets(): WalletInfo[] {
   if ((window as any).backpack?.solana?.isBackpack) {
     wallets.push({
       name: 'Backpack',
-      icon: 'https://www.svgrepo.com/show/528352/backpack.svg',
+      icon: 'https://backpack.app/favicon.ico',
       provider: (window as any).backpack.solana
     });
   }
@@ -46,7 +46,7 @@ export function getAvailableWallets(): WalletInfo[] {
   if ((window as any).ledger?.solana) {
     wallets.push({
       name: 'Ledger',
-      icon: 'https://www.svgrepo.com/show/374121/ledger.svg',
+      icon: 'https://www.ledger.com/favicon.ico',
       provider: (window as any).ledger.solana
     });
   }
@@ -57,13 +57,13 @@ export function getAvailableWallets(): WalletInfo[] {
     const solana = (window as any).solana;
     // Try to detect wallet name from the provider
     let name = 'Wallet';
-    let icon = 'https://www.svgrepo.com/show/374171/phantom.svg';
+    let icon = 'https://phantom.app/favicon.ico';
 
     if (solana.isPhantom) {
       name = 'Phantom';
     } else if (solana.isSolflare) {
       name = 'Solflare';
-      icon = 'https://www.svgrepo.com/show/475647/solflare.svg';
+      icon = 'https://solflare.com/favicon.ico';
     }
 
     wallets.push({

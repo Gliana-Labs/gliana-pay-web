@@ -51,7 +51,7 @@
       walletAddress = backpack.publicKey.toString();
       selectedWallet = {
         name: 'Backpack',
-        icon: 'https://www.svgrepo.com/show/528352/backpack.svg',
+        icon: 'https://backpack.app/favicon.ico',
         provider: backpack
       };
       connected = true;
