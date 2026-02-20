@@ -381,6 +381,10 @@
                       <label for="kick" class="block text-xs text-zinc-400 mb-1">Kick URL</label>
                       <input type="url" id="kick" bind:value={kickUrl} placeholder="https://kick.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
                     </div>
+                    <div class="md:col-span-2">
+                      <label for="reddit" class="block text-xs text-zinc-400 mb-1">Reddit URL</label>
+                      <input type="url" id="reddit" bind:value={redditUrl} placeholder="https://reddit.com/user/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                    </div>
                   </div>
                 </div>
 
