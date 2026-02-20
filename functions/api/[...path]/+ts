@@ -11,7 +11,20 @@ export async function onRequest({ request, platform }: { request: Request; platf
   // Use Service binding if available
   if (platform?.env?.WORKER) {
     try {
-      const response = await platform.env.WORKER.fetch(request.url.replace(url.origin, ''));
+      // Clone request to read body without consuming it
+      const clonedReq = request.clone();
+      const body = (clonedReq.method !== 'GET' && clonedReq.method !== 'HEAD')
+        ? await clonedReq.text()
+        : undefined;
+
+      // Create a new request with the same path for the worker
+      const workerUrl = new URL(path, 'https://glianapay.com');
+      const workerRequest = new Request(workerUrl.toString(), {
+        method: request.method,
+        headers: request.headers,
+        body,
+      });
+      const response = await platform.env.WORKER.fetch(workerRequest);
       return response;
     } catch (e) {
       console.error('Worker proxy error:', e);
