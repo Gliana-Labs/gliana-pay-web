@@ -459,6 +459,35 @@
         {/if}
       </div>
 
+      <!-- Top Tippers Leaderboard -->
+      {#if topTippers.length > 0}
+        <div class="mt-8">
+          <div class="flex items-center gap-2 mb-4 px-2">
+            <span class="text-xl">👑</span>
+            <h3 class="font-bold text-lg text-white">Top Supporters <span class="text-xs font-normal text-zinc-500">(Last 7 Days)</span></h3>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 animate-slide-up">
+            {#each topTippers as tipper, i}
+              <div class="relative overflow-hidden {i === 0 ? 'bg-gradient-to-br from-yellow-500/10 to-transparent border-yellow-500/20' : 'bg-zinc-900/40 border-white/5'} p-4 rounded-2xl border flex flex-col gap-1 transition-all hover:-translate-y-1 hover:border-purple-500/30">
+                <!-- Rank Badge -->
+                <div class="absolute top-0 right-0 w-16 h-16 pointer-events-none">
+                  <div class="absolute transform rotate-45 text-xs font-bold text-center w-full py-1 right-[-15px] top-[15px] {i === 0 ? 'bg-yellow-500 text-black shadow-[0_0_10px_rgba(234,179,8,0.5)]' : i === 1 ? 'bg-zinc-300 text-black' : i === 2 ? 'bg-orange-400 text-black' : 'bg-zinc-800 text-zinc-400'}">
+                    #{i + 1}
+                  </div>
+                </div>
+
+                <div class="text-sm font-semibold text-white truncate pr-6">{tipper.sender_name}</div>
+                <div class="flex items-center gap-1.5 mt-2">
+                  <span class="text-xs text-zinc-500">tipped</span>
+                  <span class="font-black {i === 0 ? 'text-yellow-400' : 'text-green-400'}">{(tipper.total / 1e9).toFixed(2)} SOL</span>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
       {#if qrCodeUrl}
         <div class="mt-6 glass-card rounded-2xl p-6 text-center border border-white/10 animate-slide-up">
           <div class="flex items-center justify-center gap-2 mb-4"><span class="text-2xl">📱</span><h3 class="text-xl font-bold text-white">Scan to Pay</h3></div>

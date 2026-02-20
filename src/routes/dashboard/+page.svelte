@@ -368,7 +368,7 @@
                   </div>
                 </div>
 
-                <button on:click={() => saveSettings('socials')} disabled={socialsLoading} class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer border border-white/5">
+                <button on:click={() => saveSettings('socials')} disabled={socialsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer">
                   {#if socialsLoading}
                     Saving...
                   {:else}
