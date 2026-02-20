@@ -2,9 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import type { WSTipEvent, WSMessage } from '$lib/types';
 
-  export let data: {
-    slug: string;
-  };
+  let { data } = $props();
 
   let socket: WebSocket | null = null;
   let isConnected = false;

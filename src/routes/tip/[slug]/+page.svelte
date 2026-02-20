@@ -1,16 +1,16 @@
 <svelte:head>
-  <title>Tip {data.streamer?.name || 'Streamer'} - GlianaPay</title>
-  <meta name="description" content="Send a SOL tip to {data.streamer?.name || 'this streamer'} on GlianaPay. Real-time OBS alerts included." />
-  <meta name="keywords" content="tip, donate, Solana, SOL, {data.streamer?.name || 'streamer'}, crypto, Web3" />
+  <title>Tip {streamer?.name || 'Streamer'} - GlianaPay</title>
+  <meta name="description" content="Send a SOL tip to {streamer?.name || 'this streamer'} on GlianaPay. Real-time OBS alerts included." />
+  <meta name="keywords" content="tip, donate, Solana, SOL, {streamer?.name || 'streamer'}, crypto, Web3" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Tip {data.streamer?.name || 'Streamer'} - GlianaPay" />
+  <meta property="og:title" content="Tip {streamer?.name || 'Streamer'} - GlianaPay" />
   <meta property="og:description" content="Send a SOL tip with real-time OBS alerts" />
   <meta property="og:image" content="https://glianapay.com/og-image.png" />
   <meta property="og:type" content="website" />
 
   <!-- Twitter -->
-  <meta name="twitter:title" content="Tip {data.streamer?.name || 'Streamer'} - GlianaPay" />
+  <meta name="twitter:title" content="Tip {streamer?.name || 'Streamer'} - GlianaPay" />
   <meta name="twitter:description" content="Send a SOL tip with real-time OBS alerts" />
   <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
   <meta name="twitter:site" content="@glianalabs" />
@@ -19,16 +19,17 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
   import type { Streamer, AlertSettings } from '$lib/types';
   import { getAvailableWallets, connectWallet as connectWalletUtil, disconnectWallet as disconnectWalletUtil } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
   import { WORKER_URL } from '$lib/config';
 
-  // Client-side data (populated in onMount)
-  let streamer: Streamer | undefined = undefined;
-  let settings: AlertSettings | null | undefined = undefined;
-  let loadError = '';
+  let { data } = $props();
+
+  // Streamer data loaded server-side via service binding
+  let streamer: Streamer | undefined = data.streamer ?? undefined;
+  let settings: AlertSettings | null | undefined = data.settings ?? undefined;
+  let loadError = data.streamer ? '' : 'Streamer not found';
 
   let name = '';
   let message = '';
@@ -45,22 +46,6 @@
   let isMobile = false;
 
   onMount(async () => {
-    // Fetch streamer data via proxy
-    const slug = $page.params.slug;
-    try {
-      const response = await fetch(`/api/streamer/${slug}`);
-      if (response.ok) {
-        const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
-        streamer = data.streamer;
-        settings = data.settings;
-      } else {
-        loadError = 'Streamer not found';
-      }
-    } catch (e) {
-      console.error('Failed to load streamer:', e);
-      loadError = 'Streamer not found';
-    }
-
     // Small delay to ensure wallet extensions are loaded
     setTimeout(checkWallets, 100);
     // Re-check wallets when window gains focus (e.g., after installing extension)
