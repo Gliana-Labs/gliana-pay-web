@@ -4,11 +4,9 @@ import type { Streamer, AlertSettings, StreamerPageData } from '$lib/types';
 export const load: PageServerLoad = async ({ params }) => {
   const { slug } = params;
 
-  // Use external API URL - this works (dashboard uses it)
-  const apiUrl = 'https://api.glianapay.com';
-
+  // Try relative URL first (goes through route to worker)
   try {
-    const response = await fetch(`${apiUrl}/api/streamer/${slug}`);
+    const response = await fetch(`/api/streamer/${slug}`);
     if (response.ok) {
       const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
       return {
