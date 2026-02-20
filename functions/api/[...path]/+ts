@@ -11,12 +11,21 @@ export async function onRequest({ request, platform }: { request: Request; platf
   // Use Service binding if available
   if (platform?.env?.WORKER) {
     try {
-      // Pass the path as relative URL - Service binding should handle it
-      const response = await platform.env.WORKER.fetch(path, {
+      // Clone request to read body (streams can only be read once)
+      const clonedReq = request.clone();
+      const body = (request.method === 'POST' || request.method === 'PUT')
+        ? await clonedReq.text()
+        : undefined;
+
+      // Create new request for worker
+      const workerUrl = new URL(path, url.origin);
+      const workerReq = new Request(workerUrl.toString(), {
         method: request.method,
         headers: request.headers,
-        body: request.body,
+        body,
       });
+
+      const response = await platform.env.WORKER.fetch(workerReq);
       return response;
     } catch (e) {
       console.error('Worker proxy error:', e);
