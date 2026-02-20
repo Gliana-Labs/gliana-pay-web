@@ -43,7 +43,8 @@
   let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
   let soundEnabled = false;
 
-  // Social Links
+  // Profile Settings
+  let name = '';
   let xUrl = '';
   let redditUrl = '';
   let youtubeUrl = '';
@@ -101,6 +102,7 @@
           soundUrl = data.settings.sound_url || 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
         }
         if (data.streamer) {
+          name = data.streamer.name || '';
           xUrl = data.streamer.x_url || '';
           redditUrl = data.streamer.reddit_url || '';
           youtubeUrl = data.streamer.youtube_url || '';
@@ -140,6 +142,7 @@
         body: JSON.stringify({
           min_amount: Math.floor(minAmount * 1e6),
           sound_url: soundUrl,
+          name: name,
           x_url: xUrl,
           reddit_url: redditUrl,
           youtube_url: youtubeUrl,
@@ -150,7 +153,7 @@
       });
 
       if (response.ok) {
-        showToast(type === 'alerts' ? 'Alert settings saved!' : 'Social links saved!', 'success');
+        showToast(type === 'alerts' ? 'Alert settings saved!' : 'Profile settings saved!', 'success');
       } else {
         const data = await response.json().catch(() => ({}));
         showToast(data.error || `Failed to save ${type}`, 'error');
@@ -365,13 +368,18 @@
                     <label for="kick" class="block text-xs text-zinc-400 mb-1">Kick URL</label>
                     <input type="url" id="kick" bind:value={kickUrl} placeholder="https://kick.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
                   </div>
-                  <div class="md:col-span-2">
-                    <label for="reddit" class="block text-xs text-zinc-400 mb-1">Reddit URL</label>
-                    <input type="url" id="reddit" bind:value={redditUrl} placeholder="https://reddit.com/user/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
-                  </div>
-                  <div class="md:col-span-2">
-                    <label for="description" class="block text-xs text-zinc-400 mb-1">Profile Description</label>
-                    <textarea id="description" bind:value={description} placeholder="Tell your supporters about yourself..." rows="3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"></textarea>
+                  <div class="md:col-span-2 mt-4 space-y-4 pt-4 border-t border-white/10">
+                    <h3 class="text-sm font-semibold text-zinc-300">Profile Information</h3>
+                    
+                    <div>
+                      <label for="name" class="block text-xs text-zinc-400 mb-1">Display Name</label>
+                      <input type="text" id="name" bind:value={name} placeholder="Your Streamer Name" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                    </div>
+                    
+                    <div>
+                      <label for="description" class="block text-xs text-zinc-400 mb-1">Profile Description</label>
+                      <textarea id="description" bind:value={description} placeholder="Tell your supporters about yourself..." rows="3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"></textarea>
+                    </div>
                   </div>
                 </div>
 
@@ -379,7 +387,7 @@
                   {#if socialsLoading}
                     Saving...
                   {:else}
-                    Save Social Links
+                    Save Profile Settings
                   {/if}
                 </button>
               </div>
