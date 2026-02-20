@@ -35,7 +35,8 @@
   let totalTips = 0;
   let average = 0;
   let donations: any[] = [];
-  let settingsLoading = false;
+  let alertsLoading = false;
+  let socialsLoading = false;
 
   // Settings
   let minAmount = 0.001;
@@ -114,7 +115,7 @@
   // Save settings
   let soundError = '';
 
-  async function saveSettings() {
+  async function saveSettings(type: 'alerts' | 'socials') {
     soundError = '';
 
     // Enforce minimum 0.001 SOL
@@ -124,10 +125,11 @@
 
     if (soundUrl && !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) && !soundUrl.includes('/media/sounds/')) {
       soundError = 'URL should end with .mp3 or contain /media/sounds/';
-      return;
+      if (type === 'alerts') return;
     }
 
-    settingsLoading = true;
+    if (type === 'alerts') alertsLoading = true;
+    else socialsLoading = true;
 
     try {
       const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/settings`, {
@@ -145,16 +147,17 @@
       });
 
       if (response.ok) {
-        showToast('Settings saved!', 'success');
+        showToast(type === 'alerts' ? 'Alert settings saved!' : 'Social links saved!', 'success');
       } else {
         const data = await response.json().catch(() => ({}));
-        showToast(data.error || 'Failed to save settings', 'error');
+        showToast(data.error || `Failed to save ${type}`, 'error');
       }
     } catch (e) {
       console.error('Failed to save settings:', e);
-      showToast('Failed to save settings', 'error');
+      showToast('Failed to connect to server', 'error');
     } finally {
-      settingsLoading = false;
+      alertsLoading = false;
+      socialsLoading = false;
     }
   }
 
@@ -330,6 +333,14 @@
               {#if soundError}
                 <p class="text-red-400 text-sm">{soundError}</p>
               {/if}
+              
+              <button on:click={() => saveSettings('alerts')} disabled={alertsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer">
+                {#if alertsLoading}
+                  Saving...
+                {:else}
+                  Save Alert Settings
+                {/if}
+              </button>
 
               <!-- Social Links -->
               <div class="pt-4 border-t border-white/10 space-y-4">
@@ -356,15 +367,15 @@
                     <input type="url" id="reddit" bind:value={redditUrl} placeholder="https://reddit.com/user/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
                   </div>
                 </div>
-              </div>
 
-              <button on:click={saveSettings} disabled={settingsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer">
-                {#if settingsLoading}
-                  Saving...
-                {:else}
-                  Save Settings
-                {/if}
-              </button>
+                <button on:click={() => saveSettings('socials')} disabled={socialsLoading} class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer border border-white/5">
+                  {#if socialsLoading}
+                    Saving...
+                  {:else}
+                    Save Social Links
+                  {/if}
+                </button>
+              </div>
             </div>
           </div>
 

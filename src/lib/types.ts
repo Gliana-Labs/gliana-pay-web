@@ -98,9 +98,15 @@ export interface APIResponse<T> {
 }
 
 // Tipping page data
+export interface TopTipper {
+  sender_name: string;
+  total: number;
+}
+
 export interface StreamerPageData {
   streamer: Streamer;
   settings: AlertSettings | null;
+  topTippers?: TopTipper[];
 }
 
 // QR Code generation request

@@ -20,7 +20,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import type { Streamer, AlertSettings } from '$lib/types';
+  import type { Streamer, AlertSettings, TopTipper } from '$lib/types';
   import { getAvailableWallets, connectWallet as connectWalletUtil, disconnectWallet as disconnectWalletUtil } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
   import { WORKER_URL } from '$lib/config';
@@ -28,6 +28,7 @@
   // Client-side data (populated in onMount)
   let streamer: Streamer | undefined = undefined;
   let settings: AlertSettings | null | undefined = undefined;
+  let topTippers: TopTipper[] = [];
   let loadError = '';
 
   let name = '';
@@ -50,9 +51,10 @@
     try {
       const response = await fetch(`/api/streamer/${slug}`);
       if (response.ok) {
-        const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
+        const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null; topTippers?: TopTipper[] };
         streamer = data.streamer;
         settings = data.settings;
+        topTippers = data.topTippers || [];
       } else {
         loadError = 'Streamer not found';
       }
