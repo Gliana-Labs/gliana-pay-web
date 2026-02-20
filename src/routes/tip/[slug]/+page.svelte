@@ -305,52 +305,68 @@
     </div>
   </div>
 
-  <div class="relative z-10 max-w-5xl mx-auto px-4 pt-20 pb-8">
-    <div class="text-center mb-6 max-w-xl mx-auto">
-      <div class="relative inline-block mb-4">
-        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/30">
-          <span class="text-4xl">🎮</span>
-        </div>
+  <div class="relative z-10 max-w-5xl mx-auto px-4 pt-12 pb-8">
+    
+    <!-- Profile Banner & Card Header -->
+    <div class="mb-8 w-full max-w-2xl mx-auto">
+      <!-- Banner Background (Hardcoded for now, could be dynamic later) -->
+      <div class="h-32 md:h-48 w-full rounded-t-3xl bg-zinc-800 relative overflow-hidden group">
+        <!-- Default geometric pattern fallback -->
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 mix-blend-overlay"></div>
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_2px_2px,white_1px,transparent_0)] bg-[length:24px_24px]"></div>
       </div>
 
-      <h1 class="text-3xl md:text-4xl font-bold mb-2">
-        <span class="text-gradient bg-clip-text text-transparent">
-          {streamer?.name ? titleCase(streamer.name) : 'Streamer'}
-        </span>
-      </h1>
+      <!-- Profile Card Container -->
+      <div class="bg-[#111113]/90 backdrop-blur-xl border border-white/10 border-t-0 rounded-b-3xl px-6 pb-6 pt-0 relative shadow-2xl">
+        <!-- Overlapping Avatar -->
+        <div class="flex justify-center -mt-16 mb-3 relative z-10">
+          <div class="w-32 h-32 rounded-full border-4 border-[#111113] bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/20 overflow-hidden">
+             <!-- Using emoji as requested, but structured to support images later -->
+             <span class="text-6xl drop-shadow-md">🎮</span>
+          </div>
+        </div>
 
-      <!-- Social Links -->
-      {#if streamer && (streamer.x_url || streamer.reddit_url || streamer.youtube_url || streamer.kick_url || streamer.twitch_url)}
-        <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
-          {#if streamer.x_url}
-            <a href={streamer.x_url} target="_blank" rel="noopener noreferrer" class="p-2 bg-zinc-900 border border-white/10 rounded-full hover:bg-zinc-800 hover:border-white/30 transition-all text-zinc-400 hover:text-white" title="X (Twitter)">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
-          {/if}
-          {#if streamer.twitch_url}
-            <a href={streamer.twitch_url} target="_blank" rel="noopener noreferrer" class="p-2 bg-zinc-900 border border-white/10 rounded-full hover:bg-[#9146FF]/20 hover:border-[#9146FF] transition-all text-zinc-400 hover:text-[#9146FF]" title="Twitch">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M2.149 0l-1.612 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.806-6.806v-14.149h-21.851zm19.164 13.074l-4.298 4.298h-5.373l-3.045 3.045v-3.045h-4.836v-15.045h17.552v10.746zm-9.134-5.373h-2.149v5.015h2.149v-5.015zm4.836 0h-2.149v5.015h2.149v-5.015z"/></svg>
-            </a>
-          {/if}
-          {#if streamer.youtube_url}
-            <a href={streamer.youtube_url} target="_blank" rel="noopener noreferrer" class="p-2 bg-zinc-900 border border-white/10 rounded-full hover:bg-[#FF0000]/20 hover:border-[#FF0000] transition-all text-zinc-400 hover:text-[#FF0000]" title="YouTube">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
-          {/if}
-          {#if streamer.kick_url}
-            <a href={streamer.kick_url} target="_blank" rel="noopener noreferrer" class="p-2 bg-zinc-900 border border-white/10 rounded-full hover:bg-[#53FC18]/20 hover:border-[#53FC18] transition-all text-zinc-400 hover:text-[#53FC18]" title="Kick">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M1.385 0h4.223v6.462h3.538V0h4.223v6.462h1.616V0h7.615v6.462h-4.307v2.692h-1.616v2.616h1.616v2.692h4.307V24h-7.615v-6.462h-1.616v-2.615h-1.615v2.615H8.223v2.693h-1.616V24H1.385V0zM12.692 11.846v-2.692H14.154v2.692h-1.462zm0 2.616v-2.616h1.462v2.616h-1.462z"/></svg>
-            </a>
-          {/if}
-          {#if streamer.reddit_url}
-            <a href={streamer.reddit_url} target="_blank" rel="noopener noreferrer" class="p-2 bg-zinc-900 border border-white/10 rounded-full hover:bg-[#FF4500]/20 hover:border-[#FF4500] transition-all text-zinc-400 hover:text-[#FF4500]" title="Reddit">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
-            </a>
+        <div class="text-center">
+          <h1 class="text-3xl font-bold mb-1 text-white">
+            {streamer?.name ? titleCase(streamer.name) : '...' }
+          </h1>
+          
+          <p class="text-zinc-400 text-sm max-w-sm mx-auto mb-5">
+            Send a SOL tip and show your support with a custom message on their live stream
+          </p>
+
+          <!-- Social Links -->
+          {#if streamer && (streamer.x_url || streamer.reddit_url || streamer.youtube_url || streamer.kick_url || streamer.twitch_url)}
+            <div class="flex items-center justify-center gap-2 flex-wrap pb-2">
+              {#if streamer.twitch_url}
+                <a href={streamer.twitch_url} target="_blank" rel="noopener noreferrer" class="p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#9146FF]/20 hover:border-[#9146FF]/50 transition-all text-zinc-400 hover:text-[#9146FF]" title="Twitch">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M2.149 0l-1.612 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.806-6.806v-14.149h-21.851zm19.164 13.074l-4.298 4.298h-5.373l-3.045 3.045v-3.045h-4.836v-15.045h17.552v10.746zm-9.134-5.373h-2.149v5.015h2.149v-5.015zm4.836 0h-2.149v5.015h2.149v-5.015z"/></svg>
+                </a>
+              {/if}
+              {#if streamer.youtube_url}
+                <a href={streamer.youtube_url} target="_blank" rel="noopener noreferrer" class="p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#FF0000]/20 hover:border-[#FF0000]/50 transition-all text-zinc-400 hover:text-[#FF0000]" title="YouTube">
+                  <svg class="w-5 h-5 -mx-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+              {/if}
+              {#if streamer.kick_url}
+                <a href={streamer.kick_url} target="_blank" rel="noopener noreferrer" class="p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#53FC18]/20 hover:border-[#53FC18]/50 transition-all text-zinc-400 hover:text-[#53FC18]" title="Kick">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M1.385 0h4.223v6.462h3.538V0h4.223v6.462h1.616V0h7.615v6.462h-4.307v2.692h-1.616v2.616h1.616v2.692h4.307V24h-7.615v-6.462h-1.616v-2.615h-1.615v2.615H8.223v2.693h-1.616V24H1.385V0zM12.692 11.846v-2.692H14.154v2.692h-1.462zm0 2.616v-2.616h1.462v2.616h-1.462z"/></svg>
+                </a>
+              {/if}
+              {#if streamer.x_url}
+                <a href={streamer.x_url} target="_blank" rel="noopener noreferrer" class="p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-zinc-800 hover:border-white/30 transition-all text-zinc-400 hover:text-white" title="X (Twitter)">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+              {/if}
+              {#if streamer.reddit_url}
+                <a href={streamer.reddit_url} target="_blank" rel="noopener noreferrer" class="p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#FF4500]/20 hover:border-[#FF4500]/50 transition-all text-zinc-400 hover:text-[#FF4500]" title="Reddit">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+              </a>
+              {/if}
+            </div>
           {/if}
         </div>
-      {/if}
-
-      <p class="text-zinc-400 text-sm max-w-xs mx-auto">Send a SOL tip and show your support with a custom message on their live stream</p>
+      </div>
     </div>
 
     {#if loadError}
