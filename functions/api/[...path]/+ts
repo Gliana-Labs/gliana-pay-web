@@ -1,0 +1,23 @@
+// Proxy all /api/* requests to worker via Service binding
+export async function onRequest({ request, platform }: { request: Request; platform: any }) {
+  const url = new URL(request.url);
+  const path = url.pathname;
+
+  // Only proxy /api/* requests
+  if (!path.startsWith('/api/')) {
+    return new Response('Not Found', { status: 404 });
+  }
+
+  // Use Service binding if available
+  if (platform?.env?.WORKER) {
+    try {
+      const response = await platform.env.WORKER.fetch(request.url.replace(url.origin, ''));
+      return response;
+    } catch (e) {
+      console.error('Worker proxy error:', e);
+      return new Response('Worker Error', { status: 500 });
+    }
+  }
+
+  return new Response('Service binding not configured', { status: 500 });
+}
