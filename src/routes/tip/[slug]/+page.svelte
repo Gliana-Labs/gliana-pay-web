@@ -29,7 +29,7 @@
   // Streamer data loaded server-side via service binding
   let streamer: Streamer | undefined = data.streamer ?? undefined;
   let settings: AlertSettings | null | undefined = data.settings ?? undefined;
-  let loadError = data.streamer ? '' : 'Streamer not found';
+  let loadError = '';
 
   let name = '';
   let message = '';
@@ -46,6 +46,23 @@
   let isMobile = false;
 
   onMount(async () => {
+    // If server-side loading didn't return streamer data, retry client-side
+    if (!streamer) {
+      try {
+        const response = await fetch(`/api/streamer/${data.slug}`);
+        if (response.ok) {
+          const result = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
+          streamer = result.streamer;
+          settings = result.settings;
+        } else {
+          loadError = 'Streamer not found';
+        }
+      } catch (e) {
+        console.error('Failed to load streamer:', e);
+        loadError = 'Streamer not found';
+      }
+    }
+
     // Small delay to ensure wallet extensions are loaded
     setTimeout(checkWallets, 100);
     // Re-check wallets when window gains focus (e.g., after installing extension)

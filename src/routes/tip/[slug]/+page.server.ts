@@ -1,12 +1,12 @@
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params, platform }) => {
+export const load: PageServerLoad = async ({ params, platform, fetch }) => {
     const slug = params.slug;
 
     try {
+        // Try service binding first (no network hop)
         const worker = (platform as any)?.env?.WORKER;
         if (worker) {
-            // Use service binding to call worker directly (no network hop)
             const response = await worker.fetch(
                 new Request(`https://internal/api/streamer/${slug}`)
             );
@@ -19,8 +19,19 @@ export const load: PageServerLoad = async ({ params, platform }) => {
                 };
             }
         }
+
+        // Fallback: use SvelteKit's internal fetch (goes through hooks.server.ts proxy)
+        const response = await fetch(`/api/streamer/${slug}`);
+        if (response.ok) {
+            const data = await response.json() as { streamer: any; settings: any };
+            return {
+                slug,
+                streamer: data.streamer ?? null,
+                settings: data.settings ?? null
+            };
+        }
     } catch (e) {
-        console.error('Failed to load streamer via service binding:', e);
+        console.error('Failed to load streamer:', e);
     }
 
     return { slug, streamer: null, settings: null };
