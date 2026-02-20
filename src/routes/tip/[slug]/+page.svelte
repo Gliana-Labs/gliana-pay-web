@@ -305,8 +305,8 @@
     </div>
   </div>
 
-  <div class="relative z-10 max-w-xl mx-auto px-4 pt-20 pb-8">
-    <div class="text-center mb-6">
+  <div class="relative z-10 max-w-5xl mx-auto px-4 pt-20 pb-8">
+    <div class="text-center mb-6 max-w-xl mx-auto">
       <div class="relative inline-block mb-4">
         <div class="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/30">
           <span class="text-4xl">🎮</span>
@@ -360,7 +360,7 @@
         <p class="text-zinc-500">{loadError}</p>
       </div>
     {:else if !streamer}
-      <div class="glass-card rounded-2xl p-10 text-center">
+      <div class="glass-card rounded-2xl p-10 text-center max-w-xl mx-auto">
         <!-- Animated spinner ring -->
         <div class="flex justify-center mb-5">
           <div class="w-12 h-12 rounded-full border-[3px] border-white/10 border-t-cyan-400 animate-spin"></div>
@@ -369,124 +369,143 @@
         <p class="text-sm text-zinc-500">Hang tight, we're getting everything ready</p>
       </div>
     {:else}
-      <!-- Viewer Wallet Connect -->
-      <div class="glass-card rounded-2xl p-5 border border-white/10 mb-4">
-        {#if !viewerConnected}
-          {#if availableWallets.length > 0}
-            <div class="space-y-3">
-              {#each availableWallets as wallet}
-                <button
-                  on:click={() => handleConnectWallet(wallet)}
-                  disabled={isLoading}
-                  class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400"
-                >
-                  Connect {wallet.name}
-                </button>
-              {/each}
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left Column: Leaderboard -->
+        <div class="lg:col-span-5 order-2 lg:order-1 flex flex-col gap-4">
+          {#if topTippers.length > 0}
+            <div class="glass-card rounded-2xl p-6 border border-white/10 animate-slide-up">
+              <div class="flex items-center gap-2 mb-6 px-1">
+                <span class="text-xl">👑</span>
+                <h3 class="font-bold text-lg text-white">Top Supporters <span class="text-xs font-normal text-zinc-500">(7 Days)</span></h3>
+              </div>
+              
+              <div class="flex flex-col gap-3">
+                {#each topTippers as tipper, i}
+                  <div class="relative overflow-hidden {i === 0 ? 'bg-gradient-to-br from-yellow-500/10 to-transparent border-yellow-500/20' : 'bg-zinc-900/40 border-white/5'} p-4 rounded-xl border flex items-center justify-between transition-all hover:border-purple-500/30 hover:bg-white/5 group">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10
+                        {i === 0 ? 'bg-yellow-500 text-black shadow-[0_0_10px_rgba(234,179,8,0.5)]' : 
+                         i === 1 ? 'bg-zinc-300 text-black' : 
+                         i === 2 ? 'bg-orange-400 text-black' : 
+                         'bg-zinc-800 text-zinc-400'}">
+                        #{i + 1}
+                      </div>
+                      <div class="text-sm font-semibold text-white truncate max-w-[140px]">{tipper.sender_name}</div>
+                    </div>
+                    
+                    <div class="text-right z-10">
+                      <div class="font-black {i === 0 ? 'text-yellow-400' : 'text-green-400'}">{(tipper.total / 1e9).toFixed(2)} <span class="text-xs font-normal">SOL</span></div>
+                    </div>
+                  </div>
+                {/each}
+              </div>
             </div>
           {:else}
-            {#if isMobile}
-              <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
-                Connect Wallet
-              </button>
-              <div class="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                <p class="text-xs text-purple-300">Mobile?</p>
-                <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
-              </div>
-            {:else}
-              <div class="w-full py-3 px-4 bg-zinc-900/50 rounded-xl border border-zinc-800 text-left">
-                <p class="text-sm text-zinc-300 font-medium">No wallet found</p>
-                <p class="text-xs text-zinc-500 mt-1">Please install a Solana wallet like Phantom or Solflare to send tips.</p>
-                <div class="mt-3 flex flex-wrap gap-2">
-                  <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Phantom</a>
-                  <span class="text-zinc-600">•</span>
-                  <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Solflare</a>
-                </div>
-              </div>
-            {/if}
-          {/if}
-          {#if walletError}
-            <p class="text-red-400 text-xs mt-2 text-center">{walletError}</p>
-          {/if}
-        {:else}
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-zinc-400">Connected: {viewerWallet.slice(0, 6)}...{viewerWallet.slice(-4)}</span>
-            <button on:click={handleDisconnect} class="text-xs text-red-400">Disconnect</button>
-          </div>
-        {/if}
-      </div>
-
-
-      <div class="glass-card rounded-2xl p-6 border border-white/10">
-        <form on:submit={handleSubmit} class="space-y-5">
-          <div>
-            <label for="name" class="block text-sm font-medium text-zinc-300 mb-2">👤 Your Name</label>
-            <input type="text" id="name" bind:value={name} placeholder="Anonymous" maxlength="50" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
-          </div>
-
-          <div>
-            <label for="message" class="block text-sm font-medium text-zinc-300 mb-2">💬 Message</label>
-            <textarea id="message" bind:value={message} placeholder="Say something nice..." maxlength="200" rows="2" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50 resize-none"></textarea>
-          </div>
-
-          <div>
-            <label for="amount" class="block text-sm font-medium text-zinc-300 mb-2 flex items-center gap-2">
-              <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              Amount (SOL)
-            </label>
-            <div class="relative">
-              <input type="number" id="amount" bind:value={amount} min="0.001" step="0.001" class="w-full px-4 py-3 pr-16 bg-zinc-900/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500/50" />
-              <div class="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400 font-semibold">SOL</div>
+            <!-- Empty State for Left Column -->
+            <div class="glass-card rounded-2xl p-6 border border-white/10 text-center flex flex-col items-center justify-center min-h-[200px] opacity-70 border-dashed">
+              <span class="text-4xl mb-3">💫</span>
+              <h3 class="font-bold text-white mb-1">No tips yet</h3>
+              <p class="text-sm text-zinc-400">Be the first to support {streamer?.name}!</p>
             </div>
-            <p class="mt-2 text-xs text-zinc-500">Min: 0.001 SOL</p>
-          </div>
-
-          <button type="submit" disabled={isLoading || !streamer} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2">
-            {#if isLoading}
-              <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-            {:else}
-              Generate Tip
-            {/if}
-          </button>
-        </form>
-
-        {#if status}
-          <div class="mt-4 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30">
-            <p class="text-center text-purple-300 text-sm">{status}</p>
-          </div>
-        {/if}
-      </div>
-
-      <!-- Top Tippers Leaderboard -->
-      {#if topTippers.length > 0}
-        <div class="mt-8">
-          <div class="flex items-center gap-2 mb-4 px-2">
-            <span class="text-xl">👑</span>
-            <h3 class="font-bold text-lg text-white">Top Supporters <span class="text-xs font-normal text-zinc-500">(Last 7 Days)</span></h3>
-          </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 animate-slide-up">
-            {#each topTippers as tipper, i}
-              <div class="relative overflow-hidden {i === 0 ? 'bg-gradient-to-br from-yellow-500/10 to-transparent border-yellow-500/20' : 'bg-zinc-900/40 border-white/5'} p-4 rounded-2xl border flex flex-col gap-1 transition-all hover:-translate-y-1 hover:border-purple-500/30">
-                <!-- Rank Badge -->
-                <div class="absolute top-0 right-0 w-16 h-16 pointer-events-none">
-                  <div class="absolute transform rotate-45 text-xs font-bold text-center w-full py-1 right-[-15px] top-[15px] {i === 0 ? 'bg-yellow-500 text-black shadow-[0_0_10px_rgba(234,179,8,0.5)]' : i === 1 ? 'bg-zinc-300 text-black' : i === 2 ? 'bg-orange-400 text-black' : 'bg-zinc-800 text-zinc-400'}">
-                    #{i + 1}
-                  </div>
-                </div>
-
-                <div class="text-sm font-semibold text-white truncate pr-6">{tipper.sender_name}</div>
-                <div class="flex items-center gap-1.5 mt-2">
-                  <span class="text-xs text-zinc-500">tipped</span>
-                  <span class="font-black {i === 0 ? 'text-yellow-400' : 'text-green-400'}">{(tipper.total / 1e9).toFixed(2)} SOL</span>
-                </div>
-              </div>
-            {/each}
-          </div>
+          {/if}
         </div>
-      {/if}
+
+        <!-- Right Column: Tip Form -->
+        <div class="lg:col-span-7 order-1 lg:order-2 space-y-4 max-w-xl mx-auto w-full">
+          <!-- Viewer Wallet Connect -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10">
+            {#if !viewerConnected}
+              {#if availableWallets.length > 0}
+                <div class="space-y-3">
+                  {#each availableWallets as wallet}
+                    <button
+                      on:click={() => handleConnectWallet(wallet)}
+                      disabled={isLoading}
+                      class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400"
+                    >
+                      Connect {wallet.name}
+                    </button>
+                  {/each}
+                </div>
+              {:else}
+                {#if isMobile}
+                  <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
+                    Connect Wallet
+                  </button>
+                  <div class="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                    <p class="text-xs text-purple-300">Mobile?</p>
+                    <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
+                  </div>
+                {:else}
+                  <div class="w-full py-3 px-4 bg-zinc-900/50 rounded-xl border border-zinc-800 text-left">
+                    <p class="text-sm text-zinc-300 font-medium">No wallet found</p>
+                    <p class="text-xs text-zinc-500 mt-1">Please install a Solana wallet like Phantom or Solflare to send tips.</p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                      <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Phantom</a>
+                      <span class="text-zinc-600">•</span>
+                      <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Solflare</a>
+                    </div>
+                  </div>
+                {/if}
+              {/if}
+              {#if walletError}
+                <p class="text-red-400 text-xs mt-2 text-center">{walletError}</p>
+              {/if}
+            {:else}
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-zinc-400">Connected: {viewerWallet.slice(0, 6)}...{viewerWallet.slice(-4)}</span>
+                <button on:click={handleDisconnect} class="text-xs text-red-400 hover:text-red-300">Disconnect</button>
+              </div>
+            {/if}
+          </div>
+
+          <!-- Tipping Form -->
+          <div class="glass-card rounded-2xl p-6 border border-white/10">
+            <form on:submit={handleSubmit} class="space-y-5">
+              <div>
+                <label for="name" class="block text-sm font-medium text-zinc-300 mb-2">👤 Your Name</label>
+                <input type="text" id="name" bind:value={name} placeholder="Anonymous" maxlength="50" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50" />
+              </div>
+
+              <div>
+                <label for="message" class="block text-sm font-medium text-zinc-300 mb-2">💬 Message</label>
+                <textarea id="message" bind:value={message} placeholder="Say something nice..." maxlength="200" rows="2" class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50 resize-none"></textarea>
+              </div>
+
+              <div>
+                <label for="amount" class="block text-sm font-medium text-zinc-300 mb-2 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Amount (SOL)
+                </label>
+                <div class="relative">
+                  <input type="number" id="amount" bind:value={amount} min="0.001" step="0.001" class="w-full px-4 py-3 pr-16 bg-zinc-900/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500/50" />
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400 font-semibold">SOL</div>
+                </div>
+                <p class="mt-2 text-xs text-zinc-500">Min: 0.001 SOL</p>
+              </div>
+
+              <button type="submit" disabled={isLoading || !streamer} class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 disabled:opacity-50 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                {#if isLoading}
+                  <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                {:else}
+                  Generate Tip
+                {/if}
+              </button>
+            </form>
+
+            {#if status}
+              <div class="mt-4 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 animate-slide-up">
+                <p class="text-center text-purple-300 text-sm">{status}</p>
+              </div>
+            {/if}
+          </div>
+
+      <!-- Close the right column and the grid -->
+        </div>
+      </div>
 
       {#if qrCodeUrl}
         <div class="mt-6 glass-card rounded-2xl p-6 text-center border border-white/10 animate-slide-up">
