@@ -157,14 +157,27 @@ export async function signMessage(wallet: WalletInfo, message: string): Promise<
 
     // Try different sign methods
     if (wallet.provider.signMessage) {
-      // Phantom, Solflare, Backpack support this
-      const result = await wallet.provider.signMessage(encodedMessage, 'utf8');
-      // Handle different return formats: Phantom returns { signature: Uint8Array }
-      if (result && typeof result === 'object' && 'signature' in result) {
-        const sig = result.signature;
-        signature = sig instanceof Uint8Array ? sig : new Uint8Array(sig as any);
-      } else if (result instanceof Uint8Array) {
-        signature = result;
+      // Try different display formats and message formats for different wallets
+      const displayOptions = ['utf8', 'hex'];
+      const messageOptions = [encodedMessage, message];
+
+      for (const display of displayOptions) {
+        for (const msg of messageOptions) {
+          try {
+            const result = await wallet.provider.signMessage(msg, display);
+            // Handle different return formats: Phantom returns { signature: Uint8Array }
+            if (result && typeof result === 'object' && 'signature' in result) {
+              const sig = result.signature;
+              signature = sig instanceof Uint8Array ? sig : new Uint8Array(sig as any);
+            } else if (result instanceof Uint8Array) {
+              signature = result;
+            }
+            if (signature) break;
+          } catch (e) {
+            // Try next option
+          }
+        }
+        if (signature) break;
       }
     } else if (wallet.provider.sign) {
       // Legacy method
