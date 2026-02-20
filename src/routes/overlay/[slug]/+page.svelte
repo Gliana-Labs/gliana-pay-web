@@ -5,16 +5,16 @@
   let { data } = $props();
 
   let socket: WebSocket | null = null;
-  let isConnected = false;
-  let isReconnecting = false;
-  let wsError = '';
-  let currentTip: WSTipEvent['data'] | null = null;
-  let showAlert = false;
-  let alertSound: HTMLAudioElement | null = null;
+  let isConnected = $state(false);
+  let isReconnecting = $state(false);
+  let wsError = $state('');
+  let currentTip: WSTipEvent['data'] | null = $state(null);
+  let showAlert = $state(false);
+  let alertSound: HTMLAudioElement | null = $state(null);
   let wsUrl = '';
-  let soundEnabled = false;
-  let soundLoading = false;
-  let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
+  let soundEnabled = $state(false);
+  let soundLoading = $state(false);
+  let soundUrl = $state('https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3');
   let alertQueue: WSTipEvent['data'][] = [];
   let isShowingAlert = false;
 
