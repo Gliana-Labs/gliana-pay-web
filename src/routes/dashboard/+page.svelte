@@ -348,37 +348,38 @@
                 {/if}
               </button>
 
-              <!-- Social Links -->
+              <!-- Profile Settings -->
               <div class="pt-4 border-t border-white/10 space-y-4">
-                <h3 class="text-sm font-semibold text-zinc-300">Social Links</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <h3 class="text-sm font-semibold text-zinc-300">Profile Information</h3>
+                <div class="space-y-4">
                   <div>
-                    <label for="x" class="block text-xs text-zinc-400 mb-1">X (Twitter) URL</label>
-                    <input type="url" id="x" bind:value={xUrl} placeholder="https://x.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                    <label for="name" class="block text-xs text-zinc-400 mb-1">Display Name</label>
+                    <input type="text" id="name" bind:value={name} placeholder="Your Streamer Name" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
                   </div>
                   <div>
-                    <label for="twitch" class="block text-xs text-zinc-400 mb-1">Twitch URL</label>
-                    <input type="url" id="twitch" bind:value={twitchUrl} placeholder="https://twitch.tv/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                    <label for="description" class="block text-xs text-zinc-400 mb-1">Profile Description</label>
+                    <textarea id="description" bind:value={description} placeholder="Tell your supporters about yourself..." rows="3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"></textarea>
                   </div>
-                  <div>
-                    <label for="youtube" class="block text-xs text-zinc-400 mb-1">YouTube URL</label>
-                    <input type="url" id="youtube" bind:value={youtubeUrl} placeholder="https://youtube.com/@username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
-                  </div>
-                  <div>
-                    <label for="kick" class="block text-xs text-zinc-400 mb-1">Kick URL</label>
-                    <input type="url" id="kick" bind:value={kickUrl} placeholder="https://kick.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
-                  </div>
-                  <div class="md:col-span-2 mt-4 space-y-4 pt-4 border-t border-white/10">
-                    <h3 class="text-sm font-semibold text-zinc-300">Profile Information</h3>
-                    
+                </div>
+
+                <div class="mt-4 space-y-4 pt-4 border-t border-white/10">
+                  <h3 class="text-sm font-semibold text-zinc-300">Social Links</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label for="name" class="block text-xs text-zinc-400 mb-1">Display Name</label>
-                      <input type="text" id="name" bind:value={name} placeholder="Your Streamer Name" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                      <label for="x" class="block text-xs text-zinc-400 mb-1">X (Twitter) URL</label>
+                      <input type="url" id="x" bind:value={xUrl} placeholder="https://x.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
                     </div>
-                    
                     <div>
-                      <label for="description" class="block text-xs text-zinc-400 mb-1">Profile Description</label>
-                      <textarea id="description" bind:value={description} placeholder="Tell your supporters about yourself..." rows="3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"></textarea>
+                      <label for="twitch" class="block text-xs text-zinc-400 mb-1">Twitch URL</label>
+                      <input type="url" id="twitch" bind:value={twitchUrl} placeholder="https://twitch.tv/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                    </div>
+                    <div>
+                      <label for="youtube" class="block text-xs text-zinc-400 mb-1">YouTube URL</label>
+                      <input type="url" id="youtube" bind:value={youtubeUrl} placeholder="https://youtube.com/@username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                    </div>
+                    <div>
+                      <label for="kick" class="block text-xs text-zinc-400 mb-1">Kick URL</label>
+                      <input type="url" id="kick" bind:value={kickUrl} placeholder="https://kick.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
                     </div>
                   </div>
                 </div>
