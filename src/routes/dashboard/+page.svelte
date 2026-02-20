@@ -49,6 +49,7 @@
   let youtubeUrl = '';
   let kickUrl = '';
   let twitchUrl = '';
+  let description = '';
 
   // Copy state
   let copied = false;
@@ -105,6 +106,7 @@
           youtubeUrl = data.streamer.youtube_url || '';
           kickUrl = data.streamer.kick_url || '';
           twitchUrl = data.streamer.twitch_url || '';
+          description = data.streamer.description || '';
         }
       }
     } catch (e) {
@@ -142,7 +144,8 @@
           reddit_url: redditUrl,
           youtube_url: youtubeUrl,
           kick_url: kickUrl,
-          twitch_url: twitchUrl
+          twitch_url: twitchUrl,
+          description: description
         })
       });
 
@@ -365,6 +368,10 @@
                   <div class="md:col-span-2">
                     <label for="reddit" class="block text-xs text-zinc-400 mb-1">Reddit URL</label>
                     <input type="url" id="reddit" bind:value={redditUrl} placeholder="https://reddit.com/user/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label for="description" class="block text-xs text-zinc-400 mb-1">Profile Description</label>
+                    <textarea id="description" bind:value={description} placeholder="Tell your supporters about yourself..." rows="3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"></textarea>
                   </div>
                 </div>
 

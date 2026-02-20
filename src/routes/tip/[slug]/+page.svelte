@@ -308,7 +308,7 @@
   <div class="relative z-10 max-w-5xl mx-auto px-4 pt-12 pb-8">
     
     <!-- Profile Banner & Card Header -->
-    <div class="mb-8 w-full max-w-2xl mx-auto">
+    <div class="mb-8 w-full mx-auto">
       <!-- Banner Background -->
       <div class="h-24 md:h-32 w-full rounded-t-3xl bg-zinc-800 relative overflow-hidden group">
         <div class="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 mix-blend-overlay"></div>
@@ -356,21 +356,28 @@
           {/if}
         </div>
 
-        <div class="text-left flex items-center gap-2">
-          <h1 class="text-2xl md:text-3xl font-bold text-white">
-            {streamer?.name ? titleCase(streamer.name) : '...' }
-          </h1>
-          
-          <!-- Info Icon with Tooltip containing description -->
-          <div class="relative group mt-1">
-            <div class="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-zinc-400 cursor-help hover:text-white transition-colors border border-white/10">
-              <span class="text-xs font-bold leading-none">i</span>
-            </div>
-            <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 bg-zinc-900/95 backdrop-blur-md border border-white/10 text-zinc-300 text-xs px-3 py-2 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl z-50 pointer-events-none text-center">
-              Send a SOL tip and show your support with a custom message on their live stream.
-              <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white/10"></div>
+        <div class="text-left">
+          <div class="flex items-center gap-3">
+            <h1 class="text-2xl md:text-3xl font-bold text-white">
+              {streamer?.name ? titleCase(streamer.name) : '...' }
+            </h1>
+            
+            <!-- Info Icon with Tooltip containing description -->
+            <div class="relative group mt-1">
+              <div class="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-zinc-400 cursor-help hover:text-white transition-colors border border-white/10">
+                <span class="text-xs font-bold leading-none">i</span>
+              </div>
+              <div class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 bg-zinc-900/95 backdrop-blur-md border border-white/10 text-zinc-300 text-xs px-3 py-2 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl z-50 pointer-events-none text-center">
+                Send a SOL tip and show your support with a custom message on their live stream.
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white/10"></div>
+              </div>
             </div>
           </div>
+          
+          <!-- Streamer Custom Description -->
+          {#if streamer && ('description' in streamer) && streamer.description}
+            <p class="text-zinc-400 text-sm mt-2 max-w-xl leading-relaxed whitespace-pre-wrap">{streamer.description}</p>
+          {/if}
         </div>
       </div>
     </div>

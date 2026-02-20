@@ -14,6 +14,7 @@ export interface Streamer {
   youtube_url?: string;
   kick_url?: string;
   twitch_url?: string;
+  description?: string;
 }
 
 export interface Donation {
