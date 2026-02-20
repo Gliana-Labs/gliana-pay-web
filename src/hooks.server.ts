@@ -5,7 +5,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     // Proxy /api/* and /ws/* requests to the worker via service binding
     if (pathname.startsWith('/api/') || pathname.startsWith('/ws/')) {
-        const worker = (event.platform as any)?.env?.WORKER;
+        const worker = (event.platform as any)?.env?.GLIANA_PAY_WORKER;
         if (worker) {
             try {
                 // Build a new request to forward to the worker

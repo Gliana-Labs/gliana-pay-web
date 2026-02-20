@@ -5,5 +5,5 @@ compatibility_date = "2026-02-21"
 bucket = ".svelte-kit/cloudflare"
 
 [[services]]
-binding = "WORKER"
+binding = "GLIANA_PAY_WORKER"
 service = "gliana-pay-worker"
