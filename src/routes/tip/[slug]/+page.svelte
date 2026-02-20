@@ -45,10 +45,10 @@
   let isMobile = false;
 
   onMount(async () => {
-    // Fetch streamer data client-side (uses Service binding via Pages Function)
+    // Fetch streamer data from external API
     const slug = $page.params.slug;
     try {
-      const response = await fetch(`/api/streamer/${slug}`);
+      const response = await fetch(`https://api.glianapay.com/api/streamer/${slug}`);
       if (response.ok) {
         const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
         streamer = data.streamer;
