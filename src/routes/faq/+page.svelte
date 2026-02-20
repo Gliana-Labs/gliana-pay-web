@@ -16,7 +16,7 @@
     },
     {
       question: "What wallets are supported?",
-      answer: "GlianaPay supports all Solana-compatible wallets including Phantom, Solflare, Backpack, and Slope. Simply connect your wallet to get started."
+      answer: "GlianaPay supports all Solana-compatible wallets including Phantom, Solflare, and Backpack. Simply connect your wallet to get started."
     },
     {
       question: "How do OBS alerts work?",

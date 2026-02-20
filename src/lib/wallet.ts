@@ -42,15 +42,6 @@ export function getAvailableWallets(): WalletInfo[] {
     });
   }
 
-  // Slope
-  if ((window as any).slope?.wallet) {
-    wallets.push({
-      name: 'Slope',
-      icon: 'https://www.svgrepo.com/show/375577/slope.svg',
-      provider: (window as any).slope
-    });
-  }
-
   // Ledger
   if ((window as any).ledger?.solana) {
     wallets.push({

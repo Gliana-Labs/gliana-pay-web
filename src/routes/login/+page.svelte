@@ -340,8 +340,6 @@
                 <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Solflare</a>
                 <span class="text-zinc-600">•</span>
                 <a href="https://backpack.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Backpack</a>
-                <span class="text-zinc-600">•</span>
-                <a href="https://slope.org" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Slope</a>
               </div>
             </div>
           {/if}
