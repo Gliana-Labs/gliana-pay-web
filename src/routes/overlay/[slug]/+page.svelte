@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import type { WSTipEvent, WSMessage } from '$lib/types';
-  import { WORKER_HOST } from '$lib/config';
 
   export let data: {
     slug: string;
@@ -66,7 +65,7 @@
   // Fetch streamer settings on mount
   async function loadSettings() {
     try {
-      const response = await fetch(`https://${WORKER_HOST}/api/streamer/${data.slug}/settings`);
+      const response = await fetch(`/api/streamer/${data.slug}/settings`);
       if (response.ok) {
         const result = await response.json();
         if (result.settings?.sound_url) {
@@ -111,7 +110,7 @@
       wsConnectionTimeout = null;
     }
 
-    wsUrl = `wss://${WORKER_HOST}/ws/${data.slug}`;
+    wsUrl = `wss://${window.location.host}/ws/${data.slug}`;
 
     try {
       socket = new WebSocket(wsUrl);

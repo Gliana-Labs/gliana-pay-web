@@ -1,4 +1,4 @@
 // Worker URL configuration
-// Use production URL
-export const WORKER_URL = 'https://api.glianapay.com';
-export const WORKER_HOST = 'api.glianapay.com';
+// Use relative URLs for same-origin API
+export const WORKER_URL = '';
+export const WORKER_HOST = '';
