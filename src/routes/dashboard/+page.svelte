@@ -42,6 +42,13 @@
   let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
   let soundEnabled = false;
 
+  // Social Links
+  let xUrl = '';
+  let redditUrl = '';
+  let youtubeUrl = '';
+  let kickUrl = '';
+  let twitchUrl = '';
+
   // Copy state
   let copied = false;
   async function copyPageUrl() {
@@ -91,6 +98,13 @@
           minAmount = Math.max(loadedAmount, 1000000) / 1e9;
           soundUrl = data.settings.sound_url || 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
         }
+        if (data.streamer) {
+          xUrl = data.streamer.x_url || '';
+          redditUrl = data.streamer.reddit_url || '';
+          youtubeUrl = data.streamer.youtube_url || '';
+          kickUrl = data.streamer.kick_url || '';
+          twitchUrl = data.streamer.twitch_url || '';
+        }
       }
     } catch (e) {
       console.error('Failed to load settings:', e);
@@ -121,7 +135,12 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           min_amount: Math.floor(minAmount * 1e6),
-          sound_url: soundUrl
+          sound_url: soundUrl,
+          x_url: xUrl,
+          reddit_url: redditUrl,
+          youtube_url: youtubeUrl,
+          kick_url: kickUrl,
+          twitch_url: twitchUrl
         })
       });
 
@@ -311,6 +330,34 @@
               {#if soundError}
                 <p class="text-red-400 text-sm">{soundError}</p>
               {/if}
+
+              <!-- Social Links -->
+              <div class="pt-4 border-t border-white/10 space-y-4">
+                <h3 class="text-sm font-semibold text-zinc-300">Social Links</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="x" class="block text-xs text-zinc-400 mb-1">X (Twitter) URL</label>
+                    <input type="url" id="x" bind:value={xUrl} placeholder="https://x.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                  </div>
+                  <div>
+                    <label for="twitch" class="block text-xs text-zinc-400 mb-1">Twitch URL</label>
+                    <input type="url" id="twitch" bind:value={twitchUrl} placeholder="https://twitch.tv/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                  </div>
+                  <div>
+                    <label for="youtube" class="block text-xs text-zinc-400 mb-1">YouTube URL</label>
+                    <input type="url" id="youtube" bind:value={youtubeUrl} placeholder="https://youtube.com/@username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                  </div>
+                  <div>
+                    <label for="kick" class="block text-xs text-zinc-400 mb-1">Kick URL</label>
+                    <input type="url" id="kick" bind:value={kickUrl} placeholder="https://kick.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label for="reddit" class="block text-xs text-zinc-400 mb-1">Reddit URL</label>
+                    <input type="url" id="reddit" bind:value={redditUrl} placeholder="https://reddit.com/user/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                  </div>
+                </div>
+              </div>
+
               <button on:click={saveSettings} disabled={settingsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer">
                 {#if settingsLoading}
                   Saving...

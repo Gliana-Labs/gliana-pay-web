@@ -9,6 +9,11 @@ export interface Streamer {
   wallet: string;
   name: string;
   created_at: string;
+  x_url?: string;
+  reddit_url?: string;
+  youtube_url?: string;
+  kick_url?: string;
+  twitch_url?: string;
 }
 
 export interface Donation {

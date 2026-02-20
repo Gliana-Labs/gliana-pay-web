@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { slide } from 'svelte/transition';
   let openIndex: number | null = null;
 
   const faqs = [
@@ -108,7 +109,7 @@
             </svg>
           </button>
           {#if openIndex === index}
-            <div class="px-6 pb-5 text-zinc-300 leading-relaxed">
+            <div transition:slide={{ duration: 300 }} class="px-6 pb-5 text-zinc-300 leading-relaxed">
               {faq.answer}
             </div>
           {/if}
