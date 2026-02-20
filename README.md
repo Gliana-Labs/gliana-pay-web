@@ -64,8 +64,6 @@ The overlay shows real-time tip notifications with animations and sound alerts.
 Supports multiple Solana wallets:
 - Phantom
 - Solflare
-- Backpack
-- Ledger
 
 ## Tech Stack
 

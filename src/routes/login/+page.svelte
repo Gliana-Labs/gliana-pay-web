@@ -30,30 +30,12 @@
     return (window as any).solana;
   }
 
-  function getBackpack() {
-    return (window as any).backpack?.solana;
-  }
-
   // Check if wallet already connected on page load
   async function checkExistingConnection() {
     // Check Phantom
     const phantom = getPhantom();
     if (phantom?.isConnected && phantom.publicKey) {
       walletAddress = phantom.publicKey.toString();
-      connected = true;
-      await checkExistingUser();
-      return;
-    }
-
-    // Check Backpack - get fresh provider directly from window
-    const backpackWindow = (window as any).backpack;
-    if (backpackWindow?.solana?.isConnected && backpackWindow.solana.publicKey) {
-      walletAddress = backpackWindow.solana.publicKey.toString();
-      selectedWallet = {
-        name: 'Backpack',
-        icon: 'https://backpack.app/favicon.ico',
-        provider: backpackWindow.solana
-      };
       connected = true;
       await checkExistingUser();
     }
@@ -357,8 +339,6 @@
                 <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Phantom</a>
                 <span class="text-zinc-600">•</span>
                 <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Solflare</a>
-                <span class="text-zinc-600">•</span>
-                <a href="https://backpack.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Backpack</a>
               </div>
             </div>
           {/if}

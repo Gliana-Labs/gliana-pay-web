@@ -33,15 +33,6 @@ export function getAvailableWallets(): WalletInfo[] {
     });
   }
 
-  // Backpack
-  if ((window as any).backpack?.solana?.isBackpack) {
-    wallets.push({
-      name: 'Backpack',
-      icon: 'https://backpack.app/favicon.ico',
-      provider: (window as any).backpack.solana
-    });
-  }
-
   // Ledger
   if ((window as any).ledger?.solana) {
     wallets.push({
