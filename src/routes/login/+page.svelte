@@ -331,7 +331,19 @@
           </div>
 
           {#if availableWallets.length === 0}
-            <p class="text-center text-zinc-400 text-sm">No wallet found. Please install Phantom or Solflare.</p>
+            <div class="text-left p-4 bg-zinc-900/50 rounded-xl border border-zinc-800">
+              <p class="text-sm text-zinc-300 font-medium">No wallet found</p>
+              <p class="text-xs text-zinc-500 mt-1">Please install a Solana wallet to continue.</p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Phantom</a>
+                <span class="text-zinc-600">•</span>
+                <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Solflare</a>
+                <span class="text-zinc-600">•</span>
+                <a href="https://backpack.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Backpack</a>
+                <span class="text-zinc-600">•</span>
+                <a href="https://slope.org" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Slope</a>
+              </div>
+            </div>
           {/if}
         {:else}
           <!-- Connected -->

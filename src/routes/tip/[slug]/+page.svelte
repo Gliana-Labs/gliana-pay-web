@@ -333,13 +333,27 @@
               {/each}
             </div>
           {:else}
-            <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
-              Connect Wallet
-            </button>
             {#if isMobile}
+              <button class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400">
+                Connect Wallet
+              </button>
               <div class="mt-2 p-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
                 <p class="text-xs text-purple-300">Mobile?</p>
                 <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for best experience.</p>
+              </div>
+            {:else}
+              <div class="w-full py-3 px-4 bg-zinc-900/50 rounded-xl border border-zinc-800 text-left">
+                <p class="text-sm text-zinc-300 font-medium">No wallet found</p>
+                <p class="text-xs text-zinc-500 mt-1">Please install a Solana wallet like Phantom, Solflare, Backpack, or Slope to send tips.</p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <a href="https://phantom.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Phantom</a>
+                  <span class="text-zinc-600">•</span>
+                  <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Solflare</a>
+                  <span class="text-zinc-600">•</span>
+                  <a href="https://backpack.app" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Backpack</a>
+                  <span class="text-zinc-600">•</span>
+                  <a href="https://slope.org" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Slope</a>
+                </div>
               </div>
             {/if}
           {/if}
