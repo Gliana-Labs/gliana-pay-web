@@ -40,11 +40,6 @@
     const phantom = getPhantom();
     if (phantom?.isConnected && phantom.publicKey) {
       walletAddress = phantom.publicKey.toString();
-      selectedWallet = {
-        name: 'Phantom',
-        icon: 'https://www.svgrepo.com/show/374171/phantom.svg',
-        provider: phantom
-      };
       connected = true;
       await checkExistingUser();
       return;
