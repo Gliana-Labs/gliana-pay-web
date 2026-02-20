@@ -19,16 +19,16 @@
 
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import type { Streamer, AlertSettings } from '$lib/types';
   import { getAvailableWallets, connectWallet as connectWalletUtil, disconnectWallet as disconnectWalletUtil } from '$lib/wallet';
   import type { WalletInfo } from '$lib/wallet';
   import { WORKER_URL } from '$lib/config';
 
-  export let data: {
-    streamer?: Streamer;
-    settings?: AlertSettings | null;
-    error?: string;
-  };
+  // Client-side data (populated in onMount)
+  let streamer: Streamer | undefined = undefined;
+  let settings: AlertSettings | null | undefined = undefined;
+  let loadError = '';
 
   let name = '';
   let message = '';
@@ -42,12 +42,25 @@
   let selectedWallet: WalletInfo | null = null;
   let walletError = '';
 
-  $: streamer = data.streamer;
-  $: settings = data.settings;
-
   let isMobile = false;
 
-  onMount(() => {
+  onMount(async () => {
+    // Fetch streamer data client-side (uses Service binding via Pages Function)
+    const slug = $page.params.slug;
+    try {
+      const response = await fetch(`/api/streamer/${slug}`);
+      if (response.ok) {
+        const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null };
+        streamer = data.streamer;
+        settings = data.settings;
+      } else {
+        loadError = 'Streamer not found';
+      }
+    } catch (e) {
+      console.error('Failed to load streamer:', e);
+      loadError = 'Streamer not found';
+    }
+
     // Small delay to ensure wallet extensions are loaded
     setTimeout(checkWallets, 100);
     // Re-check wallets when window gains focus (e.g., after installing extension)
@@ -307,11 +320,16 @@
       <p class="text-zinc-400 text-sm max-w-xs mx-auto">Send a SOL tip and show your support with a custom message on their live stream</p>
     </div>
 
-    {#if data.error}
+    {#if loadError}
       <div class="glass-card rounded-2xl p-8 text-center">
         <div class="text-6xl mb-4">😢</div>
         <h2 class="text-2xl font-bold text-white mb-2">Streamer Not Found</h2>
-        <p class="text-zinc-500">{data.error}</p>
+        <p class="text-zinc-500">{loadError}</p>
+      </div>
+    {:else if !streamer}
+      <div class="glass-card rounded-2xl p-8 text-center">
+        <div class="text-6xl mb-4">⏳</div>
+        <h2 class="text-2xl font-bold text-white mb-2">Loading...</h2>
       </div>
     {:else}
       <!-- Viewer Wallet Connect -->
