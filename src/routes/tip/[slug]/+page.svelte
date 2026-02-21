@@ -409,7 +409,7 @@
   <div class="relative z-10 max-w-5xl mx-auto px-4 pt-16 sm:pt-20 pb-8">
     
     <!-- Profile Banner & Card Header -->
-    <div class="mb-8 w-full mx-auto">
+    <div class="mb-4 sm:mb-5 lg:mb-6 w-full mx-auto">
       <!-- Banner Background -->
       <div class="h-24 md:h-32 w-full rounded-t-3xl bg-zinc-800 relative overflow-hidden group">
         <div class="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 mix-blend-overlay"></div>
