@@ -630,32 +630,95 @@
       </div>
 
       {#if qrCodeUrl}
-        <div class="mt-6 glass-card rounded-2xl p-6 text-center border border-white/10 animate-slide-up">
-          <div class="flex items-center justify-center gap-2 mb-4"><span class="text-2xl">📱</span><h3 class="text-xl font-bold text-white">Scan to Pay</h3></div>
-          <div class="inline-block p-3 bg-white rounded-2xl mb-4"><img src={qrCodeUrl} alt="QR" class="w-48 h-48" /></div>
-          
-          <!-- Caution: do not close -->
-          <div class="flex items-center gap-2 justify-center mb-4 px-4 py-2.5 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
-            <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse flex-shrink-0"></span>
-            <p class="text-yellow-300 text-xs">Don't close this page after scanning — the alert will be sent automatically once payment is confirmed.</p>
+        <div class="mt-6 glass-card rounded-2xl border border-white/10 animate-slide-up overflow-hidden">
+          <!-- Amount Summary Header -->
+          <div class="px-6 py-4 bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border-b border-white/5">
+            <div class="flex items-center justify-center gap-3">
+              <span class="text-green-400 font-bold text-lg">{amount} SOL</span>
+              <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <span class="text-white font-semibold">{streamer?.name}</span>
+            </div>
           </div>
 
-          <p class="text-zinc-400 text-sm mb-4">Or pay directly with connected wallet</p>
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-500/40 rounded-xl"><span class="text-green-400 font-bold">{amount} SOL</span><span class="text-zinc-500">→</span><span class="text-white font-semibold">{streamer?.name}</span></div>
+          <!-- Payment Methods -->
+          <div class="grid grid-cols-1 md:grid-cols-2">
 
-          {#if viewerConnected}
-            <button
-              on:click={payWithWallet}
-              disabled={isLoading}
-              class="mt-4 w-full py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-500 disabled:opacity-50 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2"
-            >
-              {#if isLoading}
-                <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+            <!-- Left: Scan to Pay -->
+            <div class="p-6 flex flex-col items-center text-center">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-xl">📱</span>
+                <h3 class="text-lg font-bold text-white">Scan to Pay</h3>
+              </div>
+
+              <div class="inline-block p-3 bg-white rounded-2xl mb-3 shadow-lg shadow-purple-500/10">
+                <img src={qrCodeUrl} alt="QR" class="w-44 h-44" />
+              </div>
+
+              <p class="text-zinc-500 text-xs mb-3">Open Phantom or Solflare on your phone and scan</p>
+
+              <!-- Caution -->
+              <div class="flex items-start gap-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg w-full">
+                <span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse flex-shrink-0 mt-1"></span>
+                <p class="text-yellow-300/80 text-[11px] leading-relaxed text-left">Keep this page open after scanning — the alert fires automatically once confirmed.</p>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="hidden md:flex items-center absolute inset-y-0 left-1/2 -translate-x-1/2 z-10" style="position: relative;">
+            </div>
+            <div class="flex items-center gap-3 px-6 md:hidden">
+              <div class="flex-1 h-px bg-white/10"></div>
+              <span class="text-xs text-zinc-500 font-medium">OR</span>
+              <div class="flex-1 h-px bg-white/10"></div>
+            </div>
+
+            <!-- Right: Pay with Wallet -->
+            <div class="p-6 flex flex-col items-center justify-center text-center md:border-l md:border-white/5 relative">
+              <!-- Vertical OR divider (desktop) -->
+              <div class="hidden md:block absolute -left-px top-1/2 -translate-y-1/2 -translate-x-1/2">
+                <div class="w-8 h-8 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center">
+                  <span class="text-[10px] text-zinc-400 font-bold">OR</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-xl">💳</span>
+                <h3 class="text-lg font-bold text-white">Pay with Wallet</h3>
+              </div>
+
+              {#if viewerConnected}
+                <div class="w-full space-y-3">
+                  <div class="flex items-center gap-2 justify-center px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                    <span class="text-green-400 text-xs font-medium">Wallet Connected</span>
+                  </div>
+
+                  <button
+                    on:click={payWithWallet}
+                    disabled={isLoading}
+                    class="w-full py-3.5 px-6 bg-gradient-to-r from-green-500 to-emerald-500 disabled:opacity-50 rounded-xl font-bold text-white transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-500/20"
+                  >
+                    {#if isLoading}
+                      <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    {:else}
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                      Pay {amount} SOL Now
+                    {/if}
+                  </button>
+
+                  <p class="text-zinc-500 text-[11px]">Instant — no scanning required</p>
+                </div>
               {:else}
-                Pay {amount} SOL Now
+                <div class="w-full space-y-3">
+                  <div class="p-4 bg-zinc-800/50 border border-white/5 rounded-xl">
+                    <svg class="w-10 h-10 text-zinc-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"/></svg>
+                    <p class="text-zinc-400 text-sm font-medium">No wallet connected</p>
+                    <p class="text-zinc-500 text-xs mt-1">Connect a wallet above to pay directly from your browser</p>
+                  </div>
+                </div>
               {/if}
-            </button>
-          {/if}
+            </div>
+          </div>
         </div>
       {/if}
 
