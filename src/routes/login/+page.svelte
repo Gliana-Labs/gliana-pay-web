@@ -341,6 +341,11 @@
                 <a href="https://solflare.com" target="_blank" rel="noopener noreferrer" class="text-xs text-purple-400 hover:text-purple-300">Solflare</a>
               </div>
             </div>
+
+            <div class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left">
+              <p class="text-xs font-medium text-purple-300 mb-1">Mobile?</p>
+              <p class="text-xs text-zinc-400">Open this page in your wallet's in-app browser for the best experience.</p>
+            </div>
           {/if}
         {:else}
           <!-- Connected -->
