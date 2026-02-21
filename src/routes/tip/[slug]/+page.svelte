@@ -406,7 +406,7 @@
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
   </div>
 
-  <div class="relative z-10 max-w-5xl mx-auto px-4 pt-12 pb-8">
+  <div class="relative z-10 max-w-5xl mx-auto px-4 pt-20 sm:pt-24 pb-8">
     
     <!-- Profile Banner & Card Header -->
     <div class="mb-8 w-full mx-auto">
