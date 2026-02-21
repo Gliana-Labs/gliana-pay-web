@@ -27,15 +27,15 @@
   </div>
 
   <!-- Header (Edge-to-Edge) -->
-  <div class="relative z-10 w-full px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex items-center justify-between">
+  <div class="relative z-10 w-full px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
-      <img src="/logo.svg" alt="GlianaPay" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg shadow-purple-500/20" />
+      <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/20" />
       <span class="font-bold text-sm sm:text-base md:text-lg tracking-wide hidden sm:inline">GlianaPay</span>
     </a>
     <a href="/" class="text-zinc-400 hover:text-white text-sm font-medium transition-colors">← Back</a>
   </div>
 
-  <div class="relative z-10 max-w-4xl mx-auto px-4 pt-4 sm:pt-6 pb-32 flex-1">
+  <div class="relative z-10 max-w-4xl mx-auto px-4 pt-0 pb-32 flex-1">
     <div class="text-center mb-12">
       <h1 class="text-3xl md:text-4xl font-bold mb-4">
         <span class="text-gradient bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
