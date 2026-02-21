@@ -65,22 +65,25 @@
   </div>
 
   <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 pb-32 pt-16">
-    <!-- Top Navigation -->
-    <nav class="absolute top-4 left-4 flex items-center gap-4 z-50">
-      <a href="/how" class="text-sm text-zinc-400 hover:text-white transition-colors">How</a>
-      <a href="/docs" class="text-sm text-zinc-400 hover:text-white transition-colors">Docs</a>
-      <a href="/faq" class="text-sm text-zinc-400 hover:text-white transition-colors">FAQ</a>
-    </nav>
+    <!-- Top Header (Edge-to-Edge) -->
+    <div class="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex items-center justify-between">
+      <!-- Left Navigation -->
+      <nav class="flex items-center gap-4 sm:gap-6">
+        <a href="/how" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">How</a>
+        <a href="/docs" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Docs</a>
+        <a href="/faq" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">FAQ</a>
+      </nav>
 
-    <!-- Beta Badge with Tooltip -->
-    <div class="absolute top-4 right-4 group">
-      <div class="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help">
-        <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-        <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
-      </div>
-      <!-- Tooltip -->
-      <div class="absolute right-0 top-full mt-2 w-64 px-3 py-2 bg-zinc-900 border border-yellow-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-        This is a testnet version. No real money involved. Enable devnet in your wallet settings before using.
+      <!-- Right: Beta Badge -->
+      <div class="relative group">
+        <div class="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full cursor-help hover:bg-yellow-500/20 transition-colors">
+          <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(250,204,21,0.5)]"></span>
+          <span class="text-[10px] sm:text-xs font-medium text-yellow-400">Beta - Devnet</span>
+        </div>
+        <!-- Tooltip -->
+        <div class="absolute right-0 top-full mt-2 w-48 sm:w-64 px-3 py-2 bg-zinc-900 border border-yellow-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-right sm:text-left">
+          This is a testnet version. No real money involved. Enable devnet in your wallet settings before using.
+        </div>
       </div>
     </div>
 
