@@ -482,7 +482,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         <!-- Left Column: Leaderboard -->
-        <div class="lg:col-span-5 order-2 lg:order-1 flex flex-col gap-4">
+        <div class="lg:col-span-5 order-3 lg:order-1 flex flex-col gap-4">
           {#if topTippers.length > 0}
             <div class="glass-card rounded-2xl p-6 border border-white/10 animate-slide-up">
               <div class="flex items-center gap-2 mb-6 px-1">
