@@ -625,6 +625,9 @@
             {/if}
           </div>
 
+        <!-- Close the right column -->
+        </div>
+
       {#if qrCodeUrl}
         <div class="order-2 lg:order-3 lg:col-span-12 glass-card rounded-2xl border border-white/10 animate-slide-up overflow-hidden">
           <!-- Amount Summary Header -->
@@ -716,8 +719,7 @@
         </div>
       {/if}
 
-      <!-- Close the right column and the grid -->
-        </div>
+      <!-- Close the grid -->
       </div>
 
       <!-- Powered by Solana -->
