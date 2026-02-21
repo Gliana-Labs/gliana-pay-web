@@ -123,14 +123,15 @@
       const lamports = Math.floor(amount * 1e9);
       const reference = crypto.randomUUID();
 
-      const paymentUrl = new URL('https://solana.com/pay');
-      paymentUrl.searchParams.set('recipient', streamer.wallet);
-      paymentUrl.searchParams.set('amount', lamports.toString());
-      paymentUrl.searchParams.set('reference', reference);
-      paymentUrl.searchParams.set('label', `${streamer.name}'s Tip Jar`);
-      paymentUrl.searchParams.set('message', message || `Tip for ${streamer.name}`);
+      const paymentUrl = new URL(`solana:${streamer.wallet}`);
+      paymentUrl.searchParams.append('amount', amount.toString());
+      paymentUrl.searchParams.append('reference', reference);
+      paymentUrl.searchParams.append('label', `${streamer.name}'s Tip Jar`);
+      paymentUrl.searchParams.append('message', message || `Tip for ${streamer.name}`);
 
-      qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(paymentUrl.toString())}`;
+      // Generate QR Code with the correctly encoded solana: URI
+      const encodedUrl = encodeURIComponent(paymentUrl.toString().replace('solana://', 'solana:'));
+      qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodedUrl}`;
 
       status = viewerConnected ? 'Wallet connected! You can pay directly or scan QR' : 'Scan the QR code with your wallet!';
     } catch (error) {
