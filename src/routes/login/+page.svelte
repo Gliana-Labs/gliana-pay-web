@@ -292,15 +292,16 @@
       <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
     </div>
 
-    <!-- Header -->
-    <div class="relative z-10 flex items-center justify-between px-4 py-4">
-      <a href="/" class="flex items-center gap-2">
-        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
+    <!-- Header (Edge-to-Edge) -->
+    <div class="relative z-10 w-full px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
+        <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/20" />
+        <span class="font-bold text-sm sm:text-base md:text-lg tracking-wide hidden sm:inline">GlianaPay</span>
       </a>
-      <a href="/" class="text-zinc-400 hover:text-white text-sm">← Back</a>
+      <a href="/" class="text-zinc-400 hover:text-white text-sm font-medium transition-colors">← Back</a>
     </div>
 
-    <div class="relative z-10 max-w-xl mx-auto px-4 pt-20 pb-8 flex-1">
+    <div class="relative z-10 max-w-xl mx-auto px-4 pt-4 sm:pt-6 pb-8 flex-1">
       <!-- Beta Badge -->
       <div class="flex justify-center mb-4">
         <div class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full">
