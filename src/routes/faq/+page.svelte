@@ -134,7 +134,7 @@
     >
   </div>
 
-  <div class="relative z-10 max-w-3xl mx-auto px-4 pt-0 pb-8 flex-1">
+  <div class="relative z-10 max-w-3xl w-full mx-auto px-4 pt-0 pb-8 flex-1">
     <div class="text-center mb-12">
       <h1 class="text-3xl md:text-4xl font-bold mb-4">
         <span
