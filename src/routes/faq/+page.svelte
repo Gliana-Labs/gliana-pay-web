@@ -92,7 +92,9 @@
   <link rel="alternate" hreflang="en" href="https://glianapay.com/faq" />
 </svelte:head>
 
-<div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">
+<div
+  class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col overflow-x-hidden"
+>
   <!-- Animated Background -->
   <div class="absolute inset-0 overflow-hidden">
     <div
