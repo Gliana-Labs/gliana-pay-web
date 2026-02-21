@@ -93,7 +93,7 @@
 </svelte:head>
 
 <div
-  class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col overflow-x-hidden"
+  class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col overflow-x-hidden overflow-y-scroll"
 >
   <!-- Animated Background -->
   <div class="absolute inset-0 overflow-hidden">
