@@ -380,29 +380,28 @@
 </script>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
-  <!-- Header -->
-  <div class="absolute top-0 left-0 w-full z-50 px-4 py-4">
-    <div class="max-w-5xl mx-auto w-full flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-        <img src="/logo.svg" alt="GlianaPay" class="w-8 h-8 md:w-10 md:h-10 rounded-xl" />
-        <span class="font-bold text-base md:text-lg">GlianaPay</span>
-      </a>
+  <!-- Header (Edge-to-Edge) -->
+  <div class="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
+      <img src="/logo.svg" alt="GlianaPay" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl shadow-lg shadow-purple-500/20" />
+      <span class="font-bold text-sm sm:text-base md:text-lg tracking-wide">GlianaPay</span>
+    </a>
 
-      <!-- Beta Badge -->
-      <div class="relative group z-20">
-        <div class="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-full cursor-help">
-          <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-          <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
-        </div>
-        <!-- Tooltip -->
-        <div class="absolute right-0 top-full mt-2 w-64 px-3 py-2 bg-zinc-900 border border-yellow-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-          This is a testnet version. No real money involved. Enable devnet in your wallet settings before using.
-        </div>
+    <!-- Beta Badge -->
+    <div class="relative group z-20">
+      <div class="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full cursor-help hover:bg-yellow-500/20 transition-colors">
+        <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(250,204,21,0.5)]"></span>
+        <span class="text-[10px] sm:text-xs font-medium text-yellow-400">Beta - Devnet</span>
+      </div>
+      <!-- Tooltip -->
+      <div class="absolute right-0 top-full mt-2 w-48 sm:w-64 px-3 py-2 bg-zinc-900 border border-yellow-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-right sm:text-left">
+        This is a testnet version. No real money involved. Enable devnet in your wallet settings before using.
       </div>
     </div>
   </div>
 
-  <div class="absolute inset-0 overflow-hidden">
+  <!-- Background Effects -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
     <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
   </div>
