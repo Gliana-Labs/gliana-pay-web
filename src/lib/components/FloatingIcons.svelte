@@ -27,11 +27,13 @@
     duration: string;
     opacity: string;
     rotation: string;
-    rotationAmount: string;
-    startX: string;
-    startY: string;
-    endX: string;
-    endY: string;
+    rotationAmount?: string;
+    startX?: string;
+    startY?: string;
+    endX?: string;
+    endY?: string;
+    vx?: number;
+    vy?: number;
   }> = [];
 
   function getTargetPosition() {
@@ -105,6 +107,7 @@
       icons = Array.from({ length: 10 }, (_, i) => ({
         src: iconFiles[i % iconFiles.length],
         left: `${(i / 10) * 100 + 5}%`,
+        top: '-100px',
         size: `${30 + Math.random() * 40}`,
         delay: `${Math.random() * 10}s`,
         duration: `${15 + Math.random() * 10}s`,
@@ -114,7 +117,9 @@
         startX: '',
         startY: '',
         endX: '',
-        endY: ''
+        endY: '',
+        vx: 0,
+        vy: 0
       }));
     }
   }

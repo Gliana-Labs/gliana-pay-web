@@ -45,31 +45,62 @@
 
   let isMobile = false;
 
-  onMount(async () => {
+  // Social Media states
+  let xUrl = '';
+  let redditUrl = '';
+  let youtubeUrl = '';
+  let twitchUrl = '';
+  let kickUrl = '';
+  let description = '';
+  let minAmount = 0.01;
+
+  onMount(() => {
     // Fetch streamer data
-    const slug = $page.params.slug;
-    try {
-      const response = await fetch(`/api/streamer/${slug}`);
-      if (response.ok) {
-        const data = await response.json() as { streamer: Streamer; settings: AlertSettings | null; topTippers?: TopTipper[] };
-        streamer = data.streamer;
-        settings = data.settings;
-        topTippers = data.topTippers || [];
-      } else {
+    async function fetchData() {
+      const slug = $page.params.slug;
+      try {
+        const response = await fetch(`/api/streamer/${slug}`);
+        if (response.ok) {
+          const data = await response.json();
+          streamer = data.streamer;
+          settings = data.settings;
+          topTippers = data.topTippers || [];
+
+          // Assign alert settings
+          if (settings) {
+            minAmount = settings.min_amount || 0.01;
+          }
+
+          // Assign social settings
+          if (streamer) {
+            xUrl = streamer.x_url || '';
+            redditUrl = streamer.reddit_url || '';
+            youtubeUrl = streamer.youtube_url || '';
+            twitchUrl = streamer.twitch_url || '';
+            kickUrl = streamer.kick_url || '';
+            description = streamer.description || '';
+          }
+        } else {
+          loadError = 'Streamer not found';
+        }
+      } catch (e) {
+        console.error('Failed to load streamer:', e);
         loadError = 'Streamer not found';
       }
-    } catch (e) {
-      console.error('Failed to load streamer:', e);
-      loadError = 'Streamer not found';
     }
+    
+    fetchData();
 
     // Small delay to ensure wallet extensions are loaded
     setTimeout(checkWallets, 100);
-    // Re-check wallets when window gains focus (e.g., after installing extension)
     window.addEventListener('focus', checkWallets);
-    // Check if mobile
+
     isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    return () => window.removeEventListener('focus', checkWallets);
+    
+    return () => {
+      window.removeEventListener('focus', checkWallets);
+      if (qrInterval) clearInterval(qrInterval);
+    };
   });
 
   // Check available wallets
@@ -113,15 +144,25 @@
     return null;
   }
 
+  let qrInterval: any = null;
+
   async function generatePayment() {
     if (!streamer) return;
 
     isLoading = true;
     status = 'Generating payment request...';
+    
+    // Clear any existing polling intervals
+    if (qrInterval) clearInterval(qrInterval);
 
     try {
+      const { Connection, Keypair } = await import('@solana/web3.js');
+      const connection = new Connection('https://api.devnet.solana.com');
+
       const lamports = Math.floor(amount * 1e9);
-      const reference = crypto.randomUUID();
+      // Solana Pay strictly requires an Ed25519 Public Key as the reference parameter, not a UUID string.
+      const referenceKeypair = Keypair.generate();
+      const reference = referenceKeypair.publicKey.toBase58();
 
       const paymentUrl = new URL(`solana:${streamer.wallet}`);
       paymentUrl.searchParams.append('amount', amount.toString());
@@ -134,6 +175,56 @@
       qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodedUrl}`;
 
       status = viewerConnected ? 'Wallet connected! You can pay directly or scan QR' : 'Scan the QR code with your wallet!';
+      
+      // Start polling the blockchain for the mobile QR Code scan completion
+      qrInterval = setInterval(async () => {
+        try {
+          // Check if any transactions have hit our unique reference key
+          const signatures = await connection.getSignaturesForAddress(referenceKeypair.publicKey, { limit: 1 });
+          
+          if (signatures.length > 0) {
+            clearInterval(qrInterval);
+            status = 'Mobile payment confirmed! Sending alert to streamer...';
+            
+            const txSignature = signatures[0].signature;
+            
+            // Record tip and broadcast to streamer's overlay
+            const tipData = {
+              slug: streamer!.slug,
+              tx_hash: txSignature,
+              amount: lamports,
+              sender: 'Mobile Wallet User',
+              sender_name: name || 'Anonymous (Mobile)',
+              message: message || '🎉'
+            };
+
+            for (let attempt = 1; attempt <= 3; attempt++) {
+              try {
+                const res = await fetch(`${WORKER_URL}/api/tip/record`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(tipData)
+                });
+                if (res.ok) {
+                  status = 'Alert sent! Thank you for your mobile tip! 🎉';
+                  qrCodeUrl = ''; 
+                  break;
+                }
+              } catch (e) {
+                console.error('[TipPage] Mobile Alert Attempt', attempt, 'failed:', e);
+                if (attempt === 3) {
+                  status = 'Payment confirmed but alert may be delayed. Thank you!';
+                  qrCodeUrl = '';
+                }
+              }
+              if (attempt < 3) await new Promise(r => setTimeout(r, 1000));
+            }
+          }
+        } catch (pollErr) {
+           // Silent catch for network errors during polling
+        }
+      }, 3000); // Poll every 3 seconds
+
     } catch (error) {
       console.error('Failed to generate payment:', error);
       status = 'Failed to generate payment. Please try again.';
@@ -264,7 +355,7 @@
             sender_name: name || viewerWallet?.slice(0, 8) || 'Anonymous',
             message: message || '🎉',
             timestamp: new Date().toISOString(),
-            streamer_slug: streamer.slug
+            streamer_slug: streamer!.slug
           }
         }, '*');
       }

@@ -140,7 +140,7 @@
           } else if (message.type === 'welcome') {
           } else if (message.type === 'error') {
             console.error('WebSocket error:', message.message);
-            wsError = message.message;
+            wsError = message.message || 'Unknown error';
           }
         } catch (error) {
           console.error('Failed to parse message:', error);
