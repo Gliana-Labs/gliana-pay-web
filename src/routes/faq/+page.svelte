@@ -158,7 +158,7 @@
             class="w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-zinc-800/50 transition-colors"
             on:click={() => toggle(index)}
           >
-            <span class="font-medium text-lg">{faq.question}</span>
+            <span class="font-medium text-lg min-w-0">{faq.question}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-5 h-5 text-zinc-400 transition-transform duration-200 {openIndex ===
@@ -176,7 +176,7 @@
           {#if openIndex === index}
             <div
               transition:slide={{ duration: 300 }}
-              class="px-6 pb-5 text-zinc-300 leading-relaxed"
+              class="px-6 pb-5 text-zinc-300 leading-relaxed w-full break-words"
             >
               {faq.answer}
             </div>
