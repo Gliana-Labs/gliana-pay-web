@@ -107,14 +107,14 @@
           >Docs</a
         >
         <a
-          href="/faq"
-          class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-          >FAQ</a
-        >
-        <a
           href="/roadmap"
           class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
           >Roadmap</a
+        >
+        <a
+          href="/faq"
+          class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+          >FAQ</a
         >
       </nav>
 

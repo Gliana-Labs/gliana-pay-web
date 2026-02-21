@@ -179,7 +179,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Solana Mainnet launch (real SOL)", "USDC stablecoin tipping support", "Expanded wallet compatibility", "Alert customization (colors, fonts, animation styles)", "Custom media upload for alerts (GIF/image)", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
+                            {#each ["Solana Mainnet launch (real SOL)", "Alert customization (colors, fonts, animation styles)", "Custom media upload for alerts (GIF/image)", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
@@ -277,7 +277,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs"] as item}
+                            {#each ["Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "USDC stablecoin tipping support", "Expanded wallet compatibility", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >

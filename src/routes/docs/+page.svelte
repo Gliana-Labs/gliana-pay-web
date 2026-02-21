@@ -264,6 +264,43 @@
           </p>
         </div>
       </div>
+
+      <!-- Developer API Docs -->
+      <div
+        class="glass-card rounded-2xl border border-zinc-700/50 overflow-hidden mt-4"
+      >
+        <div class="px-6 py-4 border-b border-white/5 flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-lg bg-zinc-700/30 flex items-center justify-center text-zinc-400"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+              /></svg
+            >
+          </div>
+          <h2 class="font-semibold text-base">Developer API</h2>
+          <span
+            class="ml-auto px-2.5 py-0.5 bg-zinc-800 border border-zinc-700 rounded-full text-xs font-medium text-zinc-500"
+            >Coming Soon</span
+          >
+        </div>
+        <div class="px-6 py-4 text-sm text-zinc-500 leading-relaxed">
+          Full API documentation and integration guides for developers are
+          currently in the works. Once available, you'll be able to build your
+          own integrations on top of GlianaPay. Stay tuned by checking our <a
+            href="/roadmap"
+            class="text-purple-400 hover:underline">Roadmap</a
+          >.
+        </div>
+      </div>
     </div>
 
     <!-- Quick Links -->
