@@ -301,7 +301,7 @@
       <a href="/" class="text-zinc-400 hover:text-white text-sm font-medium transition-colors">← Back</a>
     </div>
 
-    <div class="relative z-10 max-w-xl mx-auto px-4 pt-4 sm:pt-6 pb-8 flex-1">
+    <div class="relative z-10 max-w-xl mx-auto px-4 pt-4 sm:pt-6 pb-8 flex-1 flex flex-col justify-center min-h-[calc(100vh-80px)] md:min-h-0">
       <!-- Beta Badge -->
       <div class="flex justify-center mb-4">
         <div class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full">
