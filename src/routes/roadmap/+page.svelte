@@ -167,7 +167,7 @@
                                     Phase 1
                                 </p>
                                 <h2 class="font-bold text-base text-white">
-                                    Mainnet & Stability
+                                    Improvements & Accessibility
                                 </h2>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Solana Mainnet launch (real SOL)", "Alert customization (colors, fonts, animation styles)", "Custom media upload for alerts (GIF/image)", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
+                            {#each ["Alert customization (colors, fonts, animation styles)", "Custom media upload for alerts (GIF/image)", "Tip page with suggested amounts", "Fiat on-ramp (card → SOL/USDC) for viewers", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
@@ -216,7 +216,7 @@
                                     Phase 2
                                 </p>
                                 <h2 class="font-bold text-base text-white">
-                                    Stream Ecosystem
+                                    Mainnet & Stream Ecosystem
                                 </h2>
                             </div>
                         </div>
@@ -228,7 +228,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Text-to-speech (TTS) alerts", "Alert sound library (built-in meme sounds)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)", "Stream chat bot (GlianaBot)", "Tip page with suggested amounts", "Fiat on-ramp (card → SOL/USDC) for viewers"] as item}
+                            {#each ["Solana Mainnet launch (real SOL)", "Text-to-speech (TTS) alerts", "Alert sound library (built-in meme sounds)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)", "Stream chat bot (GlianaBot)"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
