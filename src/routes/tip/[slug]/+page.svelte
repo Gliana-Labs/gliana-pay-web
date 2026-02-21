@@ -625,12 +625,8 @@
             {/if}
           </div>
 
-      <!-- Close the right column and the grid -->
-        </div>
-      </div>
-
       {#if qrCodeUrl}
-        <div class="mt-6 glass-card rounded-2xl border border-white/10 animate-slide-up overflow-hidden">
+        <div class="order-2 lg:order-3 lg:col-span-12 mt-6 glass-card rounded-2xl border border-white/10 animate-slide-up overflow-hidden">
           <!-- Amount Summary Header -->
           <div class="px-6 py-4 bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border-b border-white/5">
             <div class="flex items-center justify-center gap-3">
@@ -719,6 +715,10 @@
           </div>
         </div>
       {/if}
+
+      <!-- Close the right column and the grid -->
+        </div>
+      </div>
 
       <!-- Powered by Solana -->
       <div class="mt-8 flex items-center justify-center gap-2">
