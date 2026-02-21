@@ -420,14 +420,14 @@
       <div class="bg-[#111113]/90 backdrop-blur-xl border border-white/10 border-t-0 rounded-b-3xl px-6 pb-6 pt-0 relative shadow-2xl">
         <!-- Overlapping Avatar - X/Twitter Style (Left aligned) -->
         <div class="flex justify-between items-end -mt-12 md:-mt-16 mb-4 relative z-10 w-full">
-          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-[#111113] bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/20 overflow-hidden">
+          <div class="w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-full border-4 border-[#111113] bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/20 overflow-hidden">
              <!-- Using emoji as requested, but structured to support images later -->
              <span class="text-4xl md:text-6xl drop-shadow-md">🎮</span>
           </div>
 
           <!-- Social Links moved to right side alongside avatar -->
           {#if streamer && (streamer.x_url || streamer.reddit_url || streamer.youtube_url || streamer.kick_url || streamer.twitch_url)}
-            <div class="flex gap-2 mb-2 md:mb-6">
+            <div class="flex flex-wrap justify-end ml-4 gap-2 mb-2 md:mb-6">
               {#if streamer.x_url}
                 <a href={streamer.x_url} target="_blank" rel="noopener noreferrer" class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-zinc-800 hover:border-white/30 transition-all text-zinc-400 hover:text-white" title="X (Twitter)">
                   <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -445,7 +445,7 @@
               {/if}
               {#if streamer.kick_url}
                 <a href={streamer.kick_url} target="_blank" rel="noopener noreferrer" class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#53FC18]/20 hover:border-[#53FC18]/50 transition-all text-zinc-400 hover:text-[#53FC18]" title="Kick">
-                  <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M1.385 0h4.223v6.462h3.538V0h4.223v6.462h1.616V0h7.615v6.462h-4.307v2.692h-1.616v2.616h1.616v2.692h4.307V24h-7.615v-6.462h-1.616v-2.615h-1.615v2.615H8.223v2.693h-1.616V24H1.385V0zM12.692 11.846v-2.692H14.154v2.692h-1.462zm0 2.616v-2.616h1.462v2.616h-1.462z"/></svg>
+                  <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.385 0h4.223v6.462h3.538V0h4.223v6.462h1.616V0h7.615v6.462h-4.307v2.692h-1.616v2.616h1.616v2.692h4.307V24h-7.615v-6.462h-1.616v-2.615h-1.615v2.615H8.223v2.693h-1.616V24H1.385V0zM12.692 11.846v-2.692H14.154v2.692h-1.462zm0 2.616v-2.616h1.462v2.616h-1.462z"/></svg>
                 </a>
               {/if}
               {#if streamer.reddit_url}
