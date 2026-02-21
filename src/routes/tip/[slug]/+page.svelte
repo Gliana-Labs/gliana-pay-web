@@ -445,7 +445,7 @@
               {/if}
               {#if streamer.kick_url}
                 <a href={streamer.kick_url} target="_blank" rel="noopener noreferrer" class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#53FC18]/20 hover:border-[#53FC18]/50 transition-all text-zinc-400 hover:text-[#53FC18]" title="Kick">
-                  <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.385 0h4.223v6.462h3.538V0h4.223v6.462h1.616V0h7.615v6.462h-4.307v2.692h-1.616v2.616h1.616v2.692h4.307V24h-7.615v-6.462h-1.616v-2.615h-1.615v2.615H8.223v2.693h-1.616V24H1.385V0zM12.692 11.846v-2.692H14.154v2.692h-1.462zm0 2.616v-2.616h1.462v2.616h-1.462z"/></svg>
+                  <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2"><path d="M37 .036h164.448v113.621h54.71v-56.82h54.731V.036h164.448v170.777h-54.73v56.82h-54.711v56.8h54.71v56.82h54.73V512.03H310.89v-56.82h-54.73v-56.8h-54.711v113.62H37V.036z" fill="currentColor"/></svg>
                 </a>
               {/if}
               {#if streamer.reddit_url}
