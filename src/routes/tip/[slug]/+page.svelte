@@ -633,6 +633,13 @@
         <div class="mt-6 glass-card rounded-2xl p-6 text-center border border-white/10 animate-slide-up">
           <div class="flex items-center justify-center gap-2 mb-4"><span class="text-2xl">📱</span><h3 class="text-xl font-bold text-white">Scan to Pay</h3></div>
           <div class="inline-block p-3 bg-white rounded-2xl mb-4"><img src={qrCodeUrl} alt="QR" class="w-48 h-48" /></div>
+          
+          <!-- Caution: do not close -->
+          <div class="flex items-center gap-2 justify-center mb-4 px-4 py-2.5 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
+            <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse flex-shrink-0"></span>
+            <p class="text-yellow-300 text-xs">Don't close this page after scanning — the alert will be sent automatically once payment is confirmed.</p>
+          </div>
+
           <p class="text-zinc-400 text-sm mb-4">Or pay directly with connected wallet</p>
           <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-500/40 rounded-xl"><span class="text-green-400 font-bold">{amount} SOL</span><span class="text-zinc-500">→</span><span class="text-white font-semibold">{streamer?.name}</span></div>
 
