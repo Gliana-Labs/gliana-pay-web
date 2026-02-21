@@ -479,7 +479,7 @@
         <p class="text-sm text-zinc-500">Hang tight, we're getting everything ready</p>
       </div>
     {:else}
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6 items-start">
         
         <!-- Left Column: Leaderboard -->
         <div class="lg:col-span-5 order-3 lg:order-1 flex flex-col gap-4">
