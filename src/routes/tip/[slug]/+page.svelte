@@ -641,7 +641,7 @@
           </div>
 
           <!-- Payment Methods -->
-          <div class="grid grid-cols-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2">
 
             <!-- Left: Scan to Pay -->
             <div class="p-6 flex flex-col items-center text-center">
@@ -663,17 +663,17 @@
               </div>
             </div>
 
-            <!-- Divider (mobile horizontal - hidden since always 2-col) -->
-            <div class="hidden items-center gap-3 px-6">
+            <!-- Divider (mobile horizontal) -->
+            <div class="flex items-center gap-3 px-6 sm:hidden">
               <div class="flex-1 h-px bg-white/10"></div>
               <span class="text-xs text-zinc-500 font-medium">OR</span>
               <div class="flex-1 h-px bg-white/10"></div>
             </div>
 
             <!-- Right: Pay with Wallet -->
-            <div class="p-6 flex flex-col items-center justify-center text-center border-l border-white/5 relative">
-              <!-- Vertical OR divider -->
-              <div class="absolute -left-px top-1/2 -translate-y-1/2 -translate-x-1/2">
+            <div class="p-6 flex flex-col items-center justify-center text-center sm:border-l sm:border-white/5 relative">
+              <!-- Vertical OR divider (desktop) -->
+              <div class="hidden sm:block absolute -left-px top-1/2 -translate-y-1/2 -translate-x-1/2">
                 <div class="w-8 h-8 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center">
                   <span class="text-[10px] text-zinc-400 font-bold">OR</span>
                 </div>
