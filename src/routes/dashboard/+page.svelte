@@ -240,18 +240,18 @@
     <FloatingIcons animation="rain" />
 
     <!-- Header -->
-    <div class="border-b border-white/10 relative z-10 w-full px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-      <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <button on:click={goToHomepage} class="flex items-center gap-2 sm:gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-          <img src="/logo.svg" alt="GlianaPay" class="w-8 h-8 sm:w-10 sm:h-10 bg-transparent rounded-xl" />
-          <span class="font-bold text-sm sm:text-base md:text-lg tracking-wide hidden md:inline">GlianaPay</span>
+    <div class="border-b border-white/10 relative z-10">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <button on:click={goToHomepage} class="flex items-center gap-2 cursor-pointer">
+          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
+          <span class="font-bold hidden md:inline">GlianaPay</span>
         </button>
         <div class="flex items-center gap-2 md:gap-4">
           <span class="text-zinc-400 text-sm hidden md:inline">Dashboard</span>
           <div class="text-sm text-zinc-400">
             {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
           </div>
-          <button on:click={handleLogout} class="text-sm font-medium text-red-400 hover:text-red-300 cursor-pointer transition-colors">Logout</button>
+          <button on:click={handleLogout} class="text-sm text-red-400 hover:text-red-300 cursor-pointer">Logout</button>
         </div>
       </div>
     </div>
