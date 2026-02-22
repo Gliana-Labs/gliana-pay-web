@@ -179,7 +179,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Alert customization (colors, fonts, animation styles)", "Custom media upload for alerts (GIF/image)", "Tip page with suggested amounts", "Fiat on-ramp (card → SOL/USDC) for viewers", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
+                            {#each ["Alert customization (colors, fonts, animation styles)", "Custom media upload for alerts (GIF/image)", "Tip page with suggested amounts", "Live SOL/USD price display", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
