@@ -9,24 +9,9 @@
         "GlianaPay is a Web3 tipping platform built on Solana that lets streamers accept SOL tips directly to their wallet with real-time OBS stream alerts — no middleman, no payout delays, no chargebacks.",
     },
     {
-      question: "How do I start receiving tips?",
+      question: "Why GlianaPay?",
       answer:
-        "Head to the login page, connect your Phantom or Solflare wallet, and pick a unique URL slug (e.g. your stream name). That's it — your tip page is live immediately at glianapay.com/your-slug.",
-    },
-    {
-      question: "Are there any platform fees?",
-      answer:
-        "No. Traditional platforms take 30% to 50% of your earnings. GlianaPay takes 0%. You keep 100% of your tips. The only cost is the fraction of a cent for the Solana network transaction fee.",
-    },
-    {
-      question: "How long do withdrawals take?",
-      answer:
-        "There are no withdrawals because we never hold your money. Tips are sent directly peer-to-peer into your own Solana wallet in under 400 milliseconds. No Net-30 wait times, no minimum payout thresholds.",
-    },
-    {
-      question: "What about chargebacks?",
-      answer:
-        "Unlike traditional credit card tips that can be charged back weeks later (often slapping you with dispute fees), blockchain transactions are mathematically final. 100% zero chargeback risk.",
+        "Traditional platforms take 30% to 50% of your earnings, enforce Net-30 payout delays, and expose you to credit card chargeback fraud. GlianaPay takes 0% in platform fees, settles tips instantly into your own Solana wallet peer-to-peer, and offers 100% mathematically final chargeback protection.",
     },
     {
       question: "Which wallets are supported?",
