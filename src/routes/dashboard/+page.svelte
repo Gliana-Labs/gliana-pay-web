@@ -538,7 +538,7 @@
                         class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
                       />
                     </div>
-                    <div class="md:col-span-2">
+                    <div>
                       <label
                         for="reddit"
                         class="block text-xs text-zinc-400 mb-1"
