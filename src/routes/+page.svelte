@@ -296,7 +296,13 @@
         target="_blank"
         class="flex items-center gap-2 hover:opacity-80 transition-opacity"
       >
-        <img src="/gl-logo.svg" alt="gliana" class="h-5 w-auto" />
+        <img
+          src="/gl-logo.svg"
+          alt="gliana"
+          class="h-5 w-auto"
+          width="80"
+          height="20"
+        />
         <span class="text-zinc-600 text-xs">
           &copy; {currentYear} by Gliana Labs
         </span>

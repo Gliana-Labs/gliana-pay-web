@@ -180,6 +180,8 @@
         src={icon.src}
         alt=""
         class="{animation}-icon z-0"
+        width={icon.size}
+        height={icon.size}
         style="
         position: absolute;
         width: {icon.size}px;
@@ -197,6 +199,7 @@
       "
         loading="eager"
         decoding="async"
+        fetchpriority="low"
       />
     {/each}
   </div>
