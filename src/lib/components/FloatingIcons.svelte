@@ -129,7 +129,9 @@
     if (!targetId || animation !== "fountain") {
       const targetPos = getTargetPosition();
       createIcons(targetPos);
-      ready = true;
+      requestAnimationFrame(() => {
+        ready = true;
+      });
       return;
     }
 
@@ -147,7 +149,10 @@
           if (!ready) {
             // First time setup
             createIcons(newPos);
-            ready = true;
+            // Wait for next paint frame to hydrate the 15 DOM nodes
+            requestAnimationFrame(() => {
+              ready = true;
+            });
           } else {
             // Update positions on resize
             icons = icons.map((icon) => ({
@@ -163,7 +168,9 @@
         // Fallback if target not found
         const targetPos = getTargetPosition();
         createIcons(targetPos);
-        ready = true;
+        requestAnimationFrame(() => {
+          ready = true;
+        });
       }
     }, 0);
 
