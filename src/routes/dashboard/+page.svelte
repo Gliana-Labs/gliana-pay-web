@@ -31,9 +31,13 @@
   let totalTips = 0;
   let average = 0;
   let donations: any[] = [];
+  let alertsLoading = false;
 
-  // Settings (loaded for OBS overlay)
+  // Alert Settings
+  let minAmount = 0.001;
+  let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
   let soundEnabled = false;
+  let soundError = "";
   let name = "";
 
   // Copy state
@@ -80,12 +84,64 @@
       const response = await fetch(`${WORKER_URL}/api/streamer/${slug}`);
       if (response.ok) {
         const data = await response.json();
+        if (data.settings) {
+          const loadedAmount = data.settings.min_amount || 1000000;
+          minAmount = Math.max(loadedAmount, 1000000) / 1e9;
+          soundUrl =
+            data.settings.sound_url ||
+            "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
+        }
         if (data.streamer) {
           name = data.streamer.name || "";
         }
       }
     } catch (e) {
       console.error("Failed to load settings:", e);
+    }
+  }
+
+  // Save alert settings
+  async function saveAlertSettings() {
+    soundError = "";
+
+    if (minAmount < 0.001) {
+      minAmount = 0.001;
+    }
+
+    if (
+      soundUrl &&
+      !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) &&
+      !soundUrl.includes("/media/sounds/")
+    ) {
+      soundError = "URL should end with .mp3 or contain /media/sounds/";
+      return;
+    }
+
+    alertsLoading = true;
+
+    try {
+      const response = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/settings`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            min_amount: Math.floor(minAmount * 1e6),
+            sound_url: soundUrl,
+          }),
+        },
+      );
+
+      if (response.ok) {
+        showToast("Alert settings saved!", "success");
+      } else {
+        const data = await response.json().catch(() => ({}));
+        showToast((data as any).error || "Failed to save", "error");
+      }
+    } catch (e) {
+      showToast("Failed to connect to server", "error");
+    } finally {
+      alertsLoading = false;
     }
   }
 
@@ -295,31 +351,68 @@
           </div>
         </div>
 
-        <!-- Settings Link -->
+        <!-- Alert Settings + OBS Overlay -->
         <div>
-          <a
-            href="/settings"
-            class="glass-card rounded-2xl border border-white/10 p-6 flex items-center justify-between hover:border-purple-500/30 transition-colors group"
-          >
-            <div>
-              <h2 class="font-bold text-lg">Settings</h2>
-              <p class="text-sm text-zinc-400 mt-1">
-                Manage alerts, profile & social links
-              </p>
+          <div class="glass-card rounded-2xl border border-white/10 p-6">
+            <h2 class="font-bold text-lg mb-4">Alert Settings</h2>
+            <div class="space-y-4">
+              <div>
+                <label for="min-amount" class="block text-sm text-zinc-400 mb-2"
+                  >Minimum Tip (SOL)</label
+                >
+                <input
+                  type="number"
+                  id="min-amount"
+                  bind:value={minAmount}
+                  step="0.001"
+                  min="0.001"
+                  class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
+                />
+              </div>
+              <div>
+                <label for="sound" class="block text-sm text-zinc-400 mb-2"
+                  >Alert Sound URL</label
+                >
+                <div class="space-y-2">
+                  <input
+                    type="url"
+                    id="sound"
+                    bind:value={soundUrl}
+                    placeholder="https://example.com/sound.mp3"
+                    class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm"
+                  />
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-zinc-500"
+                      >Recommended: short MP3 URLs</span
+                    >
+                    <button
+                      on:click={() =>
+                        (soundUrl =
+                          "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3")}
+                      class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
+                    >
+                      Default
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {#if soundError}
+                <p class="text-red-400 text-sm">{soundError}</p>
+              {/if}
+
+              <button
+                on:click={saveAlertSettings}
+                disabled={alertsLoading}
+                class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
+              >
+                {#if alertsLoading}
+                  Saving...
+                {:else}
+                  Save Alert Settings
+                {/if}
+              </button>
             </div>
-            <svg
-              class="w-5 h-5 text-zinc-400 group-hover:text-purple-400 transition-colors"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              /></svg
-            >
-          </a>
+          </div>
 
           <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
             <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>

@@ -27,11 +27,7 @@
     }
 
     // Settings
-    let alertsLoading = false;
     let socialsLoading = false;
-    let minAmount = 0.001;
-    let soundUrl =
-        "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
 
     // Profile Settings
     let name = "";
@@ -65,13 +61,6 @@
             const response = await fetch(`${WORKER_URL}/api/streamer/${slug}`);
             if (response.ok) {
                 const data = await response.json();
-                if (data.settings) {
-                    const loadedAmount = data.settings.min_amount || 1000000;
-                    minAmount = Math.max(loadedAmount, 1000000) / 1e9;
-                    soundUrl =
-                        data.settings.sound_url ||
-                        "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
-                }
                 if (data.streamer) {
                     name = data.streamer.name || "";
                     xUrl = data.streamer.x_url || "";
@@ -91,26 +80,8 @@
     }
 
     // Save settings
-    let soundError = "";
-
-    async function saveSettings(type: "alerts" | "socials") {
-        soundError = "";
-
-        if (minAmount < 0.001) {
-            minAmount = 0.001;
-        }
-
-        if (
-            soundUrl &&
-            !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) &&
-            !soundUrl.includes("/media/sounds/")
-        ) {
-            soundError = "URL should end with .mp3 or contain /media/sounds/";
-            if (type === "alerts") return;
-        }
-
-        if (type === "alerts") alertsLoading = true;
-        else socialsLoading = true;
+    async function saveSettings() {
+        socialsLoading = true;
 
         try {
             const response = await fetch(
@@ -119,8 +90,6 @@
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        min_amount: Math.floor(minAmount * 1e6),
-                        sound_url: soundUrl,
                         name: name,
                         x_url: xUrl,
                         reddit_url: redditUrl,
@@ -136,12 +105,7 @@
             );
 
             if (response.ok) {
-                showToast(
-                    type === "alerts"
-                        ? "Alert settings saved!"
-                        : "Profile settings saved!",
-                    "success",
-                );
+                showToast("Profile settings saved!", "success");
             } else {
                 const errorData = await response.json().catch(() => ({}));
                 showToast(
@@ -152,7 +116,6 @@
         } catch (e) {
             showToast("Failed to save settings");
         } finally {
-            alertsLoading = false;
             socialsLoading = false;
         }
     }
@@ -246,74 +209,8 @@
             <div class="mb-8">
                 <h1 class="text-2xl font-bold">Settings</h1>
                 <p class="text-zinc-400 text-sm mt-1">
-                    Manage your alerts, profile, and social links
+                    Manage your profile and social links
                 </p>
-            </div>
-
-            <!-- Alert Settings -->
-            <div class="glass-card rounded-2xl border border-white/10 p-6 mb-6">
-                <h2 class="font-bold text-lg mb-4">Alert Settings</h2>
-                <div class="space-y-4">
-                    <div>
-                        <label
-                            for="min-amount"
-                            class="block text-sm text-zinc-400 mb-2"
-                            >Minimum Tip (SOL)</label
-                        >
-                        <input
-                            type="number"
-                            id="min-amount"
-                            bind:value={minAmount}
-                            step="0.001"
-                            min="0.001"
-                            class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="sound"
-                            class="block text-sm text-zinc-400 mb-2"
-                            >Alert Sound URL</label
-                        >
-                        <div class="space-y-2">
-                            <input
-                                type="url"
-                                id="sound"
-                                bind:value={soundUrl}
-                                placeholder="https://example.com/sound.mp3"
-                                class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm"
-                            />
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs text-zinc-500"
-                                    >Recommended: short MP3 URLs</span
-                                >
-                                <button
-                                    on:click={() =>
-                                        (soundUrl =
-                                            "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3")}
-                                    class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
-                                >
-                                    Default
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {#if soundError}
-                        <p class="text-red-400 text-sm">{soundError}</p>
-                    {/if}
-
-                    <button
-                        on:click={() => saveSettings("alerts")}
-                        disabled={alertsLoading}
-                        class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
-                    >
-                        {#if alertsLoading}
-                            Saving...
-                        {:else}
-                            Save Alert Settings
-                        {/if}
-                    </button>
-                </div>
             </div>
 
             <!-- Profile Settings -->
@@ -471,7 +368,7 @@
                 </div>
 
                 <button
-                    on:click={() => saveSettings("socials")}
+                    on:click={saveSettings}
                     disabled={socialsLoading}
                     class="w-full mt-6 py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
                 >
