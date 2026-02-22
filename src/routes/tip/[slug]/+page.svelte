@@ -594,7 +594,7 @@
                   title="YouTube"
                 >
                   <svg
-                    class="w-4 h-4 md:w-5 md:h-5 -mx-0.5"
+                    class="w-4 h-4 md:w-5 md:h-5"
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     ><path
