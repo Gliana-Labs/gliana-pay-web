@@ -125,26 +125,51 @@
   }
 
   onMount(() => {
-    // Wait for the next frame to avoid forced reflows during initial render
-    requestAnimationFrame(() => {
+    // If no targetId, run immediately (no DOM measurement needed)
+    if (!targetId || animation !== "fountain") {
       const targetPos = getTargetPosition();
       createIcons(targetPos);
       ready = true;
-    });
+      return;
+    }
 
-    const handleResize = () => {
-      if (animation === "fountain" && targetId) {
-        const newPos = getTargetPosition();
-        icons = icons.map((icon) => ({
-          ...icon,
-          left: newPos.left,
-          top: newPos.top,
-        }));
+    // Use ResizeObserver to measure the target element only AFTER the browser finishes layout
+    let observer: ResizeObserver;
+
+    // We wait for the next macrotask to ensure the DOM element exists
+    setTimeout(() => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        observer = new ResizeObserver(() => {
+          // The browser is done with layout for this element, safe to measure
+          const newPos = getTargetPosition();
+
+          if (!ready) {
+            // First time setup
+            createIcons(newPos);
+            ready = true;
+          } else {
+            // Update positions on resize
+            icons = icons.map((icon) => ({
+              ...icon,
+              left: newPos.left,
+              top: newPos.top,
+            }));
+          }
+        });
+
+        observer.observe(target);
+      } else {
+        // Fallback if target not found
+        const targetPos = getTargetPosition();
+        createIcons(targetPos);
+        ready = true;
       }
-    };
+    }, 0);
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      if (observer) observer.disconnect();
+    };
   });
 </script>
 
