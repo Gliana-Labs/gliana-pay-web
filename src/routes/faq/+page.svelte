@@ -14,9 +14,19 @@
         "Head to the login page, connect your Phantom or Solflare wallet, and pick a unique URL slug (e.g. your stream name). That's it — your tip page is live immediately at glianapay.com/your-slug.",
     },
     {
-      question: "Is GlianaPay free to use?",
+      question: "Are there any platform fees?",
       answer:
-        "Yes, GlianaPay is completely free to sign up and use. There are no setup fees or monthly subscriptions. The only costs are the tiny Solana network transaction fees (usually a fraction of a cent), which go directly to the Solana validators, not to us.",
+        "No. Traditional platforms take 30% to 50% of your earnings. GlianaPay takes 0%. You keep 100% of your tips. The only cost is the fraction of a cent for the Solana network transaction fee.",
+    },
+    {
+      question: "How long do withdrawals take?",
+      answer:
+        "There are no withdrawals because we never hold your money. Tips are sent directly peer-to-peer into your own Solana wallet in under 400 milliseconds. No Net-30 wait times, no minimum payout thresholds.",
+    },
+    {
+      question: "What about chargebacks?",
+      answer:
+        "Unlike traditional credit card tips that can be charged back weeks later (often slapping you with dispute fees), blockchain transactions are mathematically final. 100% zero chargeback risk.",
     },
     {
       question: "Which wallets are supported?",
@@ -32,11 +42,6 @@
       question: "How do OBS alerts work?",
       answer:
         "Your dashboard provides a unique Browser Source URL. Paste it into OBS as a Browser Source. Whenever a tip comes in, the overlay automatically animates on-screen showing the tipper's name, amount, and message in real-time — no refresh needed.",
-    },
-    {
-      question: "How do I receive my tips?",
-      answer:
-        "Tips are sent directly to your connected Solana wallet address — GlianaPay never holds or touches your funds. You can keep them as SOL or send them to any exchange to convert to local currency.",
     },
     {
       question:
