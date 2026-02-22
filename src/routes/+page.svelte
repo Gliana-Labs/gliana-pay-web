@@ -95,7 +95,7 @@
       class="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex items-center justify-between"
     >
       <!-- Left Navigation -->
-      <nav class="flex items-center gap-4 sm:gap-6">
+      <nav class="flex items-center gap-2 sm:gap-6">
         <a
           href="/how"
           class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"

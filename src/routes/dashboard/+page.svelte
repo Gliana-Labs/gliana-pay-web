@@ -1,32 +1,28 @@
-<svelte:head>
-  <title>Dashboard - GlianaPay</title>
-</svelte:head>
-
 <script lang="ts">
-  import FloatingIcons from '$lib/components/FloatingIcons.svelte';
-  import { onMount } from 'svelte';
-  import { slide } from 'svelte/transition';
-  import { disconnectWallet } from '$lib/wallet';
-  import type { WalletInfo } from '$lib/wallet';
-  import { WORKER_URL } from '$lib/config';
+  import FloatingIcons from "$lib/components/FloatingIcons.svelte";
+  import { onMount } from "svelte";
+  import { slide } from "svelte/transition";
+  import { disconnectWallet } from "$lib/wallet";
+  import type { WalletInfo } from "$lib/wallet";
+  import { WORKER_URL } from "$lib/config";
 
   // Check auth
-  let walletAddress = '';
-  let slug = '';
+  let walletAddress = "";
+  let slug = "";
   let loading = true;
 
   // Toast notifications
-  let toast = '';
-  let toastType: 'success' | 'error' | '' = '';
+  let toast = "";
+  let toastType: "success" | "error" | "" = "";
   let toastTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  function showToast(message: string, type: 'success' | 'error' = 'error') {
+  function showToast(message: string, type: "success" | "error" = "error") {
     if (toastTimeout) clearTimeout(toastTimeout);
     toast = message;
     toastType = type;
     toastTimeout = setTimeout(() => {
-      toast = '';
-      toastType = '';
+      toast = "";
+      toastType = "";
     }, 5000);
   }
 
@@ -40,17 +36,20 @@
 
   // Settings
   let minAmount = 0.001;
-  let soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
+  let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
   let soundEnabled = false;
 
   // Profile Settings
-  let name = '';
-  let xUrl = '';
-  let redditUrl = '';
-  let youtubeUrl = '';
-  let kickUrl = '';
-  let twitchUrl = '';
-  let description = '';
+  let name = "";
+  let xUrl = "";
+  let redditUrl = "";
+  let youtubeUrl = "";
+  let kickUrl = "";
+  let twitchUrl = "";
+  let tiktokUrl = "";
+  let facebookUrl = "";
+  let instagramUrl = "";
+  let description = "";
 
   // Copy state
   let copied = false;
@@ -58,28 +57,29 @@
     const url = `https://glianapay.com/tip/${slug}`;
     await navigator.clipboard.writeText(url);
     copied = true;
-    setTimeout(() => copied = false, 2000);
+    setTimeout(() => (copied = false), 2000);
   }
 
   // Load session
   function loadSession() {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const saved = localStorage.getItem('gliana_session');
+    const saved = localStorage.getItem("gliana_session");
     if (saved) {
       const session = JSON.parse(saved);
-      walletAddress = session.walletAddress || '';
-      slug = session.slug || '';
+      walletAddress = session.walletAddress || "";
+      slug = session.slug || "";
     }
   }
-
 
   // Load dashboard data
   async function loadDashboardData() {
     if (!slug) return;
 
     try {
-      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/donations`);
+      const response = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/donations`,
+      );
       if (response.ok) {
         const data = await response.json();
         totalReceived = data.stats.totalReceived / 1e9;
@@ -88,7 +88,7 @@
         donations = data.donations || [];
       }
     } catch (e) {
-      console.error('Failed to load donations:', e);
+      console.error("Failed to load donations:", e);
     }
 
     try {
@@ -99,68 +99,88 @@
           // Enforce minimum 0.001 SOL (1000000 lamports)
           const loadedAmount = data.settings.min_amount || 1000000;
           minAmount = Math.max(loadedAmount, 1000000) / 1e9;
-          soundUrl = data.settings.sound_url || 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3';
+          soundUrl =
+            data.settings.sound_url ||
+            "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
         }
         if (data.streamer) {
-          name = data.streamer.name || '';
-          xUrl = data.streamer.x_url || '';
-          redditUrl = data.streamer.reddit_url || '';
-          youtubeUrl = data.streamer.youtube_url || '';
-          kickUrl = data.streamer.kick_url || '';
-          twitchUrl = data.streamer.twitch_url || '';
-          description = data.streamer.description || '';
+          name = data.streamer.name || "";
+          xUrl = data.streamer.x_url || "";
+          redditUrl = data.streamer.reddit_url || "";
+          youtubeUrl = data.streamer.youtube_url || "";
+          kickUrl = data.streamer.kick_url || "";
+          twitchUrl = data.streamer.twitch_url || "";
+          tiktokUrl = data.streamer.tiktok_url || "";
+          facebookUrl = data.streamer.facebook_url || "";
+          instagramUrl = data.streamer.instagram_url || "";
+          description = data.streamer.description || "";
         }
       }
     } catch (e) {
-      console.error('Failed to load settings:', e);
+      console.error("Failed to load settings:", e);
     }
   }
 
   // Save settings
-  let soundError = '';
+  let soundError = "";
 
-  async function saveSettings(type: 'alerts' | 'socials') {
-    soundError = '';
+  async function saveSettings(type: "alerts" | "socials") {
+    soundError = "";
 
     // Enforce minimum 0.001 SOL
     if (minAmount < 0.001) {
       minAmount = 0.001;
     }
 
-    if (soundUrl && !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) && !soundUrl.includes('/media/sounds/')) {
-      soundError = 'URL should end with .mp3 or contain /media/sounds/';
-      if (type === 'alerts') return;
+    if (
+      soundUrl &&
+      !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) &&
+      !soundUrl.includes("/media/sounds/")
+    ) {
+      soundError = "URL should end with .mp3 or contain /media/sounds/";
+      if (type === "alerts") return;
     }
 
-    if (type === 'alerts') alertsLoading = true;
+    if (type === "alerts") alertsLoading = true;
     else socialsLoading = true;
 
     try {
-      const response = await fetch(`${WORKER_URL}/api/streamer/${slug}/settings`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          min_amount: Math.floor(minAmount * 1e6),
-          sound_url: soundUrl,
-          name: name,
-          x_url: xUrl,
-          reddit_url: redditUrl,
-          youtube_url: youtubeUrl,
-          kick_url: kickUrl,
-          twitch_url: twitchUrl,
-          description: description
-        })
-      });
+      const response = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/settings`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            min_amount: Math.floor(minAmount * 1e6),
+            sound_url: soundUrl,
+            name: name,
+            x_url: xUrl,
+            reddit_url: redditUrl,
+            youtube_url: youtubeUrl,
+            kick_url: kickUrl,
+            twitch_url: twitchUrl,
+            tiktok_url: tiktokUrl,
+            facebook_url: facebookUrl,
+            instagram_url: instagramUrl,
+            description: description,
+          }),
+        },
+      );
 
       if (response.ok) {
-        showToast(type === 'alerts' ? 'Alert settings saved!' : 'Profile settings saved!', 'success');
+        showToast(
+          type === "alerts"
+            ? "Alert settings saved!"
+            : "Profile settings saved!",
+          "success",
+        );
       } else {
         const data = await response.json().catch(() => ({}));
-        showToast(data.error || `Failed to save ${type}`, 'error');
+        showToast(data.error || `Failed to save ${type}`, "error");
       }
     } catch (e) {
-      console.error('Failed to save settings:', e);
-      showToast('Failed to connect to server', 'error');
+      console.error("Failed to save settings:", e);
+      showToast("Failed to connect to server", "error");
     } finally {
       alertsLoading = false;
       socialsLoading = false;
@@ -180,23 +200,30 @@
     }, 10000);
 
     fetch(`${WORKER_URL}/api/test-alert/${slug}`, {
-      method: 'POST'
-    }).then(async (res) => {
-      clearTimeout(safetyTimeout);
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || data.message || `HTTP ${res.status}: ${res.statusText}`);
-      }
-      showToast('Test alert sent!', 'success');
-    }).catch(err => {
-      clearTimeout(safetyTimeout);
-      console.error('Failed to send test alert:', err);
-      showToast(err.message || 'Failed to send test alert', 'error');
-    }).finally(() => {
-      setTimeout(() => {
-        testInProgress = false;
-      }, 2000);
-    });
+      method: "POST",
+    })
+      .then(async (res) => {
+        clearTimeout(safetyTimeout);
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(
+            data.error ||
+              data.message ||
+              `HTTP ${res.status}: ${res.statusText}`,
+          );
+        }
+        showToast("Test alert sent!", "success");
+      })
+      .catch((err) => {
+        clearTimeout(safetyTimeout);
+        console.error("Failed to send test alert:", err);
+        showToast(err.message || "Failed to send test alert", "error");
+      })
+      .finally(() => {
+        setTimeout(() => {
+          testInProgress = false;
+        }, 2000);
+      });
   }
 
   // Logout
@@ -204,14 +231,14 @@
     // Disconnect wallet first
     await disconnectWallet();
     // Clear local data
-    localStorage.removeItem('gliana_session');
-    sessionStorage.setItem('gliana_just_logged_out', '1');
-    window.location.href = '/';
+    localStorage.removeItem("gliana_session");
+    sessionStorage.setItem("gliana_just_logged_out", "1");
+    window.location.href = "/";
   }
 
   // Go to homepage
   function goToHomepage() {
-    window.location.href = '/';
+    window.location.href = "/";
   }
 
   onMount(() => {
@@ -219,7 +246,7 @@
 
     if (!walletAddress || !slug) {
       // Not logged in, redirect to login
-      window.location.href = '/login';
+      window.location.href = "/login";
       return;
     }
 
@@ -228,12 +255,22 @@
   });
 </script>
 
+<svelte:head>
+  <title>Dashboard - GlianaPay</title>
+</svelte:head>
+
 {#if !loading}
-  <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden">
+  <div
+    class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden"
+  >
     <!-- Animated Background -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"></div>
-      <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+      <div
+        class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"
+      ></div>
+      <div
+        class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"
+      ></div>
     </div>
 
     <!-- Floating Icons (Rain) -->
@@ -241,9 +278,18 @@
 
     <!-- Header -->
     <div class="border-b border-white/10 relative z-10">
-      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <button on:click={goToHomepage} class="flex items-center gap-2 cursor-pointer">
-          <img src="/logo.svg" alt="GlianaPay" class="w-10 h-10 bg-transparent rounded-xl" />
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between"
+      >
+        <button
+          on:click={goToHomepage}
+          class="flex items-center gap-2 cursor-pointer"
+        >
+          <img
+            src="/logo.svg"
+            alt="GlianaPay"
+            class="w-10 h-10 bg-transparent rounded-xl"
+          />
           <span class="font-bold hidden md:inline">GlianaPay</span>
         </button>
         <div class="flex items-center gap-2 md:gap-4">
@@ -251,7 +297,11 @@
           <div class="text-sm text-zinc-400">
             {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
           </div>
-          <button on:click={handleLogout} class="text-sm text-red-400 hover:text-red-300 cursor-pointer">Logout</button>
+          <button
+            on:click={handleLogout}
+            class="text-sm text-red-400 hover:text-red-300 cursor-pointer"
+            >Logout</button
+          >
         </div>
       </div>
     </div>
@@ -261,7 +311,9 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Received</p>
-          <p class="text-3xl font-bold text-gradient mt-1">{totalReceived.toFixed(3)} SOL</p>
+          <p class="text-3xl font-bold text-gradient mt-1">
+            {totalReceived.toFixed(3)} SOL
+          </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Tips</p>
@@ -274,21 +326,32 @@
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Your Page</p>
           <div class="flex items-center gap-2 mt-1">
-            <a href="/{slug || 'yourname'}" target="_blank" class="text-xl font-bold text-purple-400 hover:underline">
-              /{slug || 'yourname'}
+            <a
+              href="/{slug || 'yourname'}"
+              target="_blank"
+              class="text-xl font-bold text-purple-400 hover:underline"
+            >
+              /{slug || "yourname"}
             </a>
-            <button on:click={copyPageUrl} class="text-xs bg-zinc-700 hover:bg-zinc-600 px-2 py-1 rounded transition-all cursor-pointer">
-              {copied ? 'Copied!' : 'Copy'}
+            <button
+              on:click={copyPageUrl}
+              class="text-xs bg-zinc-700 hover:bg-zinc-600 px-2 py-1 rounded transition-all cursor-pointer"
+            >
+              {copied ? "Copied!" : "Copy"}
             </button>
           </div>
-          <p class="text-xs text-zinc-500 mt-1">Share this link to receive tips</p>
+          <p class="text-xs text-zinc-500 mt-1">
+            Share this link to receive tips
+          </p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Recent Donations -->
         <div class="lg:col-span-2">
-          <div class="glass-card rounded-2xl border border-white/10 overflow-hidden">
+          <div
+            class="glass-card rounded-2xl border border-white/10 overflow-hidden"
+          >
             <div class="p-4 border-b border-white/10">
               <h2 class="font-bold text-lg">Recent Tips</h2>
             </div>
@@ -297,12 +360,20 @@
                 {#each donations as donation}
                   <div class="p-4 flex items-center justify-between">
                     <div>
-                      <p class="font-medium text-white">{donation.sender_name || 'Anonymous'}</p>
-                      <p class="text-sm text-zinc-500">{donation.message || 'No message'}</p>
+                      <p class="font-medium text-white">
+                        {donation.sender_name || "Anonymous"}
+                      </p>
+                      <p class="text-sm text-zinc-500">
+                        {donation.message || "No message"}
+                      </p>
                     </div>
                     <div class="text-right">
-                      <p class="font-bold text-green-400">{(donation.amount / 1e9).toFixed(3)} SOL</p>
-                      <p class="text-xs text-zinc-500">{new Date(donation.timestamp).toLocaleDateString()}</p>
+                      <p class="font-bold text-green-400">
+                        {(donation.amount / 1e9).toFixed(3)} SOL
+                      </p>
+                      <p class="text-xs text-zinc-500">
+                        {new Date(donation.timestamp).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                 {/each}
@@ -321,16 +392,40 @@
             <h2 class="font-bold text-lg mb-4">Settings</h2>
             <div class="space-y-4">
               <div>
-                <label for="min-amount" class="block text-sm text-zinc-400 mb-2">Minimum (SOL)</label>
-                <input type="number" id="min-amount" bind:value={minAmount} step="0.001" min="0.001" class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white" />
+                <label for="min-amount" class="block text-sm text-zinc-400 mb-2"
+                  >Minimum (SOL)</label
+                >
+                <input
+                  type="number"
+                  id="min-amount"
+                  bind:value={minAmount}
+                  step="0.001"
+                  min="0.001"
+                  class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
+                />
               </div>
               <div>
-                <label for="sound" class="block text-sm text-zinc-400 mb-2">Alert Sound URL</label>
+                <label for="sound" class="block text-sm text-zinc-400 mb-2"
+                  >Alert Sound URL</label
+                >
                 <div class="space-y-2">
-                  <input type="url" id="sound" bind:value={soundUrl} placeholder="https://example.com/sound.mp3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm" />
+                  <input
+                    type="url"
+                    id="sound"
+                    bind:value={soundUrl}
+                    placeholder="https://example.com/sound.mp3"
+                    class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm"
+                  />
                   <div class="flex justify-between items-center">
-                    <span class="text-xs text-zinc-500">Recommended: short MP3 URLs</span>
-                    <button on:click={() => soundUrl = 'https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3'} class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer">
+                    <span class="text-xs text-zinc-500"
+                      >Recommended: short MP3 URLs</span
+                    >
+                    <button
+                      on:click={() =>
+                        (soundUrl =
+                          "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3")}
+                      class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
+                    >
                       Default
                     </button>
                   </div>
@@ -339,8 +434,12 @@
               {#if soundError}
                 <p class="text-red-400 text-sm">{soundError}</p>
               {/if}
-              
-              <button on:click={() => saveSettings('alerts')} disabled={alertsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer">
+
+              <button
+                on:click={() => saveSettings("alerts")}
+                disabled={alertsLoading}
+                class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
+              >
                 {#if alertsLoading}
                   Saving...
                 {:else}
@@ -350,45 +449,159 @@
 
               <!-- Profile Settings -->
               <div class="pt-4 border-t border-white/10 space-y-4">
-                <h3 class="text-sm font-semibold text-zinc-300">Profile Information</h3>
+                <h3 class="text-sm font-semibold text-zinc-300">
+                  Profile Information
+                </h3>
                 <div class="space-y-4">
                   <div>
-                    <label for="name" class="block text-xs text-zinc-400 mb-1">Display Name</label>
-                    <input type="text" id="name" bind:value={name} placeholder="Your Streamer Name" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                    <label for="name" class="block text-xs text-zinc-400 mb-1"
+                      >Display Name</label
+                    >
+                    <input
+                      type="text"
+                      id="name"
+                      bind:value={name}
+                      placeholder="Your Streamer Name"
+                      class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                    />
                   </div>
                   <div>
-                    <label for="description" class="block text-xs text-zinc-400 mb-1">Profile Description</label>
-                    <textarea id="description" bind:value={description} placeholder="Tell your supporters about yourself..." rows="3" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"></textarea>
+                    <label
+                      for="description"
+                      class="block text-xs text-zinc-400 mb-1"
+                      >Profile Description</label
+                    >
+                    <textarea
+                      id="description"
+                      bind:value={description}
+                      placeholder="Tell your supporters about yourself..."
+                      rows="3"
+                      class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"
+                    ></textarea>
                   </div>
                 </div>
 
                 <div class="mt-4 space-y-4 pt-4 border-t border-white/10">
-                  <h3 class="text-sm font-semibold text-zinc-300">Social Links</h3>
+                  <h3 class="text-sm font-semibold text-zinc-300">
+                    Social Links
+                  </h3>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label for="x" class="block text-xs text-zinc-400 mb-1">X (Twitter) URL</label>
-                      <input type="url" id="x" bind:value={xUrl} placeholder="https://x.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                      <label for="x" class="block text-xs text-zinc-400 mb-1"
+                        >X (Twitter) URL</label
+                      >
+                      <input
+                        type="url"
+                        id="x"
+                        bind:value={xUrl}
+                        placeholder="https://x.com/username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
                     </div>
                     <div>
-                      <label for="twitch" class="block text-xs text-zinc-400 mb-1">Twitch URL</label>
-                      <input type="url" id="twitch" bind:value={twitchUrl} placeholder="https://twitch.tv/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                      <label
+                        for="twitch"
+                        class="block text-xs text-zinc-400 mb-1"
+                        >Twitch URL</label
+                      >
+                      <input
+                        type="url"
+                        id="twitch"
+                        bind:value={twitchUrl}
+                        placeholder="https://twitch.tv/username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
                     </div>
                     <div>
-                      <label for="youtube" class="block text-xs text-zinc-400 mb-1">YouTube URL</label>
-                      <input type="url" id="youtube" bind:value={youtubeUrl} placeholder="https://youtube.com/@username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                      <label
+                        for="youtube"
+                        class="block text-xs text-zinc-400 mb-1"
+                        >YouTube URL</label
+                      >
+                      <input
+                        type="url"
+                        id="youtube"
+                        bind:value={youtubeUrl}
+                        placeholder="https://youtube.com/@username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
                     </div>
                     <div>
-                      <label for="kick" class="block text-xs text-zinc-400 mb-1">Kick URL</label>
-                      <input type="url" id="kick" bind:value={kickUrl} placeholder="https://kick.com/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                      <label for="kick" class="block text-xs text-zinc-400 mb-1"
+                        >Kick URL</label
+                      >
+                      <input
+                        type="url"
+                        id="kick"
+                        bind:value={kickUrl}
+                        placeholder="https://kick.com/username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
                     </div>
                     <div class="md:col-span-2">
-                      <label for="reddit" class="block text-xs text-zinc-400 mb-1">Reddit URL</label>
-                      <input type="url" id="reddit" bind:value={redditUrl} placeholder="https://reddit.com/user/username" class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white" />
+                      <label
+                        for="reddit"
+                        class="block text-xs text-zinc-400 mb-1"
+                        >Reddit URL</label
+                      >
+                      <input
+                        type="url"
+                        id="reddit"
+                        bind:value={redditUrl}
+                        placeholder="https://reddit.com/user/username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="tiktok"
+                        class="block text-xs text-zinc-400 mb-1"
+                        >TikTok URL</label
+                      >
+                      <input
+                        type="url"
+                        id="tiktok"
+                        bind:value={tiktokUrl}
+                        placeholder="https://tiktok.com/@username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="instagram"
+                        class="block text-xs text-zinc-400 mb-1"
+                        >Instagram URL</label
+                      >
+                      <input
+                        type="url"
+                        id="instagram"
+                        bind:value={instagramUrl}
+                        placeholder="https://instagram.com/username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
+                    </div>
+                    <div class="md:col-span-2">
+                      <label
+                        for="facebook"
+                        class="block text-xs text-zinc-400 mb-1"
+                        >Facebook URL</label
+                      >
+                      <input
+                        type="url"
+                        id="facebook"
+                        bind:value={facebookUrl}
+                        placeholder="https://facebook.com/username"
+                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                      />
                     </div>
                   </div>
                 </div>
 
-                <button on:click={() => saveSettings('socials')} disabled={socialsLoading} class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer">
+                <button
+                  on:click={() => saveSettings("socials")}
+                  disabled={socialsLoading}
+                  class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
+                >
                   {#if socialsLoading}
                     Saving...
                   {:else}
@@ -402,7 +615,9 @@
           <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
             <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
 
-            <p class="text-sm text-zinc-400 mb-3">How to add tip alerts to your stream:</p>
+            <p class="text-sm text-zinc-400 mb-3">
+              How to add tip alerts to your stream:
+            </p>
 
             <ol class="text-sm text-zinc-300 space-y-2 mb-4">
               <li class="flex gap-2">
@@ -411,23 +626,39 @@
               </li>
               <li class="flex gap-2">
                 <span class="text-purple-400 font-bold">2.</span>
-                <span>Toggle sound below, copy URL, paste in Browser Source</span>
+                <span
+                  >Toggle sound below, copy URL, paste in Browser Source</span
+                >
               </li>
             </ol>
 
             <div class="mb-3">
               <label class="flex items-center gap-2 text-sm text-zinc-300 mb-2">
-                <input type="checkbox" bind:checked={soundEnabled} class="w-4 h-4 accent-purple-500" />
+                <input
+                  type="checkbox"
+                  bind:checked={soundEnabled}
+                  class="w-4 h-4 accent-purple-500"
+                />
                 Enable sound alerts
               </label>
             </div>
 
             <div class="space-y-2 mb-3">
               <div class="flex items-center gap-2">
-                <code class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all">
-                  https://glianapay.com/overlay/{slug}{soundEnabled ? '?sound=1' : ''}
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                >
+                  https://glianapay.com/overlay/{slug}{soundEnabled
+                    ? "?sound=1"
+                    : ""}
                 </code>
-                <button on:click={() => navigator.clipboard.writeText(`https://glianapay.com/overlay/${slug}${soundEnabled ? '?sound=1' : ''}`)} class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer">
+                <button
+                  on:click={() =>
+                    navigator.clipboard.writeText(
+                      `https://glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
+                    )}
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                >
                   Copy
                 </button>
               </div>
@@ -436,7 +667,10 @@
             <ol class="text-sm text-zinc-300 space-y-2 mb-3">
               <li class="flex gap-2">
                 <span class="text-purple-400 font-bold">3.</span>
-                <span>Set Width: <strong>600</strong>, Height: <strong>400</strong></span>
+                <span
+                  >Set Width: <strong>600</strong>, Height:
+                  <strong>400</strong></span
+                >
               </li>
               <li class="flex gap-2">
                 <span class="text-purple-400 font-bold">4.</span>
@@ -448,16 +682,26 @@
               </li>
             </ol>
 
-            <a href="/overlay/{slug}?sound=1" target="_blank" class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline">
+            <a
+              href="/overlay/{slug}?sound=1"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+            >
               <span>Preview Overlay</span>
             </a>
 
-            <button on:click={testAlertWS} disabled={testInProgress} class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed">
-              <span>{testInProgress ? 'Sending...' : 'Test Alert'}</span>
+            <button
+              on:click={testAlertWS}
+              disabled={testInProgress}
+              class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span>{testInProgress ? "Sending..." : "Test Alert"}</span>
             </button>
 
             <p class="text-xs text-zinc-500 mt-3">
-              <span class="text-yellow-500">Tip:</span> If settings don't update, right-click the Browser Source in OBS and select "Interact" then refresh the page, or remove and re-add the Browser Source.
+              <span class="text-yellow-500">Tip:</span> If settings don't update,
+              right-click the Browser Source in OBS and select "Interact" then refresh
+              the page, or remove and re-add the Browser Source.
             </p>
           </div>
         </div>
@@ -466,7 +710,10 @@
 
     <!-- Footer -->
     <div class="relative md:absolute md:bottom-6 left-0 px-4 py-6 md:py-0">
-      <a href="mailto:support@glianapay.com?subject=Report Bug" class="text-xs text-zinc-500 hover:text-white">Report Bug</a>
+      <a
+        href="mailto:support@glianapay.com?subject=Report Bug"
+        class="text-xs text-zinc-500 hover:text-white">Report Bug</a
+      >
     </div>
   </div>
 
@@ -474,7 +721,10 @@
   {#if toast}
     <div
       transition:slide={{ duration: 300 }}
-      class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 {toastType === 'success' ? 'bg-green-600' : 'bg-red-600'} text-white text-sm font-medium"
+      class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 {toastType ===
+      'success'
+        ? 'bg-green-600'
+        : 'bg-red-600'} text-white text-sm font-medium"
     >
       {toast}
     </div>
@@ -482,10 +732,26 @@
 {/if}
 
 <style>
-  .glass-card { background: rgba(17, 17, 19, 0.8); backdrop-filter: blur(12px); }
-  @keyframes gradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .glass-card {
+    background: rgba(17, 17, 19, 0.8);
+    backdrop-filter: blur(12px);
+  }
+  @keyframes gradient {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
   .text-gradient {
-    background-image: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%);
+    background-image: linear-gradient(
+      135deg,
+      #22d3ee 0%,
+      #a855f7 50%,
+      #ec4899 100%
+    );
     background-size: 200% 200%;
     animation: gradient 3s ease infinite;
     -webkit-background-clip: text;
@@ -493,8 +759,13 @@
     background-clip: text;
   }
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
   .float {
     animation: float 3s ease-in-out infinite;

@@ -14,6 +14,9 @@ export interface Streamer {
   youtube_url?: string;
   kick_url?: string;
   twitch_url?: string;
+  tiktok_url?: string;
+  facebook_url?: string;
+  instagram_url?: string;
   description?: string;
 }
 
