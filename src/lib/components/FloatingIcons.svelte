@@ -209,6 +209,7 @@
     pointer-events: none;
     overflow: hidden;
     z-index: 0;
+    contain: strict;
   }
 
   @media (max-width: 1024px) {
@@ -219,16 +220,19 @@
 
   .fountain-icon {
     animation: fountain ease-out infinite;
+    will-change: transform, opacity;
   }
 
   .rain-icon {
     animation: rain linear infinite;
     top: -100px;
+    will-change: transform, opacity;
   }
 
   .spaceship-icon {
     animation: spaceship ease-in-out infinite;
     transform-origin: center center;
+    will-change: transform, opacity;
   }
 
   @keyframes fountain {
