@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
-  export let animation: 'fountain' | 'rain' | 'spaceship' = 'fountain';
-  export let targetId: string = '';
+  export let animation: "fountain" | "rain" | "spaceship" = "fountain";
+  export let targetId: string = "";
 
   const iconFiles = [
-    '/3dicons-dollar-dynamic-color.webp',
-    '/3dicons-video-cam-dynamic-color.webp',
-    '/3dicons-wallet-dynamic-color.webp',
-    '/3dicons-shield-dynamic-color.webp',
-    '/3dicons-camera-dynamic-color.webp',
-    '/3dicons-credit-card-dynamic-color.webp',
-    '/3dicons-ghost-dynamic-color.webp',
-    '/3dicons-lab-dynamic-color.webp',
-    '/3dicons-minecraft-dynamic-color.webp',
-    '/3dicons-skull-dynamic-color.webp'
+    "/3dicons-dollar-dynamic-color.webp",
+    "/3dicons-video-cam-dynamic-color.webp",
+    "/3dicons-wallet-dynamic-color.webp",
+    "/3dicons-shield-dynamic-color.webp",
+    "/3dicons-camera-dynamic-color.webp",
+    "/3dicons-credit-card-dynamic-color.webp",
+    "/3dicons-ghost-dynamic-color.webp",
+    "/3dicons-lab-dynamic-color.webp",
+    "/3dicons-minecraft-dynamic-color.webp",
+    "/3dicons-skull-dynamic-color.webp",
   ];
 
   let ready = false;
@@ -37,21 +37,21 @@
   }> = [];
 
   function getTargetPosition() {
-    if (targetId && typeof document !== 'undefined') {
+    if (targetId && typeof document !== "undefined") {
       const target = document.getElementById(targetId);
       if (target) {
         const rect = target.getBoundingClientRect();
         return {
           left: `${rect.left + rect.width / 2}px`,
-          top: `${rect.top + rect.height / 2}px`
+          top: `${rect.top + rect.height / 2}px`,
         };
       }
     }
-    return { left: '50vw', top: '50vh' };
+    return { left: "50vw", top: "50vh" };
   }
 
   function createIcons(targetPos: { left: string; top: string }) {
-    if (animation === 'spaceship') {
+    if (animation === "spaceship") {
       // Hyperspace mode - icons streak from circular area in center outward
       // Use evenly spaced angles with varying radii for more even distribution
       icons = Array.from({ length: 15 }, (_, i) => {
@@ -74,13 +74,13 @@
           delay: `${Math.random() * 8}s`,
           duration: `${5 + Math.random() * 8}s`,
           opacity: `${0.05 + Math.random() * 0.08}`,
-          rotation: `${(angle * 180 / Math.PI)}`,
+          rotation: `${(angle * 180) / Math.PI}`,
           rotationAmount: `${Math.random() > 0.5 ? 0 : 90 + Math.random() * 90}`,
           vx: vx,
-          vy: vy
+          vy: vy,
         };
       });
-    } else if (animation === 'fountain') {
+    } else if (animation === "fountain") {
       icons = Array.from({ length: 20 }, (_, i) => {
         const angle = Math.random() * Math.PI * 2;
         const distance = 5 + Math.random() * 30;
@@ -96,10 +96,10 @@
           duration: `${20 + Math.random() * 15}s`,
           opacity: `${0.12 + Math.random() * 0.15}`,
           rotation: `${Math.random() * 360}`,
-          startX: '',
-          startY: '',
-          endX: '',
-          endY: ''
+          startX: "",
+          startY: "",
+          endX: "",
+          endY: "",
         };
       });
     } else {
@@ -107,52 +107,55 @@
       icons = Array.from({ length: 10 }, (_, i) => ({
         src: iconFiles[i % iconFiles.length],
         left: `${(i / 10) * 100 + 5}%`,
-        top: '-100px',
+        top: "-100px",
         size: `${30 + Math.random() * 40}`,
         delay: `${Math.random() * 10}s`,
         duration: `${15 + Math.random() * 10}s`,
         opacity: `${0.15 + Math.random() * 0.2}`,
         rotation: `${Math.random() * 360}`,
         rotationAmount: `${Math.random() > 0.5 ? 0 : 90 + Math.random() * 90}`,
-        startX: '',
-        startY: '',
-        endX: '',
-        endY: '',
+        startX: "",
+        startY: "",
+        endX: "",
+        endY: "",
         vx: 0,
-        vy: 0
+        vy: 0,
       }));
     }
   }
 
   onMount(() => {
-    const targetPos = getTargetPosition();
-    createIcons(targetPos);
-    ready = true;
+    // Wait for the next frame to avoid forced reflows during initial render
+    requestAnimationFrame(() => {
+      const targetPos = getTargetPosition();
+      createIcons(targetPos);
+      ready = true;
+    });
 
     const handleResize = () => {
-      if (animation === 'fountain' && targetId) {
+      if (animation === "fountain" && targetId) {
         const newPos = getTargetPosition();
-        icons = icons.map(icon => ({
+        icons = icons.map((icon) => ({
           ...icon,
           left: newPos.left,
-          top: newPos.top
+          top: newPos.top,
         }));
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   });
 </script>
 
 {#if ready}
-<div class="floating-icons">
-  {#each icons as icon}
-    <img
-      src={icon.src}
-      alt=""
-      class="{animation}-icon z-0"
-      style="
+  <div class="floating-icons">
+    {#each icons as icon}
+      <img
+        src={icon.src}
+        alt=""
+        class="{animation}-icon z-0"
+        style="
         position: absolute;
         width: {icon.size}px;
         height: {icon.size}px;
@@ -164,14 +167,14 @@
         {animation === 'fountain'
           ? `left: ${icon.left}; top: ${icon.top}; --x-spread: ${icon.startX}; --y-spread: ${icon.startY};`
           : animation === 'rain'
-          ? `left: ${icon.left}; top: -100px;`
-          : `left: 50%; top: 50%; --vx: ${icon.vx || 0}; --vy: ${icon.vy || 0};`}
+            ? `left: ${icon.left}; top: -100px;`
+            : `left: 50%; top: 50%; --vx: ${icon.vx || 0}; --vy: ${icon.vy || 0};`}
       "
-      loading="eager"
-      decoding="async"
-    />
-  {/each}
-</div>
+        loading="eager"
+        decoding="async"
+      />
+    {/each}
+  </div>
 {/if}
 
 <style>
@@ -212,7 +215,12 @@
       opacity: var(--opacity, 0.3);
     }
     100% {
-      transform: translate(calc(-50% + var(--x-spread, 0vw)), calc(-50% + var(--y-spread, 0vh))) rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg))) scale(0.5);
+      transform: translate(
+          calc(-50% + var(--x-spread, 0vw)),
+          calc(-50% + var(--y-spread, 0vh))
+        )
+        rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg)))
+        scale(0.5);
       opacity: 0;
     }
   }
@@ -229,7 +237,8 @@
       opacity: var(--opacity, 0.3);
     }
     100% {
-      transform: translateY(100vh) rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg)));
+      transform: translateY(100vh)
+        rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg)));
       opacity: 0;
     }
   }
@@ -243,7 +252,12 @@
       opacity: var(--opacity, 0.25);
     }
     100% {
-      transform: translate(calc(-50% + var(--vx) * 80vw), calc(-50% + var(--vy) * 80vh)) rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg))) scale(3);
+      transform: translate(
+          calc(-50% + var(--vx) * 80vw),
+          calc(-50% + var(--vy) * 80vh)
+        )
+        rotate(calc(var(--rotation, 0deg) + var(--rotation-amount, 180deg)))
+        scale(3);
       opacity: 0;
     }
   }
