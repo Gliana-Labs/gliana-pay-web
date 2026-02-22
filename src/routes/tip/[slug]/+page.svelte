@@ -950,7 +950,7 @@
                   </div>
                 </div>
                 <div class="mt-2 flex items-center justify-between">
-                  <p class="text-xs text-zinc-500">Min: {minAmount} SOL</p>
+                  <p class="text-xs text-zinc-500">Min: 0.01 SOL</p>
                   {#if usdEquivalent}
                     <p class="text-xs text-zinc-400">
                       ≈ <span class="text-green-400 font-medium"
