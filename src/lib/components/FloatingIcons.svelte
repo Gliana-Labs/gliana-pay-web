@@ -5,16 +5,16 @@
   export let targetId: string = '';
 
   const iconFiles = [
-    '/3dicons-dollar-dynamic-color.png',
-    '/3dicons-video-cam-dynamic-color.png',
-    '/3dicons-wallet-dynamic-color.png',
-    '/3dicons-shield-dynamic-color.png',
-    '/3dicons-camera-dynamic-color.png',
-    '/3dicons-credit-card-dynamic-color.png',
-    '/3dicons-ghost-dynamic-color.png',
-    '/3dicons-lab-dynamic-color.png',
-    '/3dicons-minecraft-dynamic-color.png',
-    '/3dicons-skull-dynamic-color.png'
+    '/3dicons-dollar-dynamic-color.webp',
+    '/3dicons-video-cam-dynamic-color.webp',
+    '/3dicons-wallet-dynamic-color.webp',
+    '/3dicons-shield-dynamic-color.webp',
+    '/3dicons-camera-dynamic-color.webp',
+    '/3dicons-credit-card-dynamic-color.webp',
+    '/3dicons-ghost-dynamic-color.webp',
+    '/3dicons-lab-dynamic-color.webp',
+    '/3dicons-minecraft-dynamic-color.webp',
+    '/3dicons-skull-dynamic-color.webp'
   ];
 
   let ready = false;
