@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, tick, onDestroy } from "svelte";
 
   export let animation: "fountain" | "rain" | "spaceship" = "fountain";
   export let targetId: string = "";
@@ -124,7 +124,12 @@
     }
   }
 
-  onMount(() => {
+  let observer: ResizeObserver;
+
+  onMount(async () => {
+    // Wait for Svelte to finish rendering DOM to prevent hydration forced reflows
+    await tick();
+
     // If no targetId, run immediately (no DOM measurement needed)
     if (!targetId || animation !== "fountain") {
       const targetPos = getTargetPosition();
@@ -132,9 +137,6 @@
       ready = true;
       return;
     }
-
-    // Use ResizeObserver to measure the target element only AFTER the browser finishes layout
-    let observer: ResizeObserver;
 
     // We wait for the next macrotask to ensure the DOM element exists
     setTimeout(() => {
@@ -166,10 +168,10 @@
         ready = true;
       }
     }, 0);
+  });
 
-    return () => {
-      if (observer) observer.disconnect();
-    };
+  onDestroy(() => {
+    if (observer) observer.disconnect();
   });
 </script>
 
