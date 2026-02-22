@@ -560,16 +560,4 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-  .float {
-    animation: float 3s ease-in-out infinite;
-  }
 </style>

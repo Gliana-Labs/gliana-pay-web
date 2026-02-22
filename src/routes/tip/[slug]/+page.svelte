@@ -1269,16 +1269,6 @@
       background-position: 100% 50%;
     }
   }
-  .text-gradient {
-    background-image: linear-gradient(
-      135deg,
-      #22d3ee 0%,
-      #a855f7 50%,
-      #ec4899 100%
-    );
-    background-size: 200% 200%;
-    animation: gradient 3s ease infinite;
-  }
   @keyframes slide-up {
     from {
       opacity: 0;
@@ -1291,17 +1281,5 @@
   }
   .animate-slide-up {
     animation: slide-up 0.4s ease-out;
-  }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-  .float {
-    animation: float 3s ease-in-out infinite;
   }
 </style>

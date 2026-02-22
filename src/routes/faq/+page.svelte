@@ -244,14 +244,6 @@
     }
   }
 
-  .animate-fade-in {
-    animation: fade-in 0.2s ease-out;
-  }
-
-  .float {
-    animation: float 6s ease-in-out infinite;
-  }
-
   @keyframes float {
     0%,
     100% {

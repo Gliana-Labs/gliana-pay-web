@@ -107,6 +107,7 @@ body::before {
 /* Neon border */
 .neon-border {
   position: relative;
+  border-radius: inherit;
 }
 
 .neon-border::before {
@@ -114,14 +115,11 @@ body::before {
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  padding: 2px;
   background: linear-gradient(135deg, #22d3ee, #a855f7, #ec4899);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
   opacity: 0.5;
   animation: gradient 3s ease infinite;
   background-size: 200% 200%;
+  z-index: -1;
   transform: translateZ(0);
   will-change: background-position, transform;
 }

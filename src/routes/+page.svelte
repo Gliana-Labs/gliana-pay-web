@@ -69,13 +69,15 @@
     <!-- Gradient orbs -->
     <div
       class="absolute top-1/4 -left-32 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"
+      style="will-change: transform, filter, opacity; transform: translateZ(0);"
     ></div>
     <div
       class="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"
-      style="animation-delay: 1s;"
+      style="animation-delay: 1s; will-change: transform, filter, opacity; transform: translateZ(0);"
     ></div>
     <div
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/10 rounded-full blur-3xl"
+      style="will-change: transform, filter; transform: translateZ(0);"
     ></div>
 
     <!-- Grid pattern -->
@@ -316,20 +318,6 @@
 
   .animate-gradient {
     animation: gradient 3s ease infinite;
-  }
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  .float {
-    animation: float 3s ease-in-out infinite;
   }
 
   @keyframes pulse-glow {
