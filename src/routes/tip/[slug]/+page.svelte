@@ -525,7 +525,7 @@
       >
         {#if streamer?.banner_url}
           <img
-            src="{WORKER_URL}{streamer.banner_url}"
+            src="{WORKER_URL}/api/media/{streamer.banner_url}"
             alt="Banner"
             class="w-full h-full object-cover"
           />
@@ -552,7 +552,7 @@
           >
             {#if streamer?.profile_image_url}
               <img
-                src="{WORKER_URL}{streamer.profile_image_url}"
+                src="{WORKER_URL}/api/media/{streamer.profile_image_url}"
                 alt={streamer.name}
                 class="w-full h-full object-cover"
               />

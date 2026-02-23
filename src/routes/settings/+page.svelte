@@ -286,7 +286,7 @@
                     >
                         {#if bannerUrl}
                             <img
-                                src="{WORKER_URL}{bannerUrl}?cb={cacheBust}"
+                                src="{WORKER_URL}/api/media/{bannerUrl}?cb={cacheBust}"
                                 alt="Banner"
                                 class="w-full h-full object-cover"
                             />
@@ -336,7 +336,7 @@
                         >
                             {#if profileImageUrl}
                                 <img
-                                    src="{WORKER_URL}{profileImageUrl}?cb={cacheBust}"
+                                    src="{WORKER_URL}/api/media/{profileImageUrl}?cb={cacheBust}"
                                     alt="Profile"
                                     class="w-full h-full object-cover"
                                 />
