@@ -2,7 +2,11 @@
     import FloatingIcons from "$lib/components/FloatingIcons.svelte";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
-    import { disconnectWallet } from "$lib/wallet";
+    import {
+        disconnectWallet,
+        signMessage,
+        getAvailableWallets,
+    } from "$lib/wallet";
     import type { WalletInfo } from "$lib/wallet";
     import { WORKER_URL } from "$lib/config";
 
@@ -98,14 +102,51 @@
 
     // Save settings
     async function saveSettings() {
+        if (!walletAddress) {
+            showToast("Please connect your wallet first", "error");
+            return;
+        }
+
         socialsLoading = true;
 
         try {
+            // Get the connected wallet provider
+            const wallets = getAvailableWallets();
+            // Try to find the matching provider based on what was saved in session
+            const savedSession = localStorage.getItem("gliana_session");
+            const sessionData = savedSession ? JSON.parse(savedSession) : {};
+            const savedWalletName = sessionData.walletName || "";
+
+            let currentProvider =
+                wallets.find((w) => w.name === savedWalletName) || wallets[0];
+
+            if (!currentProvider) {
+                showToast(
+                    "Could not find wallet provider. Please reconnect.",
+                    "error",
+                );
+                socialsLoading = false;
+                return;
+            }
+
+            // Prompt for signature
+            const message = `Update GlianaPay settings for ${slug}`;
+            const signatureData = await signMessage(currentProvider, message);
+
+            if (!signatureData) {
+                showToast("Signature request cancelled", "error");
+                socialsLoading = false;
+                return;
+            }
+
             const response = await fetch(
                 `${WORKER_URL}/api/streamer/${slug}/settings`,
                 {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${walletAddress}:${signatureData.signature}`,
+                    },
                     body: JSON.stringify({
                         name: name,
                         x_url: xUrl,
@@ -145,17 +186,54 @@
         type: "profile" | "banner" | "background",
         file: File,
     ) {
+        if (!walletAddress) {
+            showToast("Please connect your wallet first", "error");
+            return;
+        }
+
         if (type === "profile") uploadingProfile = true;
         else if (type === "banner") uploadingBanner = true;
         else uploadingBg = true;
 
         try {
+            // Get the connected wallet provider
+            const wallets = getAvailableWallets();
+            const savedSession = localStorage.getItem("gliana_session");
+            const sessionData = savedSession ? JSON.parse(savedSession) : {};
+            const savedWalletName = sessionData.walletName || "";
+
+            let currentProvider =
+                wallets.find((w) => w.name === savedWalletName) || wallets[0];
+
+            if (!currentProvider) {
+                showToast(
+                    "Could not find wallet provider. Please reconnect.",
+                    "error",
+                );
+                return;
+            }
+
+            // Prompt for signature
+            const message = `Upload image for ${slug}`;
+            const signatureData = await signMessage(currentProvider, message);
+
+            if (!signatureData) {
+                showToast("Signature request cancelled", "error");
+                return;
+            }
+
             const formData = new FormData();
             formData.append("file", file);
 
             const response = await fetch(
                 `${WORKER_URL}/api/streamer/${slug}/upload?type=${type}&skipDb=true`,
-                { method: "POST", body: formData },
+                {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        Authorization: `Bearer ${walletAddress}:${signatureData.signature}`,
+                    },
+                },
             );
 
             if (response.ok) {

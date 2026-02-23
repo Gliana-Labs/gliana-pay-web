@@ -1,8 +1,12 @@
 <script lang="ts">
   import FloatingIcons from "$lib/components/FloatingIcons.svelte";
   import { onMount } from "svelte";
-  import { slide } from "svelte/transition";
-  import { disconnectWallet } from "$lib/wallet";
+  import { fade, slide } from "svelte/transition";
+  import {
+    disconnectWallet,
+    signMessage,
+    getAvailableWallets,
+  } from "$lib/wallet";
   import type { WalletInfo } from "$lib/wallet";
   import { WORKER_URL } from "$lib/config";
 
@@ -148,11 +152,39 @@
     alertsLoading = true;
 
     try {
+      // Get the connected wallet provider
+      const wallets = getAvailableWallets();
+      const savedSession = localStorage.getItem("gliana_session");
+      const sessionData = savedSession ? JSON.parse(savedSession) : {};
+      const savedWalletName = sessionData.walletName || "";
+
+      let currentProvider =
+        wallets.find((w) => w.name === savedWalletName) || wallets[0];
+
+      if (!currentProvider) {
+        showToast("Could not find wallet provider. Please reconnect.", "error");
+        alertsLoading = false;
+        return;
+      }
+
+      // Prompt for signature
+      const message = `Update GlianaPay settings for ${slug}`;
+      const signatureData = await signMessage(currentProvider, message);
+
+      if (!signatureData) {
+        showToast("Signature request cancelled", "error");
+        alertsLoading = false;
+        return;
+      }
+
       const response = await fetch(
         `${WORKER_URL}/api/streamer/${slug}/settings`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${walletAddress}:${signatureData.signature}`,
+          },
           body: JSON.stringify({
             min_amount: Math.floor(minAmount * 1e6),
             sound_url: soundUrl,
