@@ -48,6 +48,7 @@
     let uploadingBanner = false;
     let profileInput: HTMLInputElement;
     let bannerInput: HTMLInputElement;
+    let cacheBust = Date.now();
 
     // Load session
     function loadSession() {
@@ -148,6 +149,7 @@
                 const data = await response.json();
                 if (type === "profile") profileImageUrl = data.url;
                 else bannerUrl = data.url;
+                cacheBust = Date.now();
                 showToast(
                     `${type === "profile" ? "Profile photo" : "Banner"} uploaded!`,
                     "success",
@@ -284,7 +286,7 @@
                     >
                         {#if bannerUrl}
                             <img
-                                src="{WORKER_URL}{bannerUrl}"
+                                src="{WORKER_URL}{bannerUrl}?cb={cacheBust}"
                                 alt="Banner"
                                 class="w-full h-full object-cover"
                             />
@@ -334,7 +336,7 @@
                         >
                             {#if profileImageUrl}
                                 <img
-                                    src="{WORKER_URL}{profileImageUrl}"
+                                    src="{WORKER_URL}{profileImageUrl}?cb={cacheBust}"
                                     alt="Profile"
                                     class="w-full h-full object-cover"
                                 />
