@@ -116,42 +116,18 @@
 
     fetchData();
 
-    // Fetch SOL price with Fallbacks for Rate Limits
+    // Fetch SOL price from our Cloudflare Worker Backend (which applies global 60s KV Rate Limit Caching)
     async function fetchSolPrice() {
-      const apis = [
-        {
-          url: "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd",
-          parser: (data: any) => data?.solana?.usd,
-        },
-        {
-          url: "https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT",
-          parser: (data: any) => parseFloat(data?.price),
-        },
-        {
-          url: "https://api.kraken.com/0/public/Ticker?pair=SOLUSD",
-          parser: (data: any) => parseFloat(data?.result?.SOLUSD?.c?.[0]),
-        },
-      ];
-
-      for (const api of apis) {
-        try {
-          const res = await fetch(api.url);
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const data = await res.json();
-          const price = api.parser(data);
-          if (price && price > 0) {
-            solPrice = price;
-            return; // Success, exit fallback loop
-          }
-        } catch (e) {
-          console.warn(
-            `[PriceFallback] Failed to fetch from ${new URL(api.url).hostname}:`,
-            e,
-          );
-          // Loop continues to next fallback
+      try {
+        const res = await fetch(`${WORKER_URL}/api/price/sol`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.price && data.price > 0) {
+          solPrice = data.price;
         }
+      } catch (e) {
+        console.error("Failed to fetch SOL price from backend:", e);
       }
-      console.error("[PriceFallback] All price APIs failed.");
     }
 
     fetchSolPrice();
