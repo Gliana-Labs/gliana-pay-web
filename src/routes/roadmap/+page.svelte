@@ -125,7 +125,7 @@
                         <span
                             class="px-3 py-1 bg-green-500/15 border border-green-500/30 rounded-full text-xs font-semibold text-green-400"
                         >
-                            ✓ Live Now
+                            ✓ Done
                         </span>
                     </div>
                     <div class="px-6 py-4">
@@ -174,18 +174,18 @@
                         <span
                             class="px-3 py-1 bg-purple-500/15 border border-purple-500/30 rounded-full text-xs font-semibold text-purple-300"
                         >
-                            ✓ Almost Done
+                            ✓ Live Now
                         </span>
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["UI & Performance polish", "Alert customization (colors, fonts, animation styles)", "Tip page with suggested amounts", "Live SOL/USD price display", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
+                            {#each ["UI & Performance polish", "Tip page customization (backgrounds, profile photos, banners)", "Tip page with suggested amounts", "Live SOL/USD price display", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
                                 <div
-                                    class="flex items-start gap-2 text-sm text-zinc-400"
+                                    class="flex items-start gap-2 text-sm text-zinc-300"
                                 >
                                     <span
-                                        class="text-purple-400/60 mt-0.5 flex-shrink-0"
-                                        >○</span
+                                        class="text-purple-400 mt-0.5 flex-shrink-0"
+                                        >✓</span
                                     >
                                     {item}
                                 </div>
