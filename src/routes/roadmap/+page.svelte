@@ -167,19 +167,19 @@
                                     Phase 1
                                 </p>
                                 <h2 class="font-bold text-base text-white">
-                                    Improvements & Accessibility
+                                    Improvements & Polish
                                 </h2>
                             </div>
                         </div>
                         <span
                             class="px-3 py-1 bg-purple-500/15 border border-purple-500/30 rounded-full text-xs font-semibold text-purple-300"
                         >
-                            🔨 In Progress
+                            ✓ Almost Done
                         </span>
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Alert customization (colors, fonts, animation styles)", "Custom media upload for alerts (GIF/image)", "Tip page with suggested amounts", "Live SOL/USD price display", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
+                            {#each ["UI & Performance polish", "Alert customization (colors, fonts, animation styles)", "Tip page with suggested amounts", "Live SOL/USD price display", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
@@ -216,19 +216,19 @@
                                     Phase 2
                                 </p>
                                 <h2 class="font-bold text-base text-white">
-                                    Mainnet & Stream Ecosystem
+                                    Engagement & Custom Alerts
                                 </h2>
                             </div>
                         </div>
                         <span
-                            class="px-3 py-1 bg-zinc-800 border border-zinc-700 rounded-full text-xs font-semibold text-zinc-400"
+                            class="px-3 py-1 bg-cyan-500/15 border border-cyan-500/30 rounded-full text-xs font-semibold text-cyan-300"
                         >
-                            ◷ Planned
+                            🔨 In Progress
                         </span>
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Solana Mainnet launch (real SOL)", "Text-to-speech (TTS) alerts", "Alert sound library (built-in meme sounds)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)", "Stream chat bot (GlianaBot)"] as item}
+                            {#each ["Custom media upload for alerts (GIF/image)", "Solana Mainnet launch (real SOL)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)", "Stream chat bot (GlianaBot)"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
@@ -277,7 +277,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "USDC stablecoin tipping support", "Expanded wallet compatibility", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs"] as item}
+                            {#each ["Text-to-speech (TTS) alerts", "Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "USDC stablecoin tipping support", "Expanded wallet compatibility", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
