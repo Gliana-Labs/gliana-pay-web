@@ -31,6 +31,9 @@
   let totalTips = 0;
   let average = 0;
   let donations: any[] = [];
+  let page = 1;
+  let hasMore = false;
+  let loadingMore = false;
   let alertsLoading = false;
 
   // Alert Settings
@@ -66,8 +69,9 @@
     if (!slug) return;
 
     try {
+      page = 1;
       const response = await fetch(
-        `${WORKER_URL}/api/streamer/${slug}/donations`,
+        `${WORKER_URL}/api/streamer/${slug}/donations?page=1&limit=10`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -75,6 +79,7 @@
         totalTips = data.stats.totalTips;
         average = data.stats.average / 1e9;
         donations = data.donations || [];
+        hasMore = data.pagination?.hasMore || false;
       }
     } catch (e) {
       console.error("Failed to load donations:", e);
@@ -97,6 +102,29 @@
       }
     } catch (e) {
       console.error("Failed to load settings:", e);
+    }
+  }
+
+  // Load more donations
+  async function loadMoreDonations() {
+    if (!slug || loadingMore || !hasMore) return;
+
+    loadingMore = true;
+    try {
+      const nextPage = page + 1;
+      const response = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/donations?page=${nextPage}&limit=10`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        donations = [...donations, ...(data.donations || [])];
+        page = nextPage;
+        hasMore = data.pagination?.hasMore || false;
+      }
+    } catch (e) {
+      console.error("Failed to load more donations:", e);
+    } finally {
+      loadingMore = false;
     }
   }
 
@@ -343,6 +371,20 @@
                   </div>
                 {/each}
               </div>
+
+              {#if hasMore}
+                <div
+                  class="px-4 pb-4 pt-2 flex justify-center border-t border-white/5 mt-2"
+                >
+                  <button
+                    class="px-5 py-2 text-sm font-medium text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:active:scale-100 disabled:hover:bg-purple-500/10"
+                    on:click={loadMoreDonations}
+                    disabled={loadingMore}
+                  >
+                    {loadingMore ? "Loading..." : "Load More Tips"}
+                  </button>
+                </div>
+              {/if}
             {:else}
               <div class="p-8 text-center text-zinc-500">
                 No tips yet. Share your page to start receiving tips!
