@@ -507,69 +507,86 @@
   </div>
 
   <!-- Background Effects -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div
-      class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"
-    ></div>
-    <div
-      class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"
-    ></div>
-  </div>
+  {#if streamer?.tip_bg_url}
+    <!-- Custom background image -->
+    <div class="fixed inset-0 pointer-events-none">
+      <img
+        src="{WORKER_URL}/api/media/{streamer.tip_bg_url}?v={Date.now()}"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black/60"></div>
+    </div>
+  {:else}
+    <!-- Default background -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div
+        class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-purple-500/20 to-transparent rounded-full blur-3xl"
+      ></div>
+      <div
+        class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"
+      ></div>
+    </div>
+  {/if}
 
   <div class="relative z-10 max-w-5xl mx-auto px-4 pt-16 sm:pt-20 pb-8">
-    <!-- Profile Banner & Card Header -->
-    <div class="mb-4 sm:mb-5 lg:mb-6 w-full mx-auto">
-      <!-- Banner Background -->
-      <div
-        class="h-24 md:h-32 w-full rounded-t-3xl bg-zinc-800 relative overflow-hidden group"
-      >
-        {#if streamer?.banner_url}
-          <img
-            src="{WORKER_URL}/api/media/{streamer.banner_url}?v={Date.now()}"
-            alt="Banner"
-            class="w-full h-full object-cover"
-          />
-        {:else}
-          <div
-            class="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 mix-blend-overlay"
-          ></div>
-          <div
-            class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_2px_2px,white_1px,transparent_0)] bg-[length:24px_24px]"
-          ></div>
-        {/if}
-      </div>
-
-      <!-- Profile Card Container -->
-      <div
-        class="bg-[#111113]/90 backdrop-blur-xl border border-white/10 border-t-0 rounded-b-3xl px-6 pb-6 pt-0 relative shadow-2xl"
-      >
-        <!-- Overlapping Avatar - X/Twitter Style (Left aligned) -->
+    <!-- Profile Banner & Card - Full bleed background -->
+    <div
+      class="mb-4 sm:mb-5 lg:mb-6 w-full mx-auto rounded-3xl relative overflow-hidden border border-white/10"
+    >
+      <!-- Banner image as FULL background -->
+      {#if streamer?.banner_url}
+        <img
+          src="{WORKER_URL}/api/media/{streamer.banner_url}?v={Date.now()}"
+          alt="Banner"
+          class="absolute inset-0 w-full h-full object-cover object-center"
+        />
         <div
-          class="flex justify-between items-end -mt-12 md:-mt-16 mb-4 relative z-10 w-full"
-        >
-          <div
-            class="w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-full border-4 border-[#111113] bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/20 overflow-hidden"
-          >
-            {#if streamer?.profile_image_url}
-              <img
-                src="{WORKER_URL}/api/media/{streamer.profile_image_url}?v={Date.now()}"
-                alt={streamer.name}
-                class="w-full h-full object-cover"
-              />
-            {:else}
-              <span class="text-4xl md:text-6xl drop-shadow-md">🎮</span>
-            {/if}
+          class="absolute inset-0 bg-gradient-to-t from-[#111113] via-[#111113]/60 to-[#111113]/20"
+        ></div>
+      {:else}
+        <!-- Default: original design (c17fd02) -->
+        <div class="absolute inset-0 bg-[#111113]"></div>
+        <div class="absolute top-0 left-0 right-0 h-[18%] bg-zinc-800"></div>
+        <div
+          class="absolute top-0 left-0 right-0 h-[18%] bg-gradient-to-r from-purple-900/50 to-indigo-900/50 mix-blend-overlay"
+        ></div>
+        <div
+          class="absolute top-0 left-0 right-0 h-[18%] opacity-20 bg-[radial-gradient(circle_at_2px_2px,white_1px,transparent_0)] bg-[length:24px_24px]"
+        ></div>
+      {/if}
+
+      <!-- Content -->
+      <div class="relative z-10 px-5 sm:px-8 pt-6 sm:pt-8 md:pt-10 pb-6">
+        <!-- Avatar Row -->
+        <div class="flex justify-between items-end mb-5 w-full">
+          <div class="relative">
+            <div
+              class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 shrink-0 rounded-full border-4 border-[#111113] bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/20 overflow-hidden"
+            >
+              {#if streamer?.profile_image_url}
+                <img
+                  src="{WORKER_URL}/api/media/{streamer.profile_image_url}?v={Date.now()}"
+                  alt={streamer.name}
+                  class="w-full h-full object-cover"
+                />
+              {:else}
+                <span class="text-3xl md:text-4xl select-none">🎮</span>
+              {/if}
+            </div>
           </div>
 
-          <!-- Social Links moved to right side alongside avatar -->
+          <!-- Social Links -->
           {#if streamer && (streamer.x_url || streamer.reddit_url || streamer.youtube_url || streamer.kick_url || streamer.twitch_url || streamer.tiktok_url || streamer.facebook_url || streamer.instagram_url)}
-            <div class="flex flex-wrap justify-end ml-4 gap-2 mb-2 md:mb-6">
+            <div
+              class="flex flex-wrap justify-end ml-4 gap-1.5 sm:gap-2 mb-1 sm:mb-3"
+            >
               {#if streamer.x_url}
                 <a
                   href={streamer.x_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-zinc-800 hover:border-white/30 transition-all text-zinc-400 hover:text-white"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/30 transition-all duration-200 text-white/70 hover:text-white"
                   title="X (Twitter)"
                 >
                   <svg
@@ -587,7 +604,7 @@
                   href={streamer.twitch_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#9146FF]/20 hover:border-[#9146FF]/50 transition-all text-zinc-400 hover:text-[#9146FF]"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-[#9146FF]/20 hover:border-[#9146FF]/40 transition-all duration-200 text-white/70 hover:text-[#9146FF]"
                   title="Twitch"
                 >
                   <svg
@@ -605,7 +622,7 @@
                   href={streamer.youtube_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#FF0000]/20 hover:border-[#FF0000]/50 transition-all text-zinc-400 hover:text-[#FF0000]"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-[#FF0000]/20 hover:border-[#FF0000]/40 transition-all duration-200 text-white/70 hover:text-[#FF0000]"
                   title="YouTube"
                 >
                   <svg
@@ -623,7 +640,7 @@
                   href={streamer.kick_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#53FC18]/20 hover:border-[#53FC18]/50 transition-all text-zinc-400 hover:text-[#53FC18]"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-[#53FC18]/20 hover:border-[#53FC18]/40 transition-all duration-200 text-white/70 hover:text-[#53FC18]"
                   title="Kick"
                 >
                   <svg
@@ -646,7 +663,7 @@
                   href={streamer.reddit_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#FF4500]/20 hover:border-[#FF4500]/50 transition-all text-zinc-400 hover:text-[#FF4500]"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-[#FF4500]/20 hover:border-[#FF4500]/40 transition-all duration-200 text-white/70 hover:text-[#FF4500]"
                   title="Reddit"
                 >
                   <svg
@@ -664,7 +681,7 @@
                   href={streamer.tiktok_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-zinc-800 hover:border-white/30 transition-all text-zinc-400 hover:text-white"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/30 transition-all duration-200 text-white/70 hover:text-white"
                   title="TikTok"
                 >
                   <svg
@@ -683,7 +700,7 @@
                   href={streamer.instagram_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#E4405F]/20 hover:border-[#E4405F]/50 transition-all text-zinc-400 hover:text-[#E4405F]"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-[#E4405F]/20 hover:border-[#E4405F]/40 transition-all duration-200 text-white/70 hover:text-[#E4405F]"
                   title="Instagram"
                 >
                   <svg
@@ -701,7 +718,7 @@
                   href={streamer.facebook_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="p-2 md:p-2.5 bg-zinc-900/80 border border-white/5 rounded-full hover:bg-[#1877F2]/20 hover:border-[#1877F2]/50 transition-all text-zinc-400 hover:text-[#1877F2]"
+                  class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-[#1877F2]/20 hover:border-[#1877F2]/40 transition-all duration-200 text-white/70 hover:text-[#1877F2]"
                   title="Facebook"
                 >
                   <svg
@@ -717,18 +734,17 @@
             </div>
           {/if}
         </div>
-
+        <!-- Name & Bio -->
         <div class="text-left">
-          <div class="flex items-center gap-3">
-            <h1 class="text-2xl md:text-3xl font-bold text-white">
-              {streamer?.name ? titleCase(streamer.name) : "..."}
-            </h1>
-          </div>
+          <h1
+            class="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-lg"
+          >
+            {streamer?.name ? titleCase(streamer.name) : "..."}
+          </h1>
 
-          <!-- Streamer Custom Description -->
           {#if streamer && "description" in streamer && streamer.description}
             <p
-              class="text-zinc-400 text-sm mt-2 max-w-xl leading-relaxed whitespace-pre-wrap"
+              class="text-white/60 text-sm sm:text-[15px] mt-2.5 max-w-2xl leading-relaxed whitespace-pre-wrap drop-shadow"
             >
               {streamer.description}
             </p>

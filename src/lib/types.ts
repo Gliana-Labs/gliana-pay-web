@@ -20,6 +20,8 @@ export interface Streamer {
   description?: string;
   profile_image_url?: string;
   banner_url?: string;
+  tip_bg_color?: string;
+  tip_bg_url?: string;
 }
 
 export interface Donation {

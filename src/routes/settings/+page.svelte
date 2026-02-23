@@ -40,14 +40,18 @@
     let facebookUrl = "";
     let instagramUrl = "";
     let description = "";
+    let tipBgColor = "";
 
     // Image Upload
     let profileImageUrl = "";
     let bannerUrl = "";
+    let tipBgUrl = "";
     let uploadingProfile = false;
     let uploadingBanner = false;
+    let uploadingBg = false;
     let profileInput: HTMLInputElement;
     let bannerInput: HTMLInputElement;
+    let bgInput: HTMLInputElement;
     let cacheBust = Date.now();
 
     // Load session
@@ -83,6 +87,8 @@
                     description = data.streamer.description || "";
                     profileImageUrl = data.streamer.profile_image_url || "";
                     bannerUrl = data.streamer.banner_url || "";
+                    tipBgColor = data.streamer.tip_bg_color || "";
+                    tipBgUrl = data.streamer.tip_bg_url || "";
                 }
             }
         } catch (e) {
@@ -111,6 +117,9 @@
                         facebook_url: facebookUrl,
                         instagram_url: instagramUrl,
                         description: description,
+                        profile_image_url: profileImageUrl,
+                        banner_url: bannerUrl,
+                        tip_bg_url: tipBgUrl,
                     }),
                 },
             );
@@ -132,28 +141,29 @@
     }
 
     // Upload image to R2
-    async function uploadImage(type: "profile" | "banner", file: File) {
+    async function uploadImage(
+        type: "profile" | "banner" | "background",
+        file: File,
+    ) {
         if (type === "profile") uploadingProfile = true;
-        else uploadingBanner = true;
+        else if (type === "banner") uploadingBanner = true;
+        else uploadingBg = true;
 
         try {
             const formData = new FormData();
             formData.append("file", file);
 
             const response = await fetch(
-                `${WORKER_URL}/api/streamer/${slug}/upload?type=${type}`,
+                `${WORKER_URL}/api/streamer/${slug}/upload?type=${type}&skipDb=true`,
                 { method: "POST", body: formData },
             );
 
             if (response.ok) {
                 const data = await response.json();
                 if (type === "profile") profileImageUrl = data.url;
-                else bannerUrl = data.url;
+                else if (type === "banner") bannerUrl = data.url;
+                else tipBgUrl = data.url;
                 cacheBust = Date.now();
-                showToast(
-                    `${type === "profile" ? "Profile photo" : "Banner"} uploaded!`,
-                    "success",
-                );
             } else {
                 const err = await response.json().catch(() => ({}));
                 showToast((err as { error?: string }).error || "Upload failed");
@@ -162,7 +172,8 @@
             showToast("Upload failed");
         } finally {
             if (type === "profile") uploadingProfile = false;
-            else uploadingBanner = false;
+            else if (type === "banner") uploadingBanner = false;
+            else uploadingBg = false;
         }
     }
 
@@ -174,6 +185,18 @@
     function handleBannerSelect(e: Event) {
         const input = e.target as HTMLInputElement;
         if (input.files?.[0]) uploadImage("banner", input.files[0]);
+    }
+
+    function handleBgSelect(e: Event) {
+        const input = e.target as HTMLInputElement;
+        if (input.files?.[0]) uploadImage("background", input.files[0]);
+    }
+
+    async function removeImage(type: "profile" | "banner" | "background") {
+        if (type === "profile") profileImageUrl = "";
+        else if (type === "banner") bannerUrl = "";
+        else tipBgUrl = "";
+        cacheBust = Date.now();
     }
 
     // Logout
@@ -274,10 +297,10 @@
                 <h2 class="font-bold text-lg mb-4">Profile Information</h2>
 
                 <!-- Banner Upload -->
-                <div class="mb-5">
+                <div class="mb-5 relative">
                     <label class="block text-xs text-zinc-400 mb-2"
                         >Banner Image <span class="text-zinc-600"
-                            >(1200×400 recommended, max 5MB)</span
+                            >(1500×500 recommended, max 5MB)</span
                         ></label
                     >
                     <button
@@ -325,11 +348,79 @@
                         on:change={handleBannerSelect}
                         class="hidden"
                     />
+                    {#if bannerUrl}
+                        <button
+                            on:click={() => removeImage("banner")}
+                            class="absolute top-2 right-2 z-10 w-6 h-6 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-xs"
+                            title="Remove banner">✕</button
+                        >
+                    {/if}
+                </div>
+
+                <!-- Tip Page Background Image -->
+                <div class="mb-5 relative">
+                    <label class="block text-xs text-zinc-400 mb-2"
+                        >Tip Page Background <span class="text-zinc-600"
+                            >(1920×1080 recommended, max 5MB)</span
+                        ></label
+                    >
+                    <button
+                        on:click={() => bgInput.click()}
+                        class="w-full h-24 md:h-28 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
+                    >
+                        {#if tipBgUrl}
+                            <img
+                                src="{WORKER_URL}/api/media/{tipBgUrl}?cb={cacheBust}"
+                                alt="Background"
+                                class="w-full h-full object-cover"
+                            />
+                            <div
+                                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                            >
+                                <span class="text-sm font-medium"
+                                    >Change Background</span
+                                >
+                            </div>
+                        {:else}
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 flex items-center justify-center"
+                            >
+                                {#if uploadingBg}
+                                    <div
+                                        class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                                    ></div>
+                                {:else}
+                                    <div class="text-center">
+                                        <span class="text-2xl block mb-1"
+                                            >🌌</span
+                                        >
+                                        <span class="text-xs text-zinc-400"
+                                            >Click to upload background</span
+                                        >
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
+                    </button>
+                    <input
+                        bind:this={bgInput}
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        on:change={handleBgSelect}
+                        class="hidden"
+                    />
+                    {#if tipBgUrl}
+                        <button
+                            on:click={() => removeImage("background")}
+                            class="absolute top-2 right-2 z-10 w-6 h-6 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-xs"
+                            title="Remove background">✕</button
+                        >
+                    {/if}
                 </div>
 
                 <!-- Profile Photo Upload -->
                 <div class="mb-5 flex items-center gap-4">
-                    <div>
+                    <div class="relative">
                         <button
                             on:click={() => profileInput.click()}
                             class="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
@@ -368,6 +459,13 @@
                             on:change={handleProfileSelect}
                             class="hidden"
                         />
+                        {#if profileImageUrl}
+                            <button
+                                on:click={() => removeImage("profile")}
+                                class="absolute -top-1 -right-1 z-10 w-5 h-5 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-[10px]"
+                                title="Remove photo">✕</button
+                            >
+                        {/if}
                     </div>
                     <div class="text-xs text-zinc-500">
                         <p class="font-medium text-zinc-300 mb-0.5">
