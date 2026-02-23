@@ -220,9 +220,15 @@
 
   // Session management
   function saveSession() {
+    if (!selectedWallet) return;
     localStorage.setItem(
       "gliana_session",
-      JSON.stringify({ walletAddress, name, slug }),
+      JSON.stringify({
+        walletAddress,
+        name,
+        slug,
+        walletName: selectedWallet.name,
+      }),
     );
   }
 
