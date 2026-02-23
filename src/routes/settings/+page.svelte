@@ -41,6 +41,14 @@
     let instagramUrl = "";
     let description = "";
 
+    // Image Upload
+    let profileImageUrl = "";
+    let bannerUrl = "";
+    let uploadingProfile = false;
+    let uploadingBanner = false;
+    let profileInput: HTMLInputElement;
+    let bannerInput: HTMLInputElement;
+
     // Load session
     function loadSession() {
         if (typeof window === "undefined") return;
@@ -72,6 +80,8 @@
                     facebookUrl = data.streamer.facebook_url || "";
                     instagramUrl = data.streamer.instagram_url || "";
                     description = data.streamer.description || "";
+                    profileImageUrl = data.streamer.profile_image_url || "";
+                    bannerUrl = data.streamer.banner_url || "";
                 }
             }
         } catch (e) {
@@ -118,6 +128,50 @@
         } finally {
             socialsLoading = false;
         }
+    }
+
+    // Upload image to R2
+    async function uploadImage(type: "profile" | "banner", file: File) {
+        if (type === "profile") uploadingProfile = true;
+        else uploadingBanner = true;
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch(
+                `${WORKER_URL}/api/streamer/${slug}/upload?type=${type}`,
+                { method: "POST", body: formData },
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                if (type === "profile") profileImageUrl = data.url;
+                else bannerUrl = data.url;
+                showToast(
+                    `${type === "profile" ? "Profile photo" : "Banner"} uploaded!`,
+                    "success",
+                );
+            } else {
+                const err = await response.json().catch(() => ({}));
+                showToast((err as { error?: string }).error || "Upload failed");
+            }
+        } catch (e) {
+            showToast("Upload failed");
+        } finally {
+            if (type === "profile") uploadingProfile = false;
+            else uploadingBanner = false;
+        }
+    }
+
+    function handleProfileSelect(e: Event) {
+        const input = e.target as HTMLInputElement;
+        if (input.files?.[0]) uploadImage("profile", input.files[0]);
+    }
+
+    function handleBannerSelect(e: Event) {
+        const input = e.target as HTMLInputElement;
+        if (input.files?.[0]) uploadImage("banner", input.files[0]);
     }
 
     // Logout
@@ -216,6 +270,112 @@
             <!-- Profile Settings -->
             <div class="glass-card rounded-2xl border border-white/10 p-6 mb-6">
                 <h2 class="font-bold text-lg mb-4">Profile Information</h2>
+
+                <!-- Banner Upload -->
+                <div class="mb-5">
+                    <label class="block text-xs text-zinc-400 mb-2"
+                        >Banner Image <span class="text-zinc-600"
+                            >(1200×400 recommended, max 5MB)</span
+                        ></label
+                    >
+                    <button
+                        on:click={() => bannerInput.click()}
+                        class="w-full h-28 md:h-36 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
+                    >
+                        {#if bannerUrl}
+                            <img
+                                src="{WORKER_URL}{bannerUrl}"
+                                alt="Banner"
+                                class="w-full h-full object-cover"
+                            />
+                            <div
+                                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                            >
+                                <span class="text-sm font-medium"
+                                    >Change Banner</span
+                                >
+                            </div>
+                        {:else}
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-purple-900/30 to-indigo-900/30 flex items-center justify-center"
+                            >
+                                {#if uploadingBanner}
+                                    <div
+                                        class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                                    ></div>
+                                {:else}
+                                    <div class="text-center">
+                                        <span class="text-2xl block mb-1"
+                                            >🖼️</span
+                                        >
+                                        <span class="text-xs text-zinc-400"
+                                            >Click to upload banner</span
+                                        >
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
+                    </button>
+                    <input
+                        bind:this={bannerInput}
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        on:change={handleBannerSelect}
+                        class="hidden"
+                    />
+                </div>
+
+                <!-- Profile Photo Upload -->
+                <div class="mb-5 flex items-center gap-4">
+                    <div>
+                        <button
+                            on:click={() => profileInput.click()}
+                            class="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
+                        >
+                            {#if profileImageUrl}
+                                <img
+                                    src="{WORKER_URL}{profileImageUrl}"
+                                    alt="Profile"
+                                    class="w-full h-full object-cover"
+                                />
+                                <div
+                                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full"
+                                >
+                                    <span class="text-[10px] font-medium"
+                                        >Change</span
+                                    >
+                                </div>
+                            {:else}
+                                <div
+                                    class="w-full h-full bg-gradient-to-br from-cyan-400/20 via-purple-500/20 to-pink-500/20 flex items-center justify-center"
+                                >
+                                    {#if uploadingProfile}
+                                        <div
+                                            class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                                        ></div>
+                                    {:else}
+                                        <span class="text-2xl">📷</span>
+                                    {/if}
+                                </div>
+                            {/if}
+                        </button>
+                        <input
+                            bind:this={profileInput}
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp"
+                            on:change={handleProfileSelect}
+                            class="hidden"
+                        />
+                    </div>
+                    <div class="text-xs text-zinc-500">
+                        <p class="font-medium text-zinc-300 mb-0.5">
+                            Profile Photo
+                        </p>
+                        <p>400×400 recommended</p>
+                        <p>Max 2MB · PNG, JPEG, WebP</p>
+                    </div>
+                </div>
+
                 <div class="space-y-4">
                     <div>
                         <label

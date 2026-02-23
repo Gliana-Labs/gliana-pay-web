@@ -523,12 +523,20 @@
       <div
         class="h-24 md:h-32 w-full rounded-t-3xl bg-zinc-800 relative overflow-hidden group"
       >
-        <div
-          class="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 mix-blend-overlay"
-        ></div>
-        <div
-          class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_2px_2px,white_1px,transparent_0)] bg-[length:24px_24px]"
-        ></div>
+        {#if streamer?.banner_url}
+          <img
+            src="{WORKER_URL}{streamer.banner_url}"
+            alt="Banner"
+            class="w-full h-full object-cover"
+          />
+        {:else}
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 mix-blend-overlay"
+          ></div>
+          <div
+            class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_2px_2px,white_1px,transparent_0)] bg-[length:24px_24px]"
+          ></div>
+        {/if}
       </div>
 
       <!-- Profile Card Container -->
@@ -542,8 +550,15 @@
           <div
             class="w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-full border-4 border-[#111113] bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/20 overflow-hidden"
           >
-            <!-- Using emoji as requested, but structured to support images later -->
-            <span class="text-4xl md:text-6xl drop-shadow-md">🎮</span>
+            {#if streamer?.profile_image_url}
+              <img
+                src="{WORKER_URL}{streamer.profile_image_url}"
+                alt={streamer.name}
+                class="w-full h-full object-cover"
+              />
+            {:else}
+              <span class="text-4xl md:text-6xl drop-shadow-md">🎮</span>
+            {/if}
           </div>
 
           <!-- Social Links moved to right side alongside avatar -->

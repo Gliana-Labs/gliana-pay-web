@@ -18,6 +18,8 @@ export interface Streamer {
   facebook_url?: string;
   instagram_url?: string;
   description?: string;
+  profile_image_url?: string;
+  banner_url?: string;
 }
 
 export interface Donation {
