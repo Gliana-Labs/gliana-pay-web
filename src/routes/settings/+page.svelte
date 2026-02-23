@@ -46,10 +46,21 @@
     let description = "";
     let tipBgColor = "";
 
-    // Image Upload
+    // Image Upload State
     let profileImageUrl = "";
     let bannerUrl = "";
     let tipBgUrl = "";
+
+    // Local Files Pending Upload
+    let pendingProfileFile: File | null = null;
+    let pendingBannerFile: File | null = null;
+    let pendingBgFile: File | null = null;
+
+    // Local URLs for immediate UI Preview before save
+    let localProfilePreview = "";
+    let localBannerPreview = "";
+    let localBgPreview = "";
+
     let uploadingProfile = false;
     let uploadingBanner = false;
     let uploadingBg = false;
@@ -57,6 +68,14 @@
     let bannerInput: HTMLInputElement;
     let bgInput: HTMLInputElement;
     let cacheBust = Date.now();
+
+    // Clean up local object URLs when component is destroyed
+    import { onDestroy } from "svelte";
+    onDestroy(() => {
+        if (localProfilePreview) URL.revokeObjectURL(localProfilePreview);
+        if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
+        if (localBgPreview) URL.revokeObjectURL(localBgPreview);
+    });
 
     // Load session
     function loadSession() {
@@ -139,6 +158,55 @@
                 return;
             }
 
+            // Upload any pending pending images first
+            if (pendingProfileFile || pendingBannerFile || pendingBgFile) {
+                // If there are files to upload, we'll do it sequentially here using the same signature
+                if (pendingProfileFile) {
+                    uploadingProfile = true;
+                    showToast("Uploading profile photo...", "success");
+                    const ok = await performImageUpload(
+                        "profile",
+                        pendingProfileFile,
+                        signatureData.signature,
+                    );
+                    if (!ok) {
+                        socialsLoading = false;
+                        return;
+                    }
+                    uploadingProfile = false;
+                }
+
+                if (pendingBannerFile) {
+                    uploadingBanner = true;
+                    showToast("Uploading banner...", "success");
+                    const ok = await performImageUpload(
+                        "banner",
+                        pendingBannerFile,
+                        signatureData.signature,
+                    );
+                    if (!ok) {
+                        socialsLoading = false;
+                        return;
+                    }
+                    uploadingBanner = false;
+                }
+
+                if (pendingBgFile) {
+                    uploadingBg = true;
+                    showToast("Uploading background...", "success");
+                    const ok = await performImageUpload(
+                        "background",
+                        pendingBgFile,
+                        signatureData.signature,
+                    );
+                    if (!ok) {
+                        socialsLoading = false;
+                        return;
+                    }
+                    uploadingBg = false;
+                }
+            }
+
             const response = await fetch(
                 `${WORKER_URL}/api/streamer/${slug}/settings`,
                 {
@@ -166,6 +234,18 @@
             );
 
             if (response.ok) {
+                // Clear pending files after successful save
+                pendingProfileFile = null;
+                pendingBannerFile = null;
+                pendingBgFile = null;
+                if (localProfilePreview)
+                    URL.revokeObjectURL(localProfilePreview);
+                if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
+                if (localBgPreview) URL.revokeObjectURL(localBgPreview);
+                localProfilePreview = "";
+                localBannerPreview = "";
+                localBgPreview = "";
+
                 showToast("Profile settings saved!", "success");
             } else {
                 const errorData = await response.json().catch(() => ({}));
@@ -181,47 +261,13 @@
         }
     }
 
-    // Upload image to R2
-    async function uploadImage(
+    // Helper to actually perform backend upload using an already-obtained signature
+    async function performImageUpload(
         type: "profile" | "banner" | "background",
         file: File,
-    ) {
-        if (!walletAddress) {
-            showToast("Please connect your wallet first", "error");
-            return;
-        }
-
-        if (type === "profile") uploadingProfile = true;
-        else if (type === "banner") uploadingBanner = true;
-        else uploadingBg = true;
-
+        signature: string,
+    ): Promise<boolean> {
         try {
-            // Get the connected wallet provider
-            const wallets = getAvailableWallets();
-            const savedSession = localStorage.getItem("gliana_session");
-            const sessionData = savedSession ? JSON.parse(savedSession) : {};
-            const savedWalletName = sessionData.walletName || "";
-
-            let currentProvider =
-                wallets.find((w) => w.name === savedWalletName) || wallets[0];
-
-            if (!currentProvider) {
-                showToast(
-                    "Could not find wallet provider. Please reconnect.",
-                    "error",
-                );
-                return;
-            }
-
-            // Prompt for signature
-            const message = `Upload image for ${slug}`;
-            const signatureData = await signMessage(currentProvider, message);
-
-            if (!signatureData) {
-                showToast("Signature request cancelled", "error");
-                return;
-            }
-
             const formData = new FormData();
             formData.append("file", file);
 
@@ -231,7 +277,7 @@
                     method: "POST",
                     body: formData,
                     headers: {
-                        Authorization: `Bearer ${walletAddress}:${signatureData.signature}`,
+                        Authorization: `Bearer ${walletAddress}:${signature}`,
                     },
                 },
             );
@@ -242,38 +288,62 @@
                 else if (type === "banner") bannerUrl = data.url;
                 else tipBgUrl = data.url;
                 cacheBust = Date.now();
+                return true;
             } else {
                 const err = await response.json().catch(() => ({}));
                 showToast((err as { error?: string }).error || "Upload failed");
+                return false;
             }
         } catch (e) {
             showToast("Upload failed");
-        } finally {
-            if (type === "profile") uploadingProfile = false;
-            else if (type === "banner") uploadingBanner = false;
-            else uploadingBg = false;
+            return false;
         }
     }
 
     function handleProfileSelect(e: Event) {
         const input = e.target as HTMLInputElement;
-        if (input.files?.[0]) uploadImage("profile", input.files[0]);
+        if (input.files?.[0]) {
+            pendingProfileFile = input.files[0];
+            if (localProfilePreview) URL.revokeObjectURL(localProfilePreview);
+            localProfilePreview = URL.createObjectURL(pendingProfileFile);
+        }
     }
 
     function handleBannerSelect(e: Event) {
         const input = e.target as HTMLInputElement;
-        if (input.files?.[0]) uploadImage("banner", input.files[0]);
+        if (input.files?.[0]) {
+            pendingBannerFile = input.files[0];
+            if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
+            localBannerPreview = URL.createObjectURL(pendingBannerFile);
+        }
     }
 
     function handleBgSelect(e: Event) {
         const input = e.target as HTMLInputElement;
-        if (input.files?.[0]) uploadImage("background", input.files[0]);
+        if (input.files?.[0]) {
+            pendingBgFile = input.files[0];
+            if (localBgPreview) URL.revokeObjectURL(localBgPreview);
+            localBgPreview = URL.createObjectURL(pendingBgFile);
+        }
     }
 
     async function removeImage(type: "profile" | "banner" | "background") {
-        if (type === "profile") profileImageUrl = "";
-        else if (type === "banner") bannerUrl = "";
-        else tipBgUrl = "";
+        if (type === "profile") {
+            profileImageUrl = "";
+            pendingProfileFile = null;
+            if (localProfilePreview) URL.revokeObjectURL(localProfilePreview);
+            localProfilePreview = "";
+        } else if (type === "banner") {
+            bannerUrl = "";
+            pendingBannerFile = null;
+            if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
+            localBannerPreview = "";
+        } else {
+            tipBgUrl = "";
+            pendingBgFile = null;
+            if (localBgPreview) URL.revokeObjectURL(localBgPreview);
+            localBgPreview = "";
+        }
         cacheBust = Date.now();
     }
 
@@ -376,18 +446,23 @@
 
                 <!-- Banner Upload -->
                 <div class="mb-5 relative">
-                    <label class="block text-xs text-zinc-400 mb-2"
+                    <label
+                        for="bannerUpload"
+                        class="block text-xs text-zinc-400 mb-2"
                         >Banner Image <span class="text-zinc-600"
                             >(1500×500 recommended, max 5MB)</span
                         ></label
                     >
                     <button
+                        id="bannerUpload"
                         on:click={() => bannerInput.click()}
                         class="w-full h-28 md:h-36 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
                     >
-                        {#if bannerUrl}
+                        {#if localBannerPreview || bannerUrl}
                             <img
-                                src="{WORKER_URL}/api/media/{bannerUrl}?cb={cacheBust}"
+                                src={localBannerPreview
+                                    ? localBannerPreview
+                                    : `${WORKER_URL}/api/media/${bannerUrl}?cb=${cacheBust}`}
                                 alt="Banner"
                                 class="w-full h-full object-cover"
                             />
@@ -426,7 +501,7 @@
                         on:change={handleBannerSelect}
                         class="hidden"
                     />
-                    {#if bannerUrl}
+                    {#if localBannerPreview || bannerUrl}
                         <button
                             on:click={() => removeImage("banner")}
                             class="absolute top-2 right-2 z-10 w-6 h-6 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-xs"
@@ -437,18 +512,23 @@
 
                 <!-- Tip Page Background Image -->
                 <div class="mb-5 relative">
-                    <label class="block text-xs text-zinc-400 mb-2"
+                    <label
+                        for="bgUpload"
+                        class="block text-xs text-zinc-400 mb-2"
                         >Tip Page Background <span class="text-zinc-600"
                             >(1920×1080 recommended, max 5MB)</span
                         ></label
                     >
                     <button
+                        id="bgUpload"
                         on:click={() => bgInput.click()}
                         class="w-full h-24 md:h-28 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
                     >
-                        {#if tipBgUrl}
+                        {#if localBgPreview || tipBgUrl}
                             <img
-                                src="{WORKER_URL}/api/media/{tipBgUrl}?cb={cacheBust}"
+                                src={localBgPreview
+                                    ? localBgPreview
+                                    : `${WORKER_URL}/api/media/${tipBgUrl}?cb=${cacheBust}`}
                                 alt="Background"
                                 class="w-full h-full object-cover"
                             />
@@ -487,7 +567,7 @@
                         on:change={handleBgSelect}
                         class="hidden"
                     />
-                    {#if tipBgUrl}
+                    {#if localBgPreview || tipBgUrl}
                         <button
                             on:click={() => removeImage("background")}
                             class="absolute top-2 right-2 z-10 w-6 h-6 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-xs"
@@ -503,9 +583,11 @@
                             on:click={() => profileInput.click()}
                             class="w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
                         >
-                            {#if profileImageUrl}
+                            {#if localProfilePreview || profileImageUrl}
                                 <img
-                                    src="{WORKER_URL}/api/media/{profileImageUrl}?cb={cacheBust}"
+                                    src={localProfilePreview
+                                        ? localProfilePreview
+                                        : `${WORKER_URL}/api/media/${profileImageUrl}?cb=${cacheBust}`}
                                     alt="Profile"
                                     class="w-full h-full object-cover"
                                 />
@@ -537,7 +619,7 @@
                             on:change={handleProfileSelect}
                             class="hidden"
                         />
-                        {#if profileImageUrl}
+                        {#if localProfilePreview || profileImageUrl}
                             <button
                                 on:click={() => removeImage("profile")}
                                 class="absolute -top-1 -right-1 z-10 w-5 h-5 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-[10px]"
