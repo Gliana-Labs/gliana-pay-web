@@ -1,31 +1,35 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import type { WSTipEvent, WSMessage } from '$lib/types';
+  import { onMount, onDestroy } from "svelte";
+  import type { WSTipEvent, WSMessage } from "$lib/types";
 
   let { data } = $props();
 
   let socket: WebSocket | null = null;
   let isConnected = $state(false);
   let isReconnecting = $state(false);
-  let wsError = $state('');
-  let currentTip: WSTipEvent['data'] | null = $state(null);
+  let wsError = $state("");
+  let currentTip: WSTipEvent["data"] | null = $state(null);
   let showAlert = $state(false);
   let alertSound: HTMLAudioElement | null = $state(null);
-  let wsUrl = '';
+  let wsUrl = "";
   let soundEnabled = $state(false);
   let soundLoading = $state(false);
-  let soundUrl = $state('https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3');
-  let alertQueue: WSTipEvent['data'][] = [];
+  let soundUrl = $state(
+    "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3",
+  );
+  let alertQueue: WSTipEvent["data"][] = [];
   let isShowingAlert = false;
 
   // Load sound preference from URL param only (ignore localStorage for OBS)
   function loadSoundPreference() {
     // Check URL param first (?sound=1 or ?enableSound=true)
-    const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-    const urlSound = urlParams.get('sound') || urlParams.get('enableSound');
+    const urlParams = new URLSearchParams(
+      typeof window !== "undefined" ? window.location.search : "",
+    );
+    const urlSound = urlParams.get("sound") || urlParams.get("enableSound");
 
     // Only enable sound if URL param says so - ignore localStorage
-    if (urlSound === '1' || urlSound === 'true') {
+    if (urlSound === "1" || urlSound === "true") {
       soundEnabled = true;
     }
 
@@ -41,19 +45,19 @@
     soundLoading = true;
 
     // Save preference
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('soundEnabled', 'true');
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("soundEnabled", "true");
     }
 
     // Create new audio with the sound URL
     alertSound = new Audio(soundUrl);
     alertSound.volume = 1;
 
-    alertSound.play()
-      .then(() => {
-      })
+    alertSound
+      .play()
+      .then(() => {})
       .catch((e) => {
-        console.error('Failed to play sound:', e);
+        console.error("Failed to play sound:", e);
       })
       .finally(() => {
         soundLoading = false;
@@ -76,7 +80,7 @@
         }
       }
     } catch (e) {
-      console.error('[Overlay] Failed to load settings:', e);
+      console.error("[Overlay] Failed to load settings:", e);
     }
   }
 
@@ -93,7 +97,7 @@
   function connectWebSocket() {
     // Mark as reconnecting
     isReconnecting = true;
-    wsError = '';
+    wsError = "";
 
     // Properly close existing connection
     if (socket) {
@@ -112,7 +116,7 @@
 
     try {
       socket = new WebSocket(wsUrl);
-      socket.binaryType = 'arraybuffer';
+      socket.binaryType = "arraybuffer";
 
       // Connection timeout - fail fast
       wsConnectionTimeout = setTimeout(() => {
@@ -135,15 +139,15 @@
         try {
           const message: WSMessage = JSON.parse(event.data);
 
-          if (message.type === 'tip') {
-            handleTip(message.data as WSTipEvent['data']);
-          } else if (message.type === 'welcome') {
-          } else if (message.type === 'error') {
-            console.error('WebSocket error:', message.message);
-            wsError = message.message || 'Unknown error';
+          if (message.type === "tip") {
+            handleTip(message.data as WSTipEvent["data"]);
+          } else if (message.type === "welcome") {
+          } else if (message.type === "error") {
+            console.error("WebSocket error:", message.message);
+            wsError = message.message || "Unknown error";
           }
         } catch (error) {
-          console.error('Failed to parse message:', error);
+          console.error("Failed to parse message:", error);
         }
       };
 
@@ -156,15 +160,18 @@
         }
         // Exponential backoff
         wsReconnectAttempts++;
-        const delay = Math.min(wsReconnectDelay * Math.pow(1.5, wsReconnectAttempts - 1), 30000);
+        const delay = Math.min(
+          wsReconnectDelay * Math.pow(1.5, wsReconnectAttempts - 1),
+          30000,
+        );
         setTimeout(connectWebSocket, delay);
       };
 
       socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error("WebSocket error:", error);
       };
     } catch (error) {
-      console.error('Failed to create WebSocket:', error);
+      console.error("Failed to create WebSocket:", error);
       setTimeout(connectWebSocket, 3000);
     }
   }
@@ -188,7 +195,7 @@
     }, 100);
 
     // Listen for test messages from parent window
-    window.addEventListener('message', handleMessage);
+    window.addEventListener("message", handleMessage);
 
     // Poll settings every 30 seconds to pick up updates (for OBS which caches pages)
     refreshInterval = setInterval(async () => {
@@ -196,10 +203,10 @@
     }, 30000);
 
     // Also refresh settings when window gains focus
-    window.addEventListener('focus', loadSettings);
+    window.addEventListener("focus", loadSettings);
 
     // Handle visibility change - reconnect when page becomes visible (important for OBS)
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Periodic connection check - reconnect if disconnected (backup for OBS)
     connectionCheckInterval = setInterval(() => {
@@ -211,7 +218,7 @@
   });
 
   function handleVisibilityChange() {
-    if (document.visibilityState === 'visible') {
+    if (document.visibilityState === "visible") {
       if (!socket || socket.readyState !== WebSocket.OPEN) {
         wsReconnectAttempts = 0;
         connectWebSocket();
@@ -235,14 +242,14 @@
     if (connectionCheckInterval) {
       clearInterval(connectionCheckInterval);
     }
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('message', handleMessage);
-      window.removeEventListener('focus', loadSettings);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    if (typeof window !== "undefined") {
+      window.removeEventListener("message", handleMessage);
+      window.removeEventListener("focus", loadSettings);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     }
   });
 
-  function handleTip(tipData: WSTipEvent['data']) {
+  function handleTip(tipData: WSTipEvent["data"]) {
     // Add to queue
     alertQueue.push(tipData);
 
@@ -281,32 +288,31 @@
 
   function playSound() {
     if (!soundUrl) {
-      console.error('No sound URL');
+      console.error("No sound URL");
       return;
     }
-
 
     // Use preloaded audio if available, otherwise create new
     if (alertSound) {
       alertSound.currentTime = 0;
       alertSound.play().catch((e) => {
-        console.error('Failed to play alert sound:', e);
+        console.error("Failed to play alert sound:", e);
       });
     } else {
       // Fallback: create new audio
       const audio = new Audio();
       audio.volume = 1;
       audio.src = soundUrl;
-      audio.crossOrigin = 'anonymous';
+      audio.crossOrigin = "anonymous";
       audio.play().catch((e) => {
-        console.error('Failed to play alert sound:', e);
+        console.error("Failed to play alert sound:", e);
       });
     }
   }
 
   function handleMessage(event: MessageEvent) {
     // Accept test messages from parent
-    if (event.data && event.data.type === 'tip') {
+    if (event.data && event.data.type === "tip") {
       handleTip(event.data.data);
     }
   }
@@ -322,7 +328,10 @@
 </audio>
 
 <!-- OBS Overlay - Transparent Background -->
-<div class="fixed inset-0 pointer-events-none overflow-hidden" style="background: transparent;">
+<div
+  class="fixed inset-0 pointer-events-none overflow-hidden"
+  style="background: transparent;"
+>
   <!-- Connection Status - Debug info -->
   <div class="absolute top-2 left-2 flex flex-col gap-1">
     <div class="flex items-center gap-2">
@@ -337,7 +346,11 @@
       </div>
       {#if !isConnected && !isReconnecting}
         <button
-          on:click={() => { wsReconnectAttempts = 0; wsError = ''; connectWebSocket(); }}
+          onclick={() => {
+            wsReconnectAttempts = 0;
+            wsError = "";
+            connectWebSocket();
+          }}
           class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto"
         >
           Reconnect
@@ -354,11 +367,11 @@
   <!-- Enable Sound Button -->
   {#if !soundEnabled}
     <button
-      on:click={enableSound}
+      onclick={enableSound}
       disabled={soundLoading}
       class="absolute top-2 right-2 text-xs bg-black/80 hover:bg-black/60 text-yellow-400 px-3 py-2 rounded-lg border border-yellow-400/50 pointer-events-auto disabled:opacity-50 font-bold"
     >
-      🔊 {soundLoading ? 'Loading...' : 'Enable Sound'}
+      🔊 {soundLoading ? "Loading..." : "Enable Sound"}
     </button>
   {/if}
 
@@ -373,21 +386,31 @@
     {#if currentTip}
       <div class="relative">
         <!-- Glow -->
-        <div class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
+        <div
+          class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"
+        ></div>
 
         <!-- Main Card -->
-        <div class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl p-5 shadow-2xl">
+        <div
+          class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl p-5 shadow-2xl"
+        >
           <!-- Animated gradient border -->
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-30 animate-pulse"></div>
+          <div
+            class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-30 animate-pulse"
+          ></div>
 
           <div class="relative flex items-center gap-4">
             <!-- Avatar -->
             <div class="relative flex-shrink-0">
-              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+              <div
+                class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
+              >
                 <span class="text-2xl">💎</span>
               </div>
               <!-- Sparkles -->
-              <div class="absolute -top-1 -right-1 text-lg animate-bounce">✨</div>
+              <div class="absolute -top-1 -right-1 text-lg animate-bounce">
+                ✨
+              </div>
             </div>
 
             <!-- Content -->
@@ -412,29 +435,36 @@
               {/if}
 
               {#if currentTip.message}
-                <div class="text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1 mt-1 truncate">
+                <div
+                  class="text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1 mt-1 truncate"
+                >
                   {currentTip.message}
                 </div>
               {/if}
             </div>
 
             <!-- Coin icon -->
-            <div class="flex-shrink-0 text-3xl animate-bounce">
-              🪙
-            </div>
+            <div class="flex-shrink-0 text-3xl animate-bounce">🪙</div>
           </div>
 
           <!-- Sparkle decorations -->
           <div class="absolute top-2 right-8">
-            <span class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"></span>
+            <span
+              class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"
+            ></span>
           </div>
           <div class="absolute bottom-3 left-6">
-            <span class="absolute w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping" style="animation-delay: 0.3s;"></span>
+            <span
+              class="absolute w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping"
+              style="animation-delay: 0.3s;"
+            ></span>
           </div>
         </div>
 
         <!-- Bottom line -->
-        <div class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-3/4 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"></div>
+        <div
+          class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-3/4 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"
+        ></div>
       </div>
     {/if}
   </div>
