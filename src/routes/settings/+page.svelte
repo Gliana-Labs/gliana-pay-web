@@ -14,18 +14,23 @@
     const filter = new Filter();
     filter.addWords("nigga", "niggas", "nigger", "niggers");
 
+    // Pre-compile strict regex for high-performance client-side checking
+    const strictWords = filter.list
+        .filter((w: string) => w.length > 3)
+        .map((w: string) => w.toLowerCase().replace(/[^a-z0-9]/g, ""))
+        .filter(Boolean);
+    const strictProfanityRegex = new RegExp(
+        `(${[...new Set(strictWords)].join("|")})`,
+        "i",
+    );
+
     function containsProfanity(text: string): boolean {
         if (!text) return false;
         if (filter.isProfane(text)) return true;
 
-        // Aggressive fallback for embedded slurs
+        // Aggressive regex fallback for embedded slurs
         const normalized = text.toLowerCase().replace(/[^a-z0-9]/g, "");
-        const strictBadWords = ["nigga", "nigger", "faggot", "fagot", "retard"];
-
-        for (const word of strictBadWords) {
-            if (normalized.includes(word)) return true;
-        }
-        return false;
+        return strictProfanityRegex.test(normalized);
     }
 
     // Check auth
