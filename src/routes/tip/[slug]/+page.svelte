@@ -116,18 +116,44 @@
 
     fetchData();
 
-    // Fetch SOL price
+    // Fetch SOL price with Fallbacks for Rate Limits
     async function fetchSolPrice() {
-      try {
-        const res = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd",
-        );
-        const data = await res.json();
-        solPrice = data.solana?.usd || 0;
-      } catch (e) {
-        console.error("Failed to fetch SOL price:", e);
+      const apis = [
+        {
+          url: "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd",
+          parser: (data: any) => data?.solana?.usd,
+        },
+        {
+          url: "https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT",
+          parser: (data: any) => parseFloat(data?.price),
+        },
+        {
+          url: "https://api.kraken.com/0/public/Ticker?pair=SOLUSD",
+          parser: (data: any) => parseFloat(data?.result?.SOLUSD?.c?.[0]),
+        },
+      ];
+
+      for (const api of apis) {
+        try {
+          const res = await fetch(api.url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          const price = api.parser(data);
+          if (price && price > 0) {
+            solPrice = price;
+            return; // Success, exit fallback loop
+          }
+        } catch (e) {
+          console.warn(
+            `[PriceFallback] Failed to fetch from ${new URL(api.url).hostname}:`,
+            e,
+          );
+          // Loop continues to next fallback
+        }
       }
+      console.error("[PriceFallback] All price APIs failed.");
     }
+
     fetchSolPrice();
     const priceInterval = setInterval(fetchSolPrice, 60000); // refresh every 60s
 
