@@ -14,6 +14,20 @@
     const filter = new Filter();
     filter.addWords("nigga", "niggas", "nigger", "niggers");
 
+    function containsProfanity(text: string): boolean {
+        if (!text) return false;
+        if (filter.isProfane(text)) return true;
+
+        // Aggressive fallback for embedded slurs
+        const normalized = text.toLowerCase().replace(/[^a-z0-9]/g, "");
+        const strictBadWords = ["nigga", "nigger", "faggot", "fagot", "retard"];
+
+        for (const word of strictBadWords) {
+            if (normalized.includes(word)) return true;
+        }
+        return false;
+    }
+
     // Check auth
     let walletAddress = "";
     let slug = "";
@@ -130,12 +144,12 @@
             return;
         }
 
-        if (name && filter.isProfane(name)) {
+        if (name && containsProfanity(name)) {
             showToast("Display Name contains restricted words.", "error");
             return;
         }
 
-        if (description && filter.isProfane(description)) {
+        if (description && containsProfanity(description)) {
             showToast(
                 "Profile Description contains restricted words.",
                 "error",

@@ -4,7 +4,30 @@
   import { page } from "$app/stores";
 
   const filter = new Filter();
-  filter.addWords("nigga", "niggas", "nigger", "niggers");
+  filter.addWords(
+    "nigga",
+    "niggas",
+    "nigger",
+    "niggers",
+    "faggot",
+    "fagot",
+    "retard",
+  );
+
+  function containsProfanity(text: string): boolean {
+    if (!text) return false;
+    if (filter.isProfane(text)) return true;
+
+    // Aggressive fallback for embedded slurs
+    const normalized = text.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const strictBadWords = ["nigga", "nigger", "faggot", "fagot", "retard"];
+
+    for (const word of strictBadWords) {
+      if (normalized.includes(word)) return true;
+    }
+    return false;
+  }
+
   import type { Streamer, AlertSettings, TopTipper } from "$lib/types";
   import {
     getAvailableWallets,
@@ -165,11 +188,11 @@
   async function generatePayment() {
     if (!streamer) return;
 
-    if (name && filter.isProfane(name)) {
+    if (name && containsProfanity(name)) {
       status = "Sender name contains restricted words.";
       return;
     }
-    if (message && filter.isProfane(message)) {
+    if (message && containsProfanity(message)) {
       status = "Tip message contains restricted words.";
       return;
     }
@@ -282,11 +305,11 @@
     if (!streamer || !viewerConnected || !viewerWallet || !selectedWallet)
       return;
 
-    if (name && filter.isProfane(name)) {
+    if (name && containsProfanity(name)) {
       status = "Sender name contains restricted words.";
       return;
     }
-    if (message && filter.isProfane(message)) {
+    if (message && containsProfanity(message)) {
       status = "Tip message contains restricted words.";
       return;
     }
