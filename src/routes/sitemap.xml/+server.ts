@@ -25,18 +25,6 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://glianapay.com/dashboard</loc>
-    <lastmod>2026-02-19</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.glianapay.com/dashboard</loc>
-    <lastmod>2026-02-19</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://glianapay.com/faq</loc>
     <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
@@ -73,14 +61,14 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://glianapay.com/settings</loc>
-    <lastmod>2026-02-22</lastmod>
+    <loc>https://glianapay.com/roadmap</loc>
+    <lastmod>2026-02-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.glianapay.com/settings</loc>
-    <lastmod>2026-02-22</lastmod>
+    <loc>https://www.glianapay.com/roadmap</loc>
+    <lastmod>2026-02-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
