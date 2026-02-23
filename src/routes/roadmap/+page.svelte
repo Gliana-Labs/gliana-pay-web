@@ -179,7 +179,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["UI & Performance polish", "Tip page customization (backgrounds, profile photos, banners)", "Tip page with suggested amounts", "Live SOL/USD price display", "Improved dashboard analytics", "Mobile-optimized tip page experience"] as item}
+                            {#each ["UI & Performance polish", "Improved dashboard analytics", "Tip page with suggested amounts", "Live SOL/USD price display", "Tip page customization (backgrounds, profile photos, banners)", "Mobile-optimized tip page experience"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-300"
                                 >
