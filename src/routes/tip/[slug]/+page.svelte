@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { Filter } from "bad-words";
   import { page } from "$app/stores";
+
+  const filter = new Filter();
+  filter.addWords("nigga", "niggas", "nigger", "niggers");
   import type { Streamer, AlertSettings, TopTipper } from "$lib/types";
   import {
     getAvailableWallets,
@@ -161,6 +165,15 @@
   async function generatePayment() {
     if (!streamer) return;
 
+    if (name && filter.isProfane(name)) {
+      status = "Sender name contains restricted words.";
+      return;
+    }
+    if (message && filter.isProfane(message)) {
+      status = "Tip message contains restricted words.";
+      return;
+    }
+
     isLoading = true;
     status = "Generating payment request...";
 
@@ -268,6 +281,15 @@
   async function payWithWallet() {
     if (!streamer || !viewerConnected || !viewerWallet || !selectedWallet)
       return;
+
+    if (name && filter.isProfane(name)) {
+      status = "Sender name contains restricted words.";
+      return;
+    }
+    if (message && filter.isProfane(message)) {
+      status = "Tip message contains restricted words.";
+      return;
+    }
 
     isLoading = true;
     status = "Preparing transaction...";

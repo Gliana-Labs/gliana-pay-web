@@ -9,6 +9,10 @@
     } from "$lib/wallet";
     import type { WalletInfo } from "$lib/wallet";
     import { WORKER_URL } from "$lib/config";
+    import { Filter } from "bad-words";
+
+    const filter = new Filter();
+    filter.addWords("nigga", "niggas", "nigger", "niggers");
 
     // Check auth
     let walletAddress = "";
@@ -123,6 +127,19 @@
     async function saveSettings() {
         if (!walletAddress) {
             showToast("Please connect your wallet first", "error");
+            return;
+        }
+
+        if (name && filter.isProfane(name)) {
+            showToast("Display Name contains restricted words.", "error");
+            return;
+        }
+
+        if (description && filter.isProfane(description)) {
+            showToast(
+                "Profile Description contains restricted words.",
+                "error",
+            );
             return;
         }
 
