@@ -454,7 +454,7 @@
         onclick={skipAlert}
         class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto font-medium"
       >
-        {skipHotkey?.toUpperCase() || "S"} | Skip
+        {skipHotkey || "s"} | Skip
       </button>
     </div>
   </div>
