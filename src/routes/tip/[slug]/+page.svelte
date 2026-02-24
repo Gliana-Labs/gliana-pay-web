@@ -7,6 +7,11 @@
     englishRecommendedTransformers,
   } from "obscenity";
 
+  // Helper to capitalize each word
+  function capitalizeWords(str: string): string {
+    return str.replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
   // Best practice: Use englishDataset with recommended transformers
   // The transformers handle leet-speak, padded words, etc. (heuristic matching)
   const matcher = new RegExpMatcher({
@@ -463,7 +468,7 @@
 </script>
 
 <svelte:head>
-  <title>Tip {streamer?.name || "Streamer"} - GlianaPay</title>
+  <title>Tip {streamer?.name ? capitalizeWords(streamer.name) : "Streamer"} - GlianaPay</title>
   <meta
     name="description"
     content="Send a SOL tip to {streamer?.name ||
