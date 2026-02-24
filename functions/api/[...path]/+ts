@@ -9,7 +9,7 @@ export async function onRequest({ request, platform }: { request: Request; platf
   }
 
   // Use Service binding if available
-  if (platform?.env?.WORKER) {
+  if (platform?.env?.GLIANA_PAY_WORKER) {
     try {
       // Clone request to read body (streams can only be read once)
       const clonedReq = request.clone();

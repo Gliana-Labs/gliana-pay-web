@@ -948,7 +948,7 @@
                         <div class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 bg-[#53FC18] rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M2.149 0l-1.612 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.269-6.269v-14.686h-21.314zm19.164 13.612l-3.582 3.582h-5.731l-3.045 3.045v-3.045h-4.836v-15.045h17.194v11.463zm-3.582-7.343v-4.269h-4.269v4.269h4.269zm-6.268 0v-4.269h-4.27v4.269h4.27z"/></svg>
+                                    <svg class="w-6 h-6 text-black" viewBox="0 0 512 512" fill="currentColor"><path d="M37 .036h164.448v113.621h54.71v-56.82h54.731V.036h164.448v170.777h-54.73v56.82h-54.711v56.8h54.71v56.82h54.73V512.03H310.89v-56.82h-54.73v-56.8h-54.711v113.62H37V.036z"/></svg>
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-white">Kick</div>
