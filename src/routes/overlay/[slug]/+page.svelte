@@ -315,14 +315,16 @@
 
   // Skip current alert and show next in queue
   function skipAlert() {
-    if (!isShowingAlert || alertQueue.length === 0) return;
+    if (!isShowingAlert) return;
 
     // Stop current alert immediately
     showAlert = false;
     isShowingAlert = false;
 
-    // Process next alert immediately
-    processQueue();
+    // Process next alert if available
+    if (alertQueue.length > 0) {
+      processQueue();
+    }
   }
 
   function handleMessage(event: MessageEvent) {
