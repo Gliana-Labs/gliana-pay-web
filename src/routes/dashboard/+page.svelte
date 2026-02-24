@@ -93,10 +93,18 @@
     // If recording hotkey, capture the key combination
     if (isRecordingHotkey) {
       event.preventDefault();
+      event.stopPropagation();
+
+      // Don't allow empty or special keys
+      if (event.key === "Control" || event.key === "Shift" || event.key === "Alt" || event.key === "Meta") {
+        return;
+      }
+
       const parts: string[] = [];
       if (event.ctrlKey) parts.push("ctrl");
       if (event.shiftKey) parts.push("shift");
       if (event.altKey) parts.push("alt");
+      if (event.metaKey) parts.push("meta");
       parts.push(event.key.toLowerCase());
       skipHotkey = parts.join("+");
       isRecordingHotkey = false;
@@ -606,20 +614,24 @@
                 <label class="block text-sm text-zinc-400 mb-2"
                   >Skip Alert Hotkey</label
                 >
-                <div class="flex gap-2">
+                <div class="flex items-center gap-2">
                   <button
                     on:click={() => isRecordingHotkey = true}
-                    class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono min-w-[120px] text-center"
+                    on:keydown|preventDefault
+                    class="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono text-center cursor-pointer"
                   >
                     {#if isRecordingHotkey}
-                      Press key...
+                      <span class="text-yellow-400">Press key or combo...</span>
                     {:else}
                       {skipHotkey || "Click to set"}
                     {/if}
                   </button>
-                  <span class="text-xs text-zinc-500 self-center">
-                    Press a key or combo (e.g., ctrl+shift+s)
-                  </span>
+                  <button
+                    on:click={() => isRecordingHotkey = !isRecordingHotkey}
+                    class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300"
+                  >
+                    {isRecordingHotkey ? "Cancel" : "Change"}
+                  </button>
                 </div>
               </div>
 

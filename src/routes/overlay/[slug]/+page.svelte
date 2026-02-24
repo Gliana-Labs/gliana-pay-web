@@ -371,6 +371,7 @@
     if (event.ctrlKey) parts.push("ctrl");
     if (event.shiftKey) parts.push("shift");
     if (event.altKey) parts.push("alt");
+    if (event.metaKey) parts.push("meta");
     parts.push(event.key.toLowerCase());
     const currentCombo = parts.join("+");
 
