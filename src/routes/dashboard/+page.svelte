@@ -641,6 +641,9 @@
                     {isRecordingHotkey ? "Cancel" : "Change"}
                   </button>
                 </div>
+                <p class="text-xs text-zinc-500 mt-1">
+                  Works when dashboard or overlay is focused
+                </p>
               </div>
 
               <button
