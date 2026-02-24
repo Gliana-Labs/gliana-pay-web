@@ -446,18 +446,18 @@
     >
       {skipHotkey?.toUpperCase() || "S"} | Skip Alert
     </button>
-  </div>
 
-  <!-- Enable Sound Button -->
-  {#if !soundEnabled}
-    <button
-      onclick={enableSound}
-      disabled={soundLoading}
-      class="absolute top-2 right-2 text-xs bg-black/80 hover:bg-black/60 text-yellow-400 px-3 py-2 rounded-lg border border-yellow-400/50 pointer-events-auto disabled:opacity-50 font-bold"
-    >
-      🔊 {soundLoading ? "Loading..." : "Enable Sound"}
-    </button>
-  {/if}
+    <!-- Enable Sound Button -->
+    {#if !soundEnabled}
+      <button
+        onclick={enableSound}
+        disabled={soundLoading}
+        class="text-xs bg-black/80 hover:bg-black/60 text-yellow-400 px-3 py-1 rounded border border-yellow-400/50 pointer-events-auto disabled:opacity-50 font-bold"
+      >
+        🔊 Enable Sound
+      </button>
+    {/if}
+  </div>
 
   <!-- Alert Container -->
   <div
