@@ -231,7 +231,10 @@
     }, 30000);
 
     // Also refresh settings when window gains focus
-    window.addEventListener("focus", loadSettings);
+    window.addEventListener("focus", () => {
+      loadSettings();
+      loadHotkey();
+    });
 
     // Handle visibility change - reconnect when page becomes visible (important for OBS)
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -251,6 +254,9 @@
         wsReconnectAttempts = 0;
         connectWebSocket();
       }
+      // Also reload settings when becoming visible
+      loadSettings();
+      loadHotkey();
     }
   }
 
@@ -434,7 +440,7 @@
       onclick={skipAlert}
       class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-3 py-1 rounded pointer-events-auto font-medium"
     >
-      Skip Alert
+      {skipHotkey?.toUpperCase() || "S"} | Skip Alert
     </button>
   </div>
 

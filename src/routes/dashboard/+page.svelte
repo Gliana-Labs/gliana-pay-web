@@ -263,7 +263,10 @@
 
         // Notify overlay about settings change via WebSocket
         if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+          console.log("[Dashboard] Sending settings_changed to overlay");
           wsSocket.send(JSON.stringify({ type: "settings_changed" }));
+        } else {
+          console.log("[Dashboard] WebSocket not connected, overlay won't be notified");
         }
       } else {
         const data = await response.json().catch(() => ({}));
