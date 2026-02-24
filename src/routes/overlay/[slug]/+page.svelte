@@ -88,8 +88,10 @@
           soundUrl = result.settings.sound_url;
         }
         // Load skip_hotkey from streamer
+        console.log("[Overlay] Settings response:", JSON.stringify(result));
         if (result.streamer?.skip_hotkey) {
           skipHotkey = result.streamer.skip_hotkey;
+          console.log("[Overlay] Loaded skip_hotkey:", skipHotkey);
         }
         // Preload sound after getting URL
         if (soundEnabled) {
