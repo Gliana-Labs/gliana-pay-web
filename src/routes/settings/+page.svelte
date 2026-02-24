@@ -9,30 +9,21 @@
     } from "$lib/wallet";
     import type { WalletInfo } from "$lib/wallet";
     import { WORKER_URL } from "$lib/config";
-    import { Filter } from "bad-words";
+    import {
+        RegExpMatcher,
+        englishDataset,
+        englishRecommendedTransformers,
+    } from "obscenity";
 
-    const filter = new Filter();
-    filter.addWords("nigga", "niggas", "nigger", "niggers");
-
-    // Pre-compile strict regex for high-performance client-side checking
-    const strictWords = filter.list
-        .filter((w: string) => w.length > 3)
-        .map((w: string) => w.toLowerCase().replace(/[^a-z0-9]/g, ""))
-        .filter(Boolean);
-    const strictProfanityRegex = new RegExp(
-        `(${[...new Set(strictWords)].join("|")})`,
-        "i",
-    );
+    const matcher = new RegExpMatcher({
+        ...englishDataset.build(),
+        ...englishRecommendedTransformers,
+    });
 
     function containsProfanity(text: string): boolean {
         if (!text) return false;
-        if (filter.isProfane(text)) return true;
-
-        // Aggressive regex fallback for embedded slurs
-        const normalized = text.toLowerCase().replace(/[^a-z0-9]/g, "");
-        return strictProfanityRegex.test(normalized);
+        return matcher.hasMatch(text);
     }
-
     // Check auth
     let walletAddress = "";
     let slug = "";
