@@ -141,6 +141,9 @@
 
           if (message.type === "tip") {
             handleTip(message.data as WSTipEvent["data"]);
+          } else if (message.type === "skip") {
+            // Skip current alert from dashboard
+            skipAlert();
           } else if (message.type === "welcome") {
           } else if (message.type === "error") {
             console.error("WebSocket error:", message.message);
@@ -308,6 +311,18 @@
         console.error("Failed to play alert sound:", e);
       });
     }
+  }
+
+  // Skip current alert and show next in queue
+  function skipAlert() {
+    if (!isShowingAlert || alertQueue.length === 0) return;
+
+    // Stop current alert immediately
+    showAlert = false;
+    isShowingAlert = false;
+
+    // Process next alert immediately
+    processQueue();
   }
 
   function handleMessage(event: MessageEvent) {

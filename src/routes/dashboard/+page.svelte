@@ -40,6 +40,9 @@
   let loadingMore = false;
   let alertsLoading = false;
 
+  // Hide earnings toggle
+  let hideEarnings = false;
+
   // Alert Settings
   let minAmount = 0.001;
   let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
@@ -259,6 +262,45 @@
     window.location.href = "/";
   }
 
+  // WebSocket for skip alert
+  let wsSocket: WebSocket | null = null;
+
+  function connectWebSocket() {
+    if (!slug) return;
+
+    const wsUrl = `wss://${window.location.host}/ws/${slug}`;
+
+    try {
+      wsSocket = new WebSocket(wsUrl);
+
+      wsSocket.onopen = () => {
+        console.log("[Dashboard] WebSocket connected");
+      };
+
+      wsSocket.onclose = () => {
+        console.log("[Dashboard] WebSocket disconnected");
+        // Reconnect after delay
+        setTimeout(connectWebSocket, 5000);
+      };
+
+      wsSocket.onerror = (error) => {
+        console.error("[Dashboard] WebSocket error:", error);
+      };
+    } catch (error) {
+      console.error("[Dashboard] Failed to create WebSocket:", error);
+      setTimeout(connectWebSocket, 5000);
+    }
+  }
+
+  function skipCurrentAlert() {
+    if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+      wsSocket.send(JSON.stringify({ type: "skip" }));
+      showToast("Skipping current alert...", "success");
+    } else {
+      showToast("Not connected to overlay", "error");
+    }
+  }
+
   onMount(() => {
     loadSession();
 
@@ -270,6 +312,9 @@
 
     loadDashboardData();
     loading = false;
+
+    // Connect WebSocket for skip functionality
+    connectWebSocket();
   });
 </script>
 
@@ -332,21 +377,48 @@
     </div>
 
     <div class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Skip Alert Button & Hide Earnings -->
+      <div class="flex justify-between items-center mb-6">
+        <button
+          on:click={skipCurrentAlert}
+          class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-sm font-medium transition-all cursor-pointer"
+        >
+          Skip Current Alert
+        </button>
+        <button
+          on:click={() => hideEarnings = !hideEarnings}
+          class="flex items-center gap-2 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-all cursor-pointer"
+        >
+          {#if hideEarnings}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            Show Earnings
+          {:else}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+            </svg>
+            Hide Earnings
+          {/if}
+        </button>
+      </div>
+
       <!-- Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Received</p>
           <p class="text-3xl font-bold text-gradient mt-1">
-            {totalReceived.toFixed(3)} SOL
+            {hideEarnings ? "••••••" : `${totalReceived.toFixed(3)} SOL`}
           </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Tips</p>
-          <p class="text-3xl font-bold mt-1">{totalTips}</p>
+          <p class="text-3xl font-bold mt-1">{hideEarnings ? "•••" : totalTips}</p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Average</p>
-          <p class="text-3xl font-bold mt-1">{average.toFixed(3)} SOL</p>
+          <p class="text-3xl font-bold mt-1">{hideEarnings ? "••••" : `${average.toFixed(3)} SOL`}</p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Your Page</p>
