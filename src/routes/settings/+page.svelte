@@ -64,6 +64,7 @@
     let profileImageUrl = "";
     let bannerUrl = "";
     let tipBgUrl = "";
+    let imageVersion = 1;
 
     // Local Files Pending Upload
     let pendingProfileFile: File | null = null;
@@ -126,6 +127,7 @@
                     bannerUrl = data.streamer.banner_url || "";
                     tipBgColor = data.streamer.tip_bg_color || "";
                     tipBgUrl = data.streamer.tip_bg_url || "";
+                    imageVersion = data.streamer.image_version || 1;
                 }
             }
         } catch (e) {
@@ -314,7 +316,8 @@
                 if (type === "profile") profileImageUrl = data.url;
                 else if (type === "banner") bannerUrl = data.url;
                 else tipBgUrl = data.url;
-                cacheBust = Date.now();
+                // Increment version to bust cache after upload
+                imageVersion += 1;
                 return true;
             } else {
                 const err = await response.json().catch(() => ({}));
@@ -371,7 +374,8 @@
             if (localBgPreview) URL.revokeObjectURL(localBgPreview);
             localBgPreview = "";
         }
-        cacheBust = Date.now();
+        // Increment version to bust cache after removal
+        imageVersion += 1;
     }
 
     // Logout
@@ -489,7 +493,7 @@
                             <img
                                 src={localBannerPreview
                                     ? localBannerPreview
-                                    : `${WORKER_URL}/api/media/${bannerUrl}?cb=${cacheBust}`}
+                                    : `${WORKER_URL}/api/media/${bannerUrl}?v=${imageVersion}`}
                                 alt="Banner"
                                 class="w-full h-full object-cover"
                             />
@@ -555,7 +559,7 @@
                             <img
                                 src={localBgPreview
                                     ? localBgPreview
-                                    : `${WORKER_URL}/api/media/${tipBgUrl}?cb=${cacheBust}`}
+                                    : `${WORKER_URL}/api/media/${tipBgUrl}?v=${imageVersion}`}
                                 alt="Background"
                                 class="w-full h-full object-cover"
                             />
@@ -614,7 +618,7 @@
                                 <img
                                     src={localProfilePreview
                                         ? localProfilePreview
-                                        : `${WORKER_URL}/api/media/${profileImageUrl}?cb=${cacheBust}`}
+                                        : `${WORKER_URL}/api/media/${profileImageUrl}?v=${imageVersion}`}
                                     alt="Profile"
                                     class="w-full h-full object-cover"
                                 />
