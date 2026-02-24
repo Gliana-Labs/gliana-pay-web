@@ -21,7 +21,7 @@
   let isShowingAlert = false;
 
   // Hotkey for skip alert (from URL param)
-  let skipHotkey = "s";
+  let skipHotkey = $state("s");
 
   // Load hotkey from URL param
   function loadHotkey() {
@@ -88,10 +88,8 @@
           soundUrl = result.settings.sound_url;
         }
         // Load skip_hotkey from streamer
-        console.log("[Overlay] Settings response:", JSON.stringify(result));
         if (result.streamer?.skip_hotkey) {
           skipHotkey = result.streamer.skip_hotkey;
-          console.log("[Overlay] Loaded skip_hotkey:", skipHotkey);
         }
         // Preload sound after getting URL
         if (soundEnabled) {
@@ -441,24 +439,24 @@
       </div>
     </div>
 
-    <!-- Skip Alert Button -->
-    <button
-      onclick={skipAlert}
-      class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-3 py-1 rounded pointer-events-auto font-medium"
-    >
-      {skipHotkey?.toUpperCase() || "S"} | Skip Alert
-    </button>
-
-    <!-- Enable Sound Button -->
-    {#if !soundEnabled}
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-1">
+      {#if !soundEnabled}
+        <button
+          onclick={enableSound}
+          disabled={soundLoading}
+          class="text-xs bg-black/80 hover:bg-black/60 text-yellow-400 px-2 py-1 rounded border border-yellow-400/50 pointer-events-auto disabled:opacity-50 font-bold"
+        >
+          🔊 Sound
+        </button>
+      {/if}
       <button
-        onclick={enableSound}
-        disabled={soundLoading}
-        class="text-xs bg-black/80 hover:bg-black/60 text-yellow-400 px-3 py-1 rounded border border-yellow-400/50 pointer-events-auto disabled:opacity-50 font-bold"
+        onclick={skipAlert}
+        class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto font-medium"
       >
-        🔊 Enable Sound
+        {skipHotkey?.toUpperCase() || "S"} | Skip
       </button>
-    {/if}
+    </div>
   </div>
 
   <!-- Alert Container -->
