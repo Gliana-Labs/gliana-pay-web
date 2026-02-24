@@ -952,26 +952,10 @@
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-white">Kick</div>
-                                    <div class="text-xs text-zinc-500">{connectedPlatforms.kick ? 'Connected' : 'Not connected'}</div>
+                                    <div class="text-xs text-zinc-500">{connectedPlatforms.kick ? 'Connected' : 'Coming Soon'}</div>
                                 </div>
                             </div>
-                            {#if connectedPlatforms.kick}
-                                <button
-                                    on:click={() => disconnectPlatform('kick')}
-                                    disabled={streamingLoading}
-                                    class="px-3 py-1.5 text-xs bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg transition-colors cursor-pointer"
-                                >
-                                    Disconnect
-                                </button>
-                            {:else}
-                                <button
-                                    on:click={() => connectPlatform('kick')}
-                                    disabled={connectingPlatform === 'kick'}
-                                    class="px-3 py-1.5 text-xs bg-[#53FC18] text-black hover:bg-[#45c715] disabled:opacity-50 rounded-lg transition-colors cursor-pointer"
-                                >
-                                    {connectingPlatform === 'kick' ? 'Connecting...' : 'Connect'}
-                                </button>
-                            {/if}
+                            <span class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-500 rounded-lg">Coming Soon</span>
                         </div>
 
                         <!-- YouTube -->
@@ -982,26 +966,10 @@
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-white">YouTube</div>
-                                    <div class="text-xs text-zinc-500">{connectedPlatforms.youtube ? 'Connected' : 'Not connected'}</div>
+                                    <div class="text-xs text-zinc-500">{connectedPlatforms.youtube ? 'Connected' : 'Coming Soon'}</div>
                                 </div>
                             </div>
-                            {#if connectedPlatforms.youtube}
-                                <button
-                                    on:click={() => disconnectPlatform('youtube')}
-                                    disabled={streamingLoading}
-                                    class="px-3 py-1.5 text-xs bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg transition-colors cursor-pointer"
-                                >
-                                    Disconnect
-                                </button>
-                            {:else}
-                                <button
-                                    on:click={() => connectPlatform('youtube')}
-                                    disabled={connectingPlatform === 'youtube'}
-                                    class="px-3 py-1.5 text-xs bg-[#FF0000] hover:bg-[#cc0000] disabled:opacity-50 rounded-lg transition-colors cursor-pointer"
-                                >
-                                    {connectingPlatform === 'youtube' ? 'Connecting...' : 'Connect'}
-                                </button>
-                            {/if}
+                            <span class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-500 rounded-lg">Coming Soon</span>
                         </div>
                     </div>
                 </div>
