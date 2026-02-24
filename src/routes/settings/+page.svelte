@@ -66,6 +66,11 @@
     let tipBgUrl = "";
     let imageVersion = 1;
 
+    // Track original URLs to detect deletions
+    let originalProfileUrl = "";
+    let originalBannerUrl = "";
+    let originalTipBgUrl = "";
+
     // Local Files Pending Upload
     let pendingProfileFile: File | null = null;
     let pendingBannerFile: File | null = null;
@@ -92,6 +97,9 @@
     };
     let connectingPlatform = "";
     let streamingLoading = false;
+
+    // Track images marked for deletion (sent to server on save)
+    let deletedImages: string[] = [];
 
     // Listen for OAuth callback messages
     function handleOAuthMessage(event: MessageEvent) {
@@ -149,6 +157,11 @@
                     tipBgColor = data.streamer.tip_bg_color || "";
                     tipBgUrl = data.streamer.tip_bg_url || "";
                     imageVersion = data.streamer.image_version || 1;
+
+                    // Store original URLs for deletion tracking
+                    originalProfileUrl = data.streamer.profile_image_url || "";
+                    originalBannerUrl = data.streamer.banner_url || "";
+                    originalTipBgUrl = data.streamer.tip_bg_url || "";
                 }
             }
         } catch (e) {
@@ -279,6 +292,7 @@
                         profile_image_url: profileImageUrl,
                         banner_url: bannerUrl,
                         tip_bg_url: tipBgUrl,
+                        deleted_images: deletedImages,
                     }),
                 },
             );
@@ -295,6 +309,9 @@
                 localProfilePreview = "";
                 localBannerPreview = "";
                 localBgPreview = "";
+
+                // Clear deleted images tracking after successful save
+                deletedImages = [];
 
                 showToast("Profile settings saved!", "success");
             } else {
@@ -380,16 +397,31 @@
 
     async function removeImage(type: "profile" | "banner" | "background") {
         if (type === "profile") {
+            // Track for deletion if there was an original image
+            if (originalProfileUrl && !deletedImages.includes(originalProfileUrl)) {
+                deletedImages.push(originalProfileUrl);
+            }
+            originalProfileUrl = "";
             profileImageUrl = "";
             pendingProfileFile = null;
             if (localProfilePreview) URL.revokeObjectURL(localProfilePreview);
             localProfilePreview = "";
         } else if (type === "banner") {
+            // Track for deletion if there was an original image
+            if (originalBannerUrl && !deletedImages.includes(originalBannerUrl)) {
+                deletedImages.push(originalBannerUrl);
+            }
+            originalBannerUrl = "";
             bannerUrl = "";
             pendingBannerFile = null;
             if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
             localBannerPreview = "";
         } else {
+            // Track for deletion if there was an original image
+            if (originalTipBgUrl && !deletedImages.includes(originalTipBgUrl)) {
+                deletedImages.push(originalTipBgUrl);
+            }
+            originalTipBgUrl = "";
             tipBgUrl = "";
             pendingBgFile = null;
             if (localBgPreview) URL.revokeObjectURL(localBgPreview);
