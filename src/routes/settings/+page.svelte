@@ -84,6 +84,27 @@
     let bgInput: HTMLInputElement;
     let cacheBust = Date.now();
 
+    // Streaming Platform Chat Connections
+    let connectedPlatforms = {
+        twitch: false,
+        kick: false,
+        youtube: false
+    };
+    let connectingPlatform = "";
+    let streamingLoading = false;
+
+    // Listen for OAuth callback messages
+    function handleOAuthMessage(event: MessageEvent) {
+        const data = event.data;
+        if (data.success) {
+            showToast(`Connected to ${data.platform} successfully!`, "success");
+            checkConnectedPlatforms();
+        } else if (data.error) {
+            showToast(`Failed to connect: ${data.error}`, "error");
+        }
+        connectingPlatform = "";
+    }
+
     // Clean up local object URLs when component is destroyed
     import { onDestroy } from "svelte";
     onDestroy(() => {
@@ -399,9 +420,74 @@
             return;
         }
 
+        // Listen for OAuth callback messages
+        window.addEventListener("message", handleOAuthMessage);
+
         loadSettings();
+        checkConnectedPlatforms();
         loading = false;
+
+        return () => {
+            window.removeEventListener("message", handleOAuthMessage);
+        };
     });
+
+    // Check which platforms are connected
+    async function checkConnectedPlatforms() {
+        if (!slug) return;
+        try {
+            const res = await fetch(`${WORKER_URL}/api/streamer/${slug}/platforms`);
+            const data = await res.json();
+            if (data.platforms) {
+                connectedPlatforms = data.platforms;
+            }
+        } catch (e) {
+            console.error("Failed to check platforms:", e);
+        }
+    }
+
+    // Connect to a streaming platform
+    async function connectPlatform(platform: string) {
+        if (!slug) return;
+        connectingPlatform = platform;
+        try {
+            const res = await fetch(`${WORKER_URL}/api/streamer/${slug}/connect/${platform}`, {
+                method: "POST"
+            });
+            const data = await res.json();
+            if (data.authUrl) {
+                // Open OAuth popup
+                const width = 600;
+                const height = 700;
+                const left = (window.innerWidth - width) / 2;
+                const top = (window.innerHeight - height) / 2;
+                window.open(
+                    data.authUrl,
+                    `${platform} connect`,
+                    `width=${width},height=${height},left=${left},top=${top}`
+                );
+            }
+        } catch (e) {
+            showToast(`Failed to connect to ${platform}`, "error");
+            connectingPlatform = "";
+        }
+    }
+
+    // Disconnect a streaming platform
+    async function disconnectPlatform(platform: string) {
+        if (!slug) return;
+        streamingLoading = true;
+        try {
+            await fetch(`${WORKER_URL}/api/streamer/${slug}/disconnect/${platform}`, {
+                method: "POST"
+            });
+            connectedPlatforms[platform as keyof typeof connectedPlatforms] = false;
+            showToast(`Disconnected from ${platform}`, "success");
+        } catch (e) {
+            showToast(`Failed to disconnect ${platform}`, "error");
+        }
+        streamingLoading = false;
+    }
 </script>
 
 <svelte:head>
@@ -814,6 +900,108 @@
                                 placeholder="https://facebook.com/username"
                                 class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
                             />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Streaming Chat Connections -->
+                <div class="mt-6 space-y-4 pt-4 border-t border-white/10">
+                    <h3 class="text-sm font-semibold text-zinc-300">
+                        Stream Chat Alerts
+                    </h3>
+                    <p class="text-xs text-zinc-500">
+                        Connect your streaming accounts to post tip alerts in your chat automatically.
+                    </p>
+
+                    <div class="space-y-3">
+                        <!-- Twitch -->
+                        <div class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-[#9146FF] rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-white">Twitch</div>
+                                    <div class="text-xs text-zinc-500">{connectedPlatforms.twitch ? 'Connected' : 'Not connected'}</div>
+                                </div>
+                            </div>
+                            {#if connectedPlatforms.twitch}
+                                <button
+                                    on:click={() => disconnectPlatform('twitch')}
+                                    disabled={streamingLoading}
+                                    class="px-3 py-1.5 text-xs bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg transition-colors cursor-pointer"
+                                >
+                                    Disconnect
+                                </button>
+                            {:else}
+                                <button
+                                    on:click={() => connectPlatform('twitch')}
+                                    disabled={connectingPlatform === 'twitch'}
+                                    class="px-3 py-1.5 text-xs bg-[#9146FF] hover:bg-[#772ce8] disabled:opacity-50 rounded-lg transition-colors cursor-pointer"
+                                >
+                                    {connectingPlatform === 'twitch' ? 'Connecting...' : 'Connect'}
+                                </button>
+                            {/if}
+                        </div>
+
+                        <!-- Kick -->
+                        <div class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-[#53FC18] rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M2.149 0l-1.612 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.269-6.269v-14.686h-21.314zm19.164 13.612l-3.582 3.582h-5.731l-3.045 3.045v-3.045h-4.836v-15.045h17.194v11.463zm-3.582-7.343v-4.269h-4.269v4.269h4.269zm-6.268 0v-4.269h-4.27v4.269h4.27z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-white">Kick</div>
+                                    <div class="text-xs text-zinc-500">{connectedPlatforms.kick ? 'Connected' : 'Not connected'}</div>
+                                </div>
+                            </div>
+                            {#if connectedPlatforms.kick}
+                                <button
+                                    on:click={() => disconnectPlatform('kick')}
+                                    disabled={streamingLoading}
+                                    class="px-3 py-1.5 text-xs bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg transition-colors cursor-pointer"
+                                >
+                                    Disconnect
+                                </button>
+                            {:else}
+                                <button
+                                    on:click={() => connectPlatform('kick')}
+                                    disabled={connectingPlatform === 'kick'}
+                                    class="px-3 py-1.5 text-xs bg-[#53FC18] text-black hover:bg-[#45c715] disabled:opacity-50 rounded-lg transition-colors cursor-pointer"
+                                >
+                                    {connectingPlatform === 'kick' ? 'Connecting...' : 'Connect'}
+                                </button>
+                            {/if}
+                        </div>
+
+                        <!-- YouTube -->
+                        <div class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-[#FF0000] rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-white">YouTube</div>
+                                    <div class="text-xs text-zinc-500">{connectedPlatforms.youtube ? 'Connected' : 'Not connected'}</div>
+                                </div>
+                            </div>
+                            {#if connectedPlatforms.youtube}
+                                <button
+                                    on:click={() => disconnectPlatform('youtube')}
+                                    disabled={streamingLoading}
+                                    class="px-3 py-1.5 text-xs bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg transition-colors cursor-pointer"
+                                >
+                                    Disconnect
+                                </button>
+                            {:else}
+                                <button
+                                    on:click={() => connectPlatform('youtube')}
+                                    disabled={connectingPlatform === 'youtube'}
+                                    class="px-3 py-1.5 text-xs bg-[#FF0000] hover:bg-[#cc0000] disabled:opacity-50 rounded-lg transition-colors cursor-pointer"
+                                >
+                                    {connectingPlatform === 'youtube' ? 'Connecting...' : 'Connect'}
+                                </button>
+                            {/if}
                         </div>
                     </div>
                 </div>
