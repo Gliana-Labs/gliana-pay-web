@@ -87,6 +87,10 @@
         if (result.settings?.sound_url) {
           soundUrl = result.settings.sound_url;
         }
+        // Load skip_hotkey from streamer
+        if (result.streamer?.skip_hotkey) {
+          skipHotkey = result.streamer.skip_hotkey;
+        }
         // Preload sound after getting URL
         if (soundEnabled) {
           alertSound = new Audio(soundUrl);
