@@ -466,7 +466,7 @@
                     </div>
                     <div class="text-right">
                       <p class="font-bold text-green-400">
-                        {(donation.amount / 1e9).toFixed(3)} SOL
+                        {hideEarnings ? "••••" : `${(donation.amount / 1e9).toFixed(3)} SOL`}
                       </p>
                       <p class="text-xs text-zinc-500">
                         {new Date(donation.timestamp).toLocaleDateString()}
