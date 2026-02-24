@@ -339,7 +339,7 @@
     }
   }
 
-  // Skip current alert - dismiss immediately, clear queue
+  // Skip current alert - dismiss immediately, play next if exists
   function skipAlert() {
     if (!isShowingAlert) return;
 
@@ -357,8 +357,10 @@
     showAlert = false;
     isShowingAlert = false;
 
-    // Clear the queue entirely - just dismiss
-    alertQueue = [];
+    // Play next alert in queue if exists
+    if (alertQueue.length > 0) {
+      processQueue();
+    }
   }
 
   function handleMessage(event: MessageEvent) {
