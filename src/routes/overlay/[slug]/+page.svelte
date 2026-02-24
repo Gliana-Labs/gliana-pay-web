@@ -160,6 +160,10 @@
           } else if (message.type === "skip") {
             // Skip current alert from dashboard
             skipAlert();
+          } else if (message.type === "settings_changed") {
+            // Reload settings when changed from dashboard
+            loadSettings();
+            loadHotkey();
           } else if (message.type === "welcome") {
           } else if (message.type === "error") {
             console.error("WebSocket error:", message.message);

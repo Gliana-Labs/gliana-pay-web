@@ -260,6 +260,11 @@
 
       if (response.ok) {
         showToast("Alert settings saved!", "success");
+
+        // Notify overlay about settings change via WebSocket
+        if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
+          wsSocket.send(JSON.stringify({ type: "settings_changed" }));
+        }
       } else {
         const data = await response.json().catch(() => ({}));
         showToast((data as any).error || "Failed to save", "error");
