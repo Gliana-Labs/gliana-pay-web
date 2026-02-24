@@ -547,11 +547,14 @@
   <!-- Background Effects -->
   {#if streamer?.tip_bg_url}
     <!-- Custom background image -->
+    {@const imgVersion = streamer.image_version || 1}
     <div class="fixed inset-0 pointer-events-none">
       <img
-        src="{WORKER_URL}/api/media/{streamer.tip_bg_url}?v={Date.now()}"
+        src="{WORKER_URL}/api/media/{streamer.tip_bg_url}?v={imgVersion}"
         alt=""
         class="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+        decoding="async"
       />
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
@@ -574,10 +577,13 @@
     >
       <!-- Banner image as FULL background -->
       {#if streamer?.banner_url}
+        {@const imgVersion = streamer.image_version || 1}
         <img
-          src="{WORKER_URL}/api/media/{streamer.banner_url}?v={Date.now()}"
+          src="{WORKER_URL}/api/media/{streamer.banner_url}?v={imgVersion}"
           alt="Banner"
           class="absolute inset-0 w-full h-full object-cover object-center"
+          fetchpriority="high"
+          decoding="async"
         />
         <div
           class="absolute inset-0 bg-gradient-to-t from-[#111113] via-[#111113]/60 to-[#111113]/20"
@@ -603,10 +609,13 @@
               class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 shrink-0 rounded-full border-4 border-[#111113] bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl shadow-purple-500/20 overflow-hidden"
             >
               {#if streamer?.profile_image_url}
+                {@const imgVersion = streamer.image_version || 1}
                 <img
-                  src="{WORKER_URL}/api/media/{streamer.profile_image_url}?v={Date.now()}"
+                  src="{WORKER_URL}/api/media/{streamer.profile_image_url}?v={imgVersion}"
                   alt={streamer.name}
                   class="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               {:else}
                 <span class="text-3xl md:text-4xl select-none">🎮</span>
@@ -775,14 +784,14 @@
         <!-- Name & Bio -->
         <div class="text-left">
           <h1
-            class="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-lg"
+            class="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-lg min-h-[2.5rem] sm:min-h-[3rem]"
           >
-            {streamer?.name ? titleCase(streamer.name) : "..."}
+            {streamer?.name ? titleCase(streamer.name) : "Loading..."}
           </h1>
 
           {#if streamer && "description" in streamer && streamer.description}
             <p
-              class="text-white/60 text-sm sm:text-[15px] mt-2.5 max-w-2xl leading-relaxed whitespace-pre-wrap drop-shadow"
+              class="text-white/60 text-sm sm:text-[15px] mt-2.5 max-w-2xl leading-relaxed whitespace-pre-wrap drop-shadow min-h-[1.5rem]"
             >
               {streamer.description}
             </p>
@@ -820,7 +829,7 @@
         <div class="lg:col-span-5 order-3 lg:order-1 flex flex-col gap-4">
           {#if topTippers.length > 0}
             <div
-              class="glass-card rounded-2xl p-6 border border-white/10 animate-slide-up"
+              class="glass-card rounded-2xl p-6 border border-white/10 animate-slide-up min-h-[200px]"
             >
               <div class="flex items-center gap-2 mb-6 px-1">
                 <span class="text-xl">👑</span>

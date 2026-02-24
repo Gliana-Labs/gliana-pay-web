@@ -22,6 +22,7 @@ export interface Streamer {
   banner_url?: string;
   tip_bg_color?: string;
   tip_bg_url?: string;
+  image_version?: number;
 }
 
 export interface Donation {
