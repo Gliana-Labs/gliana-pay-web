@@ -20,6 +20,20 @@
   let alertQueue: WSTipEvent["data"][] = [];
   let isShowingAlert = false;
 
+  // Hotkey for skip alert (from URL param)
+  let skipHotkey = "s";
+
+  // Load hotkey from URL param
+  function loadHotkey() {
+    const urlParams = new URLSearchParams(
+      typeof window !== "undefined" ? window.location.search : "",
+    );
+    const urlHotkey = urlParams.get("hotkey");
+    if (urlHotkey) {
+      skipHotkey = urlHotkey;
+    }
+  }
+
   // Load sound preference from URL param only (ignore localStorage for OBS)
   function loadSoundPreference() {
     // Check URL param first (?sound=1 or ?enableSound=true)
@@ -189,6 +203,8 @@
     await loadSettings();
     // Then load sound preference from URL param
     loadSoundPreference();
+    // Load hotkey from URL param
+    loadHotkey();
 
     // Force reset before connecting
     wsReconnectAttempts = 0;
@@ -201,6 +217,9 @@
 
     // Listen for test messages from parent window
     window.addEventListener("message", handleMessage);
+
+    // Listen for keyboard shortcuts
+    window.addEventListener("keydown", handleOverlayKeydown);
 
     // Poll settings every 30 seconds to pick up updates (for OBS which caches pages)
     refreshInterval = setInterval(async () => {
@@ -249,6 +268,7 @@
     }
     if (typeof window !== "undefined") {
       window.removeEventListener("message", handleMessage);
+      window.removeEventListener("keydown", handleOverlayKeydown);
       window.removeEventListener("focus", loadSettings);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     }
@@ -341,6 +361,23 @@
     // Accept test messages from parent
     if (event.data && event.data.type === "tip") {
       handleTip(event.data.data);
+    }
+  }
+
+  // Handle keyboard for skip alert
+  function handleOverlayKeydown(event: KeyboardEvent) {
+    // Build the current key combination
+    const parts: string[] = [];
+    if (event.ctrlKey) parts.push("ctrl");
+    if (event.shiftKey) parts.push("shift");
+    if (event.altKey) parts.push("alt");
+    parts.push(event.key.toLowerCase());
+    const currentCombo = parts.join("+");
+
+    // Check if pressed combination matches hotkey
+    if (currentCombo === skipHotkey.toLowerCase()) {
+      event.preventDefault();
+      skipAlert();
     }
   }
 </script>

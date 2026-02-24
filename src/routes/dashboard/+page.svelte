@@ -1,6 +1,6 @@
 <script lang="ts">
   import FloatingIcons from "$lib/components/FloatingIcons.svelte";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { fade, slide } from "svelte/transition";
   import {
     disconnectWallet,
@@ -43,6 +43,10 @@
   // Hide earnings toggle
   let hideEarnings = false;
 
+  // Hotkey for skip alert
+  let skipHotkey = "s";
+  let isRecordingHotkey = false;
+
   // Alert Settings
   let minAmount = 0.001;
   let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
@@ -68,6 +72,55 @@
       const session = JSON.parse(saved);
       walletAddress = session.walletAddress || "";
       slug = session.slug || "";
+    }
+
+    // Load hotkey from localStorage
+    const savedHotkey = localStorage.getItem("skipHotkey");
+    if (savedHotkey) {
+      skipHotkey = savedHotkey;
+    }
+  }
+
+  // Save hotkey to localStorage
+  function saveHotkey() {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("skipHotkey", skipHotkey);
+    }
+  }
+
+  // Handle keyboard for skip alert
+  function handleKeydown(event: KeyboardEvent) {
+    // If recording hotkey, capture the key combination
+    if (isRecordingHotkey) {
+      event.preventDefault();
+      const parts: string[] = [];
+      if (event.ctrlKey) parts.push("ctrl");
+      if (event.shiftKey) parts.push("shift");
+      if (event.altKey) parts.push("alt");
+      parts.push(event.key.toLowerCase());
+      skipHotkey = parts.join("+");
+      isRecordingHotkey = false;
+      saveHotkey();
+      return;
+    }
+
+    // Build the current key combination
+    const parts: string[] = [];
+    if (event.ctrlKey) parts.push("ctrl");
+    if (event.shiftKey) parts.push("shift");
+    if (event.altKey) parts.push("alt");
+    parts.push(event.key.toLowerCase());
+    const currentCombo = parts.join("+");
+
+    // Check if pressed combination matches hotkey
+    if (currentCombo === skipHotkey.toLowerCase()) {
+      // Don't trigger if user is typing in an input
+      const target = event.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+        return;
+      }
+      event.preventDefault();
+      skipCurrentAlert();
     }
   }
 
@@ -105,6 +158,7 @@
         }
         if (data.streamer) {
           name = data.streamer.name || "";
+          skipHotkey = data.streamer.skip_hotkey || "s";
         }
       }
     } catch (e) {
@@ -191,6 +245,7 @@
           body: JSON.stringify({
             min_amount: Math.floor(minAmount * 1e6),
             sound_url: soundUrl,
+            skip_hotkey: skipHotkey,
           }),
         },
       );
@@ -315,6 +370,15 @@
 
     // Connect WebSocket for skip functionality
     connectWebSocket();
+
+    // Add keyboard listener for hotkey
+    window.addEventListener("keydown", handleKeydown);
+  });
+
+  onDestroy(() => {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("keydown", handleKeydown);
+    }
   });
 </script>
 
@@ -536,6 +600,28 @@
               {#if soundError}
                 <p class="text-red-400 text-sm">{soundError}</p>
               {/if}
+
+              <!-- Skip Hotkey -->
+              <div>
+                <label class="block text-sm text-zinc-400 mb-2"
+                  >Skip Alert Hotkey</label
+                >
+                <div class="flex gap-2">
+                  <button
+                    on:click={() => isRecordingHotkey = true}
+                    class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono min-w-[120px] text-center"
+                  >
+                    {#if isRecordingHotkey}
+                      Press key...
+                    {:else}
+                      {skipHotkey || "Click to set"}
+                    {/if}
+                  </button>
+                  <span class="text-xs text-zinc-500 self-center">
+                    Press a key or combo (e.g., ctrl+shift+s)
+                  </span>
+                </div>
+              </div>
 
               <button
                 on:click={saveAlertSettings}
