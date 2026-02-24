@@ -7,6 +7,8 @@
     englishRecommendedTransformers,
   } from "obscenity";
 
+  // Best practice: Use englishDataset with recommended transformers
+  // The transformers handle leet-speak, padded words, etc. (heuristic matching)
   const matcher = new RegExpMatcher({
     ...englishDataset.build(),
     ...englishRecommendedTransformers,
