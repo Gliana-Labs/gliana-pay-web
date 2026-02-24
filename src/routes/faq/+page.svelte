@@ -11,7 +11,7 @@
     {
       question: "Why GlianaPay?",
       answer:
-        "Traditional platforms take 30% to 50% of your earnings, enforce Net-30 payout delays, and expose you to credit card chargeback fraud. GlianaPay takes 0% in platform fees, settles tips instantly into your own Solana wallet peer-to-peer, and offers 100% mathematically final chargeback protection.",
+        "Traditional platforms like StreamElements, Streamlabs, or Patreon take 30-50% of your earnings, hold funds for Net-30 payout delays, and expose you to credit card chargeback fraud. GlianaPay takes 0% in platform fees, settles tips instantly into your own Solana wallet peer-to-peer, and offers 100% mathematically final chargeback protection — your money can't be reversed once it's on-chain. No middleman, no waiting, no risk.",
     },
     {
       question: "Which wallets are supported?",

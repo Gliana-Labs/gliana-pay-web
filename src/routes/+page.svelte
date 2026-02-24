@@ -269,7 +269,7 @@
     </div>
 
     <!-- CTA -->
-    <div class="mt-12">
+    <div class="mt-12 flex flex-col items-center gap-4">
       {#if isLoggedIn}
         <a
           href="/dashboard"
@@ -284,6 +284,9 @@
         >
           Start Tipping Page
         </a>
+        <p class="text-sm text-zinc-500 max-w-md text-center">
+          Connect your wallet to create your tipping page. Share your link and start receiving SOL tips with live OBS alerts.
+        </p>
       {/if}
     </div>
 
