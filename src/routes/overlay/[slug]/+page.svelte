@@ -234,12 +234,6 @@
       await loadSettings();
     }, 30000);
 
-    // Also refresh settings when window gains focus
-    window.addEventListener("focus", () => {
-      loadSettings();
-      loadHotkey();
-    });
-
     // Handle visibility change - reconnect when page becomes visible (important for OBS)
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
@@ -258,9 +252,6 @@
         wsReconnectAttempts = 0;
         connectWebSocket();
       }
-      // Also reload settings when becoming visible
-      loadSettings();
-      loadHotkey();
     }
   }
 
@@ -283,7 +274,6 @@
     if (typeof window !== "undefined") {
       window.removeEventListener("message", handleMessage);
       window.removeEventListener("keydown", handleOverlayKeydown);
-      window.removeEventListener("focus", loadSettings);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     }
   });
