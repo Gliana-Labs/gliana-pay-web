@@ -624,7 +624,7 @@
             <a
               href="/overlay/{slug}?sound=1"
               target="_blank"
-              class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+              class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline ml-3 first:ml-0"
             >
               <span>Preview Overlay</span>
             </a>
@@ -632,7 +632,7 @@
             <button
               on:click={testAlertWS}
               disabled={testInProgress}
-              class="inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+              class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>{testInProgress ? "Sending..." : "Test Alert"}</span>
             </button>
