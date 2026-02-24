@@ -474,6 +474,15 @@
               style="animation-delay: 0.3s;"
             ></span>
           </div>
+
+          <!-- Skip button -->
+          <button
+            onclick={skipAlert}
+            class="absolute -top-2 -right-2 w-6 h-6 bg-red-600 hover:bg-red-500 rounded-full text-white text-xs flex items-center justify-center shadow-lg transition-colors"
+            title="Skip alert"
+          >
+            ✕
+          </button>
         </div>
 
         <!-- Bottom line -->
