@@ -360,35 +360,40 @@
   style="background: transparent;"
 >
   <!-- Connection Status - Debug info -->
-  <div class="absolute top-2 left-2 flex flex-col gap-1">
-    <div class="flex items-center gap-2">
-      <div class="text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
-        {#if isConnected}
-          🟢 Connected | {data.slug}
-        {:else if isReconnecting}
-          🟡 Reconnecting... | {data.slug}
-        {:else}
-          🔴 Disconnected | {data.slug}
+  <div class="absolute top-2 left-2 right-2 flex justify-between items-start">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center gap-2">
+        <div class="text-xs text-white/70 bg-black/50 px-2 py-1 rounded">
+          {#if isConnected}
+            🟢 Connected | {data.slug}
+          {:else if isReconnecting}
+            🟡 Reconnecting... | {data.slug}
+          {:else}
+            🔴 Disconnected | {data.slug}
+          {/if}
+        </div>
+        {#if !isConnected && !isReconnecting}
+          <button
+            onclick={() => {
+              wsReconnectAttempts = 0;
+              wsError = "";
+              connectWebSocket();
+            }}
+            class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto"
+          >
+            Reconnect
+          </button>
         {/if}
       </div>
-      {#if !isConnected && !isReconnecting}
-        <button
-          onclick={() => {
-            wsReconnectAttempts = 0;
-            wsError = "";
-            connectWebSocket();
-          }}
-          class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-2 py-1 rounded pointer-events-auto"
-        >
-          Reconnect
-        </button>
-      {/if}
     </div>
-    {#if wsError}
-      <div class="text-xs text-red-400 bg-black/70 px-2 py-1 rounded max-w-xs">
-        ⚠️ {wsError}
-      </div>
-    {/if}
+
+    <!-- Skip Alert Button -->
+    <button
+      onclick={skipAlert}
+      class="text-xs bg-red-600/80 hover:bg-red-600 text-white px-3 py-1 rounded pointer-events-auto font-medium"
+    >
+      Skip Alert
+    </button>
   </div>
 
   <!-- Enable Sound Button -->
@@ -486,15 +491,6 @@
               style="animation-delay: 0.3s;"
             ></span>
           </div>
-
-          <!-- Skip button -->
-          <button
-            onclick={skipAlert}
-            class="absolute -top-2 -right-2 w-6 h-6 bg-red-600 hover:bg-red-500 rounded-full text-white text-xs flex items-center justify-center shadow-lg transition-colors"
-            title="Skip alert"
-          >
-            ✕
-          </button>
         </div>
 
         <!-- Bottom line -->
