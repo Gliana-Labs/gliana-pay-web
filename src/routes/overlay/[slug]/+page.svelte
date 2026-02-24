@@ -357,9 +357,9 @@
     showAlert = false;
     isShowingAlert = false;
 
-    // Play next alert in queue if exists
+    // Play next alert in queue if exists (with small delay for state transition)
     if (alertQueue.length > 0) {
-      processQueue();
+      setTimeout(() => processQueue(), 50);
     }
   }
 
