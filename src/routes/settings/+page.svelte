@@ -922,26 +922,12 @@
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-white">Twitch</div>
-                                    <div class="text-xs text-zinc-500">{connectedPlatforms.twitch ? 'Connected' : 'Not connected'}</div>
+                                    <div class="text-xs text-zinc-500">Coming Soon</div>
                                 </div>
                             </div>
-                            {#if connectedPlatforms.twitch}
-                                <button
-                                    on:click={() => disconnectPlatform('twitch')}
-                                    disabled={streamingLoading}
-                                    class="px-3 py-1.5 text-xs bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg transition-colors cursor-pointer"
-                                >
-                                    Disconnect
-                                </button>
-                            {:else}
-                                <button
-                                    on:click={() => connectPlatform('twitch')}
-                                    disabled={connectingPlatform === 'twitch'}
-                                    class="px-3 py-1.5 text-xs bg-[#9146FF] hover:bg-[#772ce8] disabled:opacity-50 rounded-lg transition-colors cursor-pointer"
-                                >
-                                    {connectingPlatform === 'twitch' ? 'Connecting...' : 'Connect'}
-                                </button>
-                            {/if}
+                            <span class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-400 rounded-lg cursor-not-allowed">
+                                Coming Soon
+                            </span>
                         </div>
 
                         <!-- Kick -->
