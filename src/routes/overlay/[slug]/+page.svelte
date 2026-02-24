@@ -93,6 +93,8 @@
   let wsReconnectAttempts = 0;
   let wsReconnectDelay = 1000;
   let wsConnectionTimeout: ReturnType<typeof setTimeout> | null = null;
+  let alertTimeout: ReturnType<typeof setTimeout> | null = null;
+  let alertDelayTimeout: ReturnType<typeof setTimeout> | null = null;
 
   function connectWebSocket() {
     // Mark as reconnecting
@@ -279,10 +281,10 @@
     }
 
     // After alert duration, show next in queue
-    setTimeout(() => {
+    alertTimeout = setTimeout(() => {
       showAlert = false;
       // Small delay before next alert
-      setTimeout(() => {
+      alertDelayTimeout = setTimeout(() => {
         isShowingAlert = false;
         processQueue();
       }, 500);
@@ -313,18 +315,26 @@
     }
   }
 
-  // Skip current alert and show next in queue
+  // Skip current alert - dismiss immediately, clear queue
   function skipAlert() {
     if (!isShowingAlert) return;
+
+    // Cancel any pending timeouts
+    if (alertTimeout) {
+      clearTimeout(alertTimeout);
+      alertTimeout = null;
+    }
+    if (alertDelayTimeout) {
+      clearTimeout(alertDelayTimeout);
+      alertDelayTimeout = null;
+    }
 
     // Stop current alert immediately
     showAlert = false;
     isShowingAlert = false;
 
-    // Process next alert if available
-    if (alertQueue.length > 0) {
-      processQueue();
-    }
+    // Clear the queue entirely - just dismiss
+    alertQueue = [];
   }
 
   function handleMessage(event: MessageEvent) {
