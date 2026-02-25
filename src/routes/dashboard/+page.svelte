@@ -40,8 +40,8 @@
   let loadingMore = false;
   let alertsLoading = false;
 
-  // Hide earnings toggle
-  let hideEarnings = false;
+  // Hide earnings toggle (default to hidden)
+  let hideEarnings = true;
 
   // Hotkey for skip alert
   let skipHotkey = "s";
