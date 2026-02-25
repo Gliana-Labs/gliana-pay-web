@@ -228,7 +228,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Solana Mainnet launch (real SOL)", "Custom media upload for alerts (GIF/image)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)"] as item}
+                            {#each ["Solana Mainnet launch (real SOL)", "API Security & Wallet Auth", "Profanity filter for tips", "Custom media upload for alerts (GIF/image)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
