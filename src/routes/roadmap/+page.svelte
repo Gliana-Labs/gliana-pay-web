@@ -216,7 +216,7 @@
                                     Phase 2
                                 </p>
                                 <h2 class="font-bold text-base text-white">
-                                    Engagement & Custom Alerts
+                                    Ecosystem Expansion
                                 </h2>
                             </div>
                         </div>
@@ -228,18 +228,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["API Security & Wallet Auth", "Profanity filter for tips"] as item}
-                                <div
-                                    class="flex items-start gap-2 text-sm text-zinc-300"
-                                >
-                                    <span
-                                        class="text-green-400 mt-0.5 flex-shrink-0"
-                                        >✓</span
-                                    >
-                                    {item}
-                                </div>
-                            {/each}
-                            {#each ["Solana Mainnet launch (real SOL)", "Custom media upload for alerts (GIF/image)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)", "Stream chat bot (GlianaBot)"] as item}
+                            {#each ["Solana Mainnet launch (real SOL)", "Custom media upload for alerts (GIF/image)", "OBS Goal Bar widget", "OBS Event List widget (recent tippers)"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
@@ -288,7 +277,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Text-to-speech (TTS) alerts", "Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "USDC stablecoin tipping support", "Expanded wallet compatibility", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs"] as item}
+                            {#each ["Stream chat bot (GlianaBot for Twitch/Kick/YouTube)", "Text-to-speech (TTS) alerts", "Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "USDC stablecoin tipping support", "Expanded wallet compatibility", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >
