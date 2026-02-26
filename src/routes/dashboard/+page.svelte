@@ -251,7 +251,7 @@
             Authorization: `Bearer ${walletAddress}:${signatureData.signature}`,
           },
           body: JSON.stringify({
-            min_amount: Math.floor(minAmount * 1e6),
+            min_amount: Math.floor(minAmount * 1e9),
             sound_url: soundUrl,
             skip_hotkey: skipHotkey,
           }),
