@@ -17,12 +17,15 @@ export interface Streamer {
   tiktok_url?: string;
   facebook_url?: string;
   instagram_url?: string;
+  discord_url?: string;
+  email?: string;
   description?: string;
   profile_image_url?: string;
   banner_url?: string;
   tip_bg_color?: string;
   tip_bg_url?: string;
   image_version?: number;
+  skip_hotkey?: string;
 }
 
 export interface Donation {
