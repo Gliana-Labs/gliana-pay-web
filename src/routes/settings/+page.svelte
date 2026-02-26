@@ -949,7 +949,7 @@
                                 type="text"
                                 id="discord"
                                 bind:value={discordUrl}
-                                placeholder="username#0000"
+                                placeholder="https://discord.gg/your-server"
                                 class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
                             />
                         </div>

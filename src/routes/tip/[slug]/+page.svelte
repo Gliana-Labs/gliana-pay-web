@@ -789,7 +789,7 @@
               {/if}
               {#if streamer.discord_url}
                 <a
-                  href={streamer.discord_url.startsWith('http') ? streamer.discord_url : `https://discord.com/users/${streamer.discord_url}`}
+                  href={streamer.discord_url.startsWith('http') ? streamer.discord_url : `https://${streamer.discord_url}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="p-2 md:p-2.5 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-[#5865F2]/20 hover:border-[#5865F2]/40 transition-all duration-200 text-white/70 hover:text-[#5865F2]"
