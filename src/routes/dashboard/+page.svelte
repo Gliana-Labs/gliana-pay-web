@@ -575,7 +575,7 @@
             <div class="space-y-4">
               <div>
                 <label for="min-amount" class="block text-sm text-zinc-400 mb-2"
-                  >Minimum Tip (SOL)</label
+                  >Minimum Tip to Show Alert (SOL)</label
                 >
                 <input
                   type="number"
