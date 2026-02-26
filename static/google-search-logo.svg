@@ -1,0 +1,13 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="96" fill="#0a0a0b"/>
+  <defs>
+    <linearGradient id="glow" x1="256" y1="256" x2="256" y2="256">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="256" cy="256" rx="200" ry="180" fill="url(#glow)"/>
+  <text x="256" y="330" font-family="JetBrains Mono, monospace" font-size="200" font-weight="bold" text-anchor="middle" letter-spacing="-4">
+    <tspan fill="#22d3ee">[</tspan><tspan fill="white" dx="-2">GP</tspan><tspan fill="#ec4899" dx="-2">]</tspan>
+  </text>
+</svg>
