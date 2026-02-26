@@ -57,6 +57,8 @@
     let tiktokUrl = "";
     let facebookUrl = "";
     let instagramUrl = "";
+    let discordUrl = "";
+    let email = "";
     let description = "";
     let tipBgColor = "";
 
@@ -151,6 +153,8 @@
                     tiktokUrl = data.streamer.tiktok_url || "";
                     facebookUrl = data.streamer.facebook_url || "";
                     instagramUrl = data.streamer.instagram_url || "";
+                    discordUrl = data.streamer.discord_url || "";
+                    email = data.streamer.email || "";
                     description = data.streamer.description || "";
                     profileImageUrl = data.streamer.profile_image_url || "";
                     bannerUrl = data.streamer.banner_url || "";
@@ -288,6 +292,8 @@
                         tiktok_url: tiktokUrl,
                         facebook_url: facebookUrl,
                         instagram_url: instagramUrl,
+                        discord_url: discordUrl,
+                        email: email,
                         description: description,
                         profile_image_url: profileImageUrl,
                         banner_url: bannerUrl,
@@ -930,6 +936,34 @@
                                 id="facebook"
                                 bind:value={facebookUrl}
                                 placeholder="https://facebook.com/username"
+                                class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="discord"
+                                class="block text-xs text-zinc-400 mb-1"
+                                >Discord</label
+                            >
+                            <input
+                                type="text"
+                                id="discord"
+                                bind:value={discordUrl}
+                                placeholder="username#0000"
+                                class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="email"
+                                class="block text-xs text-zinc-400 mb-1"
+                                >Email</label
+                            >
+                            <input
+                                type="email"
+                                id="email"
+                                bind:value={email}
+                                placeholder="you@example.com"
                                 class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
                             />
                         </div>
