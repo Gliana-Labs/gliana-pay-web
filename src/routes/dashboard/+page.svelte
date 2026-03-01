@@ -174,6 +174,10 @@
         if (cityMatch) {
           cfCityName = cityMatch.name;
           cfCityStatus = cityMatch.status;
+        } else {
+          // Fallback to region name
+          cfCityName = region;
+          cfCityStatus = regionGroup.status;
         }
 
         // Get degraded children
