@@ -813,7 +813,7 @@
           </div>
 
           <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
-            <h2 class="font-bold text-lg mb-1">📋 Event List Widget</h2>
+            <h2 class="font-bold text-lg mb-1">Event List Widget</h2>
             <p class="text-sm text-zinc-400 mb-4">
               Show recent tips or top tippers as a live list on your stream.
             </p>
@@ -826,10 +826,10 @@
                   bind:value={eventListMode}
                   class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
                 >
-                  <option value="recent">⚡ Recent Tips</option>
-                  <option value="top_today">🏆 Top Today</option>
-                  <option value="top_week">🏆 Top This Week</option>
-                  <option value="top_month">🏆 Top This Month</option>
+                  <option value="recent">Recent Tips</option>
+                  <option value="top_today">Top Today</option>
+                  <option value="top_week">Top This Week</option>
+                  <option value="top_month">Top This Month</option>
                 </select>
               </div>
 
@@ -854,9 +854,9 @@
                   bind:value={eventListTheme}
                   class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
                 >
-                  <option value="dark">🌙 Dark</option>
-                  <option value="light">☀️ Light</option>
-                  <option value="minimal">✨ Minimal</option>
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                  <option value="minimal">Minimal</option>
                 </select>
               </div>
             </div>
