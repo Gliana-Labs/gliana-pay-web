@@ -64,6 +64,102 @@
 
   $: eventListUrl = `https://glianapay.com/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
 
+  // Cloudflare Status
+  let cfStatus:
+    | "operational"
+    | "partial_outage"
+    | "major_outage"
+    | "under_maintenance"
+    | "loading"
+    | "error" = "loading";
+  let cfRegionName = "";
+
+  function getRegionFromTimezone(): string {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz.startsWith("Asia/")) return "Asia";
+    if (tz.startsWith("Europe/")) return "Europe";
+    if (tz.startsWith("Africa/")) return "Africa";
+    if (tz.startsWith("Australia/") || tz.startsWith("Pacific/"))
+      return "Oceania";
+    if (tz.startsWith("America/")) {
+      const latin = [
+        "Argentina",
+        "Bogota",
+        "Buenos_Aires",
+        "Caracas",
+        "Cayenne",
+        "Costa_Rica",
+        "Guayaquil",
+        "Guatemala",
+        "Guyana",
+        "Havana",
+        "La_Paz",
+        "Lima",
+        "Managua",
+        "Mexico_City",
+        "Montevideo",
+        "Panama",
+        "Paramaribo",
+        "Port-au-Prince",
+        "Port_of_Spain",
+        "Recife",
+        "Rio_Branco",
+        "Santiago",
+        "Santo_Domingo",
+        "Sao_Paulo",
+        "Tegucigalpa",
+      ];
+      const city = tz.split("/").pop() || "";
+      if (latin.some((c) => city.includes(c)))
+        return "Latin America & the Caribbean";
+      return "North America";
+    }
+    return "North America";
+  }
+
+  async function loadCloudflareStatus() {
+    try {
+      const cached = sessionStorage.getItem("cf_status");
+      if (cached) {
+        const { status, region, ts } = JSON.parse(cached);
+        if (Date.now() - ts < 300000) {
+          cfStatus = status;
+          cfRegionName = region;
+          return;
+        }
+      }
+
+      const res = await fetch(
+        "https://www.cloudflarestatus.com/api/v2/summary.json",
+      );
+      const data = await res.json();
+      const region = getRegionFromTimezone();
+      cfRegionName = region;
+
+      const regionGroup = data.components.find(
+        (c: any) => c.group === true && c.name === region,
+      );
+
+      if (regionGroup) {
+        cfStatus = regionGroup.status;
+      } else {
+        cfStatus =
+          data.status?.indicator === "none" ? "operational" : "partial_outage";
+      }
+
+      sessionStorage.setItem(
+        "cf_status",
+        JSON.stringify({
+          status: cfStatus,
+          region: cfRegionName,
+          ts: Date.now(),
+        }),
+      );
+    } catch {
+      cfStatus = "error";
+    }
+  }
+
   async function copyEventListUrl() {
     await navigator.clipboard.writeText(eventListUrl);
     eventListCopied = true;
@@ -415,6 +511,9 @@
     loadDashboardData();
     loading = false;
 
+    // Fetch Cloudflare status (non-blocking)
+    loadCloudflareStatus();
+
     // Connect WebSocket for skip functionality
     connectWebSocket();
 
@@ -584,6 +683,47 @@
           </p>
         </div>
       </div>
+
+      <!-- Cloudflare Status -->
+      {#if cfStatus !== "loading"}
+        <div class="mb-4 flex items-center gap-2" transition:fade>
+          <span
+            class="inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full border
+            {cfStatus === 'operational'
+              ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
+              : cfStatus === 'under_maintenance'
+                ? 'text-blue-400 border-blue-500/30 bg-blue-500/10'
+                : cfStatus === 'partial_outage'
+                  ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'
+                  : cfStatus === 'major_outage'
+                    ? 'text-red-400 border-red-500/30 bg-red-500/10'
+                    : 'text-zinc-400 border-zinc-500/30 bg-zinc-500/10'}"
+          >
+            <span
+              class="w-1.5 h-1.5 rounded-full
+              {cfStatus === 'operational'
+                ? 'bg-emerald-400'
+                : cfStatus === 'under_maintenance'
+                  ? 'bg-blue-400'
+                  : cfStatus === 'partial_outage'
+                    ? 'bg-yellow-400'
+                    : cfStatus === 'major_outage'
+                      ? 'bg-red-400'
+                      : 'bg-zinc-400'}"
+            ></span>
+            {cfStatus === "operational"
+              ? "All Systems Operational"
+              : cfStatus === "under_maintenance"
+                ? "Maintenance"
+                : cfStatus === "partial_outage"
+                  ? "Partial Degradation"
+                  : cfStatus === "major_outage"
+                    ? "Major Outage"
+                    : "Status Unavailable"}
+            ({cfRegionName})
+          </span>
+        </div>
+      {/if}
 
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <!-- Recent Donations -->
