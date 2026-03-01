@@ -526,7 +526,9 @@
             </button>
           </div>
           <p class="text-3xl font-bold text-gradient mt-1">
-            {hideEarnings ? "••••••" : `${totalReceived.toFixed(3)} SOL`}
+            {hideEarnings
+              ? "••••••"
+              : `${parseFloat(totalReceived.toFixed(3))} SOL`}
           </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -538,7 +540,7 @@
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Average</p>
           <p class="text-3xl font-bold mt-1">
-            {hideEarnings ? "••••" : `${average.toFixed(3)} SOL`}
+            {hideEarnings ? "••••" : `${parseFloat(average.toFixed(3))} SOL`}
           </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -589,7 +591,7 @@
                       <p class="font-bold text-green-400">
                         {hideEarnings
                           ? "••••"
-                          : `${(donation.amount / 1e9).toFixed(3)} SOL`}
+                          : `${parseFloat((donation.amount / 1e9).toFixed(3))} SOL`}
                       </p>
                       <p class="text-xs text-zinc-500">
                         {new Date(donation.timestamp).toLocaleDateString()}
@@ -719,7 +721,7 @@
               How to add tip alerts to your stream:
             </p>
 
-            <ol class="text-sm text-zinc-300 space-y-2 mb-4">
+            <ol class="text-sm text-zinc-300 space-y-1 mb-4">
               <li class="flex gap-2">
                 <span class="text-purple-400 font-bold">1.</span>
                 <span>In OBS, add a <strong>Browser Source</strong></span>
@@ -764,7 +766,7 @@
               </div>
             </div>
 
-            <ol class="text-sm text-zinc-300 space-y-2 mb-3">
+            <ol class="text-sm text-zinc-300 space-y-1 mb-3">
               <li class="flex gap-2">
                 <span class="text-purple-400 font-bold">3.</span>
                 <span

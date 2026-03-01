@@ -57,8 +57,8 @@
     // --- Format helpers ---
     function formatSOL(lamports: number): string {
         const sol = lamports / 1e9;
-        if (sol < 0.01) return sol.toFixed(4);
-        if (sol < 1) return sol.toFixed(3);
+        if (sol < 0.01) return parseFloat(sol.toFixed(4)).toString();
+        if (sol < 1) return parseFloat(sol.toFixed(3)).toString();
         return sol.toFixed(2);
     }
 

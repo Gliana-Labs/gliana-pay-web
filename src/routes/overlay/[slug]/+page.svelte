@@ -105,7 +105,10 @@
   const ALERT_DURATION = 5000;
 
   function formatSOL(lamports: number): string {
-    return (lamports / 1e9).toFixed(4);
+    const sol = lamports / 1e9;
+    if (sol < 0.01) return parseFloat(sol.toFixed(4)).toString();
+    if (sol < 1) return parseFloat(sol.toFixed(3)).toString();
+    return sol.toFixed(2);
   }
 
   let wsReconnectAttempts = 0;
