@@ -9,6 +9,7 @@
   } from "$lib/wallet";
   import type { WalletInfo } from "$lib/wallet";
   import { WORKER_URL } from "$lib/config";
+  import { fetchCloudflareStatus } from "$lib/cloudflare-status";
 
   // Check auth
   let walletAddress = "";
@@ -78,49 +79,6 @@
   let cfDegradedItems: { name: string; status: string }[] = [];
   let showStatusDropdown = false;
 
-  function getRegionFromTimezone(): string {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (tz.startsWith("Asia/")) return "Asia";
-    if (tz.startsWith("Europe/")) return "Europe";
-    if (tz.startsWith("Africa/")) return "Africa";
-    if (tz.startsWith("Australia/") || tz.startsWith("Pacific/"))
-      return "Oceania";
-    if (tz.startsWith("America/")) {
-      const latin = [
-        "Argentina",
-        "Bogota",
-        "Buenos_Aires",
-        "Caracas",
-        "Cayenne",
-        "Costa_Rica",
-        "Guayaquil",
-        "Guatemala",
-        "Guyana",
-        "Havana",
-        "La_Paz",
-        "Lima",
-        "Managua",
-        "Mexico_City",
-        "Montevideo",
-        "Panama",
-        "Paramaribo",
-        "Port-au-Prince",
-        "Port_of_Spain",
-        "Recife",
-        "Rio_Branco",
-        "Santiago",
-        "Santo_Domingo",
-        "Sao_Paulo",
-        "Tegucigalpa",
-      ];
-      const city = tz.split("/").pop() || "";
-      if (latin.some((c) => city.includes(c)))
-        return "Latin America & the Caribbean";
-      return "North America";
-    }
-    return "North America";
-  }
-
   function getStatusLabel(s: string): string {
     if (s === "operational") return "Operational";
     if (s === "partial_outage") return "Degraded";
@@ -131,7 +89,7 @@
 
   async function loadCloudflareStatus() {
     try {
-      const cached = sessionStorage.getItem("cf_status_v2");
+      const cached = sessionStorage.getItem("cf_status");
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Date.now() - parsed.ts < 300000) {
@@ -144,72 +102,15 @@
         }
       }
 
-      const res = await fetch(
-        "https://www.cloudflarestatus.com/api/v2/summary.json",
-      );
-      const data = await res.json();
-      const region = getRegionFromTimezone();
-      cfRegionName = region;
-
-      // Find user's city from timezone
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const tzCity = (tz.split("/").pop() || "").replace(/_/g, " ");
-
-      // Find region group
-      const regionGroup = data.components.find(
-        (c: any) => c.group === true && c.name === region,
-      );
-
-      if (regionGroup) {
-        cfStatus = regionGroup.status;
-        const childIds: string[] = regionGroup.components || [];
-        const regionChildren = data.components.filter((c: any) =>
-          childIds.includes(c.id),
-        );
-
-        // Find user's nearest PoP city
-        const cityMatch = regionChildren.find((c: any) =>
-          c.name.toLowerCase().includes(tzCity.toLowerCase()),
-        );
-        if (cityMatch) {
-          cfCityName = cityMatch.name;
-          cfCityStatus = cityMatch.status;
-        } else {
-          // Fallback to region name
-          cfCityName = region;
-          cfCityStatus = regionGroup.status;
-        }
-
-        // Get degraded children
-        cfDegradedItems = regionChildren
-          .filter((c: any) => c.status !== "operational")
-          .map((c: any) => ({ name: c.name, status: c.status }))
-          .slice(0, 8);
-      } else {
-        cfStatus =
-          data.status?.indicator === "none" ? "operational" : "partial_outage";
-      }
-
-      // Find "Cloudflare Sites and Services" group and get all non-operational services
-      const sitesGroup = data.components.find(
-        (c: any) =>
-          c.group === true && c.name === "Cloudflare Sites and Services",
-      );
-      if (sitesGroup) {
-        const svcIds: string[] = sitesGroup.components || [];
-        const degradedServices = data.components
-          .filter(
-            (c: any) => svcIds.includes(c.id) && c.status !== "operational",
-          )
-          .map((c: any) => ({ name: c.name, status: c.status }));
-        if (degradedServices.length > 0) {
-          cfDegradedItems = [...degradedServices, ...cfDegradedItems];
-          if (cfStatus === "operational") cfStatus = "partial_outage";
-        }
-      }
+      const result = await fetchCloudflareStatus("cf_status");
+      cfStatus = result.status;
+      cfRegionName = result.region;
+      cfCityName = result.cityName;
+      cfCityStatus = result.cityStatus;
+      cfDegradedItems = result.degradedItems;
 
       sessionStorage.setItem(
-        "cf_status_v2",
+        "cf_status",
         JSON.stringify({
           status: cfStatus,
           region: cfRegionName,
