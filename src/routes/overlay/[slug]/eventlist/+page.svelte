@@ -56,7 +56,10 @@
 
     // --- Format helpers ---
     function formatSOL(lamports: number): string {
-        return (lamports / 1e9).toFixed(2);
+        const sol = lamports / 1e9;
+        if (sol < 0.01) return sol.toFixed(4);
+        if (sol < 1) return sol.toFixed(3);
+        return sol.toFixed(2);
     }
 
     function formatTime(timestamp: string): string {
