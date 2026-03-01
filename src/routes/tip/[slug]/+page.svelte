@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { page } from "$app/stores";
+  import { fade } from "svelte/transition";
   import {
     RegExpMatcher,
     englishDataset,
@@ -126,6 +127,7 @@
     }
 
     fetchSolPrice();
+    fetchCfStatus();
     const priceInterval = setInterval(fetchSolPrice, 60000); // refresh every 60s
 
     // Small delay to ensure wallet extensions are loaded
@@ -468,6 +470,65 @@
       /\w\S*/g,
       (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase(),
     );
+  }
+
+  // Cloudflare Status
+  let cfStatus:
+    | "operational"
+    | "partial_outage"
+    | "major_outage"
+    | "under_maintenance"
+    | "loading"
+    | "error" = "loading";
+  let cfCityName = "";
+  let cfCityStatus = "";
+  let showStatusDropdown = false;
+
+  function getRegionFromTimezone(): string {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz.startsWith("Asia/")) return "Asia";
+    if (tz.startsWith("Europe/")) return "Europe";
+    if (tz.startsWith("Africa/")) return "Africa";
+    if (tz.startsWith("Australia/") || tz.startsWith("Pacific/"))
+      return "Oceania";
+    if (tz.startsWith("America/")) {
+      const latin = [
+        "Argentina", "Bogota", "Buenos_Aires", "Caracas", "Cayenne",
+        "Costa_Rica", "Guayaquil", "Guatemala", "Guyana", "Havana",
+        "La_Paz", "Lima", "Managua", "Mexico_City", "Montevideo",
+        "Panama", "Paramaribo", "Port-au-Prince", "Port_of_Spain",
+        "Recife", "Rio_Branco", "Santiago", "Santo_Domingo", "Sao_Paulo",
+        "Tegucigalpa",
+      ];
+      const city = tz.split("/").pop() || "";
+      if (latin.some((c) => city.includes(c)))
+        return "Latin America & the Caribbean";
+      return "North America";
+    }
+    return "North America";
+  }
+
+  function getStatusLabel(s: string): string {
+    if (s === "operational") return "Operational";
+    if (s === "partial_outage") return "Degraded";
+    if (s === "major_outage") return "Outage";
+    if (s === "under_maintenance") return "Maintenance";
+    return s;
+  }
+
+  async function fetchCfStatus() {
+    const region = getRegionFromTimezone();
+    try {
+      const res = await fetch(
+        `https://cf-status.glianapay.workers.dev/?region=${region}`,
+      );
+      const parsed = await res.json();
+      cfStatus = parsed.status;
+      cfCityName = parsed.city || "";
+      cfCityStatus = parsed.cityStatus || "";
+    } catch (e) {
+      cfStatus = "error";
+    }
   }
 </script>
 
@@ -1359,11 +1420,107 @@
   </div>
 
   <!-- Footer -->
-  <div class="absolute bottom-6 left-0 px-4">
+  <div
+    class="absolute bottom-6 left-0 right-0 px-4 flex items-center justify-between"
+  >
     <a
       href="mailto:support@glianapay.com?subject=Report Bug"
-      class="text-xs text-zinc-500 hover:text-white">Report Bug</a
+      class="text-xs text-zinc-500 hover:text-white transition-colors"
+      >Report Bug</a
     >
+
+    <!-- Cloudflare Status -->
+    {#if cfStatus !== "loading"}
+      <div
+        class="relative"
+        on:mouseenter={() => (showStatusDropdown = true)}
+        on:mouseleave={() => (showStatusDropdown = false)}
+        role="status"
+      >
+        <button
+          on:click={() => (showStatusDropdown = !showStatusDropdown)}
+          class="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+        >
+          <span
+            class="w-1.5 h-1.5 rounded-full
+            {cfStatus === 'operational'
+              ? 'bg-emerald-400'
+              : cfStatus === 'under_maintenance'
+                ? 'bg-blue-400'
+                : cfStatus === 'partial_outage'
+                  ? 'bg-yellow-400'
+                  : cfStatus === 'major_outage'
+                    ? 'bg-red-400'
+                    : 'bg-zinc-400'}"
+          ></span>
+          <span class="hidden sm:inline">
+            {cfStatus === "operational"
+              ? "All Systems Operational"
+              : cfStatus === "under_maintenance"
+                ? "Under Maintenance"
+                : cfStatus === "partial_outage"
+                  ? "Partial Degradation"
+                  : cfStatus === "major_outage"
+                    ? "Major Outage"
+                    : "Status Unavailable"}
+          </span>
+        </button>
+
+        {#if showStatusDropdown}
+          <div
+            class="absolute right-0 bottom-full mb-2 w-72 glass-card rounded-xl border border-white/10 p-4 z-50 shadow-2xl"
+            transition:fade={{ duration: 150 }}
+          >
+            <div
+              class="text-[10px] text-zinc-500 uppercase tracking-wider mb-3"
+            >
+              Status
+            </div>
+
+            {#if cfCityName}
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="w-2 h-2 rounded-full shrink-0
+                    {cfCityStatus === 'operational'
+                      ? 'bg-emerald-400'
+                      : cfCityStatus === 'partial_outage'
+                        ? 'bg-yellow-400'
+                        : cfCityStatus === 'major_outage'
+                          ? 'bg-red-400'
+                          : cfCityStatus === 'under_maintenance'
+                            ? 'bg-blue-400'
+                            : 'bg-zinc-400'}"
+                  ></span>
+                  <span class="text-xs font-medium text-white"
+                    >{cfCityName}</span
+                  >
+                </div>
+                <span
+                  class="text-[10px] px-1.5 py-0.5 rounded font-medium
+                  {cfCityStatus === 'operational'
+                    ? 'text-emerald-400 bg-emerald-500/10'
+                    : cfCityStatus === 'partial_outage'
+                      ? 'text-yellow-400 bg-yellow-500/10'
+                      : cfCityStatus === 'major_outage'
+                        ? 'text-red-400 bg-red-500/10'
+                        : cfCityStatus === 'under_maintenance'
+                          ? 'text-blue-400 bg-blue-500/10'
+                          : 'text-zinc-400 bg-zinc-500/10'}"
+                >
+                  {getStatusLabel(cfCityStatus)}
+                </span>
+              </div>
+            {:else}
+              <div class="flex items-center gap-2 text-emerald-400 text-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                All systems operational
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
+    {/if}
   </div>
 </div>
 
