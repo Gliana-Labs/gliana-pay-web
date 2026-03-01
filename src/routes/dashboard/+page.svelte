@@ -646,7 +646,7 @@
       </div>
     </div>
 
-    <div class="max-w-[1600px] mx-auto px-4 py-8">
+    <div class="max-w-[1600px] mx-auto px-4 py-8 pb-14">
       <!-- Stats -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -1071,10 +1071,10 @@
     </div>
 
     <!-- Footer -->
-    <div class="relative z-10 border-t border-white/5 mt-8">
-      <div
-        class="max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between"
-      >
+    <div
+      class="fixed bottom-0 left-0 right-0 z-40 border-t border-white/5 bg-[#0a0a0b]/90 backdrop-blur-sm"
+    >
+      <div class="px-4 py-3 flex items-center justify-between">
         <a
           href="mailto:support@glianapay.com?subject=Report Bug"
           class="text-xs text-zinc-500 hover:text-white transition-colors"
@@ -1120,18 +1120,17 @@
 
             {#if showStatusDropdown}
               <div
-                class="absolute right-0 bottom-full mb-2 w-80 glass-card rounded-xl border border-white/10 p-4 z-50 shadow-2xl"
+                class="absolute right-0 bottom-full mb-2 w-72 glass-card rounded-xl border border-white/10 p-4 z-50 shadow-2xl"
                 transition:fade={{ duration: 150 }}
               >
-                <div class="text-[10px] text-zinc-500 mb-3">
-                  Cloudflare Sites & Services
+                <div
+                  class="text-[10px] text-zinc-500 uppercase tracking-wider mb-3"
+                >
+                  Status
                 </div>
 
-                <!-- User's city -->
                 {#if cfCityName}
-                  <div
-                    class="flex items-center justify-between mb-3 pb-2 border-b border-white/5"
-                  >
+                  <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
                       <span
                         class="w-2 h-2 rounded-full shrink-0
@@ -1164,34 +1163,14 @@
                       {getStatusLabel(cfCityStatus)}
                     </span>
                   </div>
-                {/if}
-
-                <!-- Key services -->
-                {#if cfDegradedItems.length > 0}
-                  <div class="space-y-1.5">
-                    {#each cfDegradedItems.slice(0, 3) as item}
-                      <div class="flex items-center justify-between text-xs">
-                        <span class="text-zinc-300">{item.name}</span>
-                        <span
-                          class="px-1.5 py-0.5 rounded text-[10px] font-medium
-                          {item.status === 'partial_outage'
-                            ? 'text-yellow-400 bg-yellow-500/10'
-                            : item.status === 'major_outage'
-                              ? 'text-red-400 bg-red-500/10'
-                              : item.status === 'under_maintenance'
-                                ? 'text-blue-400 bg-blue-500/10'
-                                : 'text-zinc-400 bg-zinc-500/10'}"
-                        >
-                          {getStatusLabel(item.status)}
-                        </span>
-                      </div>
-                    {/each}
-                    {#if cfDegradedItems.length > 3}
-                      <div class="text-[10px] text-zinc-500">
-                        +{cfDegradedItems.length - 3} more affected
-                      </div>
-                    {/if}
-                  </div>
+                  {#if cfDegradedItems.length > 0}
+                    <div class="text-[10px] text-yellow-400/70 mt-2">
+                      +{cfDegradedItems.length} service{cfDegradedItems.length >
+                      1
+                        ? "s"
+                        : ""} affected
+                    </div>
+                  {/if}
                 {:else}
                   <div class="flex items-center gap-2 text-emerald-400 text-xs">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
