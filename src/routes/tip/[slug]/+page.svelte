@@ -480,8 +480,10 @@
     | "under_maintenance"
     | "loading"
     | "error" = "loading";
+  let cfRegionName = "";
   let cfCityName = "";
   let cfCityStatus = "";
+  let cfDegradedItems: { name: string; status: string }[] = [];
   let showStatusDropdown = false;
 
   function getRegionFromTimezone(): string {
@@ -517,15 +519,78 @@
   }
 
   async function fetchCfStatus() {
-    const region = getRegionFromTimezone();
     try {
+      const cached = sessionStorage.getItem("cf_status_tip");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - parsed.ts < 300000) {
+          cfStatus = parsed.status;
+          cfRegionName = parsed.region || "";
+          cfCityName = parsed.city || "";
+          cfCityStatus = parsed.cityStatus || "";
+          cfDegradedItems = parsed.degraded || [];
+          return;
+        }
+      }
+
       const res = await fetch(
-        `https://cf-status.glianapay.workers.dev/?region=${region}`,
+        "https://www.cloudflarestatus.com/api/v2/summary.json",
       );
-      const parsed = await res.json();
-      cfStatus = parsed.status;
-      cfCityName = parsed.city || "";
-      cfCityStatus = parsed.cityStatus || "";
+      const data = await res.json();
+      const region = getRegionFromTimezone();
+      cfRegionName = region;
+
+      // Find user's city from timezone
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const tzCity = (tz.split("/").pop() || "").replace(/_/g, " ");
+
+      // Find region group
+      const regionGroup = data.components.find(
+        (c: any) => c.group === true && c.name === region,
+      );
+
+      if (regionGroup) {
+        cfStatus = regionGroup.status;
+        const childIds: string[] = regionGroup.components || [];
+        const regionChildren = data.components.filter((c: any) =>
+          childIds.includes(c.id),
+        );
+
+        // Find user's nearest PoP city
+        const cityMatch = regionChildren.find((c: any) =>
+          c.name.toLowerCase().includes(tzCity.toLowerCase()),
+        );
+        if (cityMatch) {
+          cfCityName = cityMatch.name;
+          cfCityStatus = cityMatch.status;
+        } else {
+          cfCityName = region;
+          cfCityStatus = regionGroup.status;
+        }
+
+        // Get degraded children
+        cfDegradedItems = regionChildren
+          .filter((c: any) => c.status !== "operational")
+          .map((c: any) => ({ name: c.name, status: c.status }))
+          .slice(0, 8);
+      } else {
+        cfStatus = data.status;
+        cfCityName = "";
+        cfCityStatus = "";
+      }
+
+      // Cache result
+      sessionStorage.setItem(
+        "cf_status_tip",
+        JSON.stringify({
+          ts: Date.now(),
+          status: cfStatus,
+          region: cfRegionName,
+          city: cfCityName,
+          cityStatus: cfCityStatus,
+          degraded: cfDegradedItems,
+        }),
+      );
     } catch (e) {
       cfStatus = "error";
     }
