@@ -601,7 +601,7 @@
             </div>
         </div>
 
-        <div class="max-w-3xl mx-auto px-4 py-8 relative z-10">
+        <div class="max-w-5xl mx-auto px-4 py-8 relative z-10">
             <!-- Page Title -->
             <div class="mb-8">
                 <h1 class="text-2xl font-bold">Settings</h1>
