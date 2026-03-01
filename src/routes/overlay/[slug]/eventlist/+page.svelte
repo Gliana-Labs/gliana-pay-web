@@ -8,6 +8,7 @@
     let mode = $state("recent");
     let limit = $state(5);
     let theme = $state("dark"); // dark | light | minimal
+    let isPreview = $state(false);
 
     interface EventItem {
         id: number;
@@ -35,6 +36,7 @@
         mode = params.get("mode") || "recent";
         limit = Math.min(parseInt(params.get("limit") || "5"), 20);
         theme = params.get("theme") || "dark";
+        isPreview = params.get("preview") === "1";
     }
 
     // --- Fetch initial data ---
@@ -247,7 +249,9 @@
     <!-- Header -->
     <div class="event-header">
         <span class="mode-label">{getModeLabel(mode)}</span>
-        <span class="connection-dot" class:connected={isConnected}></span>
+        {#if isPreview}
+            <span class="connection-dot" class:connected={isConnected}></span>
+        {/if}
     </div>
 
     <!-- List -->

@@ -785,7 +785,7 @@
             </ol>
 
             <a
-              href="/overlay/{slug}?sound=1"
+              href="/overlay/{slug}?sound=1&preview=1"
               target="_blank"
               class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline ml-3 first:ml-0"
             >
@@ -902,7 +902,7 @@
             </ol>
 
             <a
-              href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}"
+              href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
               target="_blank"
               class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
             >
