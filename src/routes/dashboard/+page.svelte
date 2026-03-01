@@ -35,6 +35,7 @@
   let totalTips = 0;
   let average = 0;
   let donations: any[] = [];
+  let biggestTip = 0;
   let page = 1;
   let hasMore = false;
   let loadingMore = false;
@@ -166,6 +167,9 @@
         totalTips = data.stats.totalTips;
         average = data.stats.average / 1e9;
         donations = data.donations || [];
+        if (donations.length > 0) {
+          biggestTip = Math.max(...donations.map((d: any) => d.amount)) / 1e9;
+        }
         hasMore = data.pagination?.hasMore || false;
       }
     } catch (e) {
@@ -479,7 +483,7 @@
 
     <div class="max-w-6xl mx-auto px-4 py-8">
       <!-- Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <div class="flex justify-between items-start">
             <p class="text-zinc-400 text-sm">Total Received</p>
@@ -544,6 +548,12 @@
           </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
+          <p class="text-zinc-400 text-sm">Biggest Tip</p>
+          <p class="text-3xl font-bold text-yellow-400 mt-1">
+            {hideEarnings ? "••••" : `${parseFloat(biggestTip.toFixed(3))} SOL`}
+          </p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Your Page</p>
           <div class="flex items-center gap-2 mt-1">
             <a
@@ -566,9 +576,9 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Recent Donations -->
-        <div class="lg:col-span-2">
+        <div>
           <div
             class="glass-card rounded-2xl border border-white/10 overflow-hidden"
           >
@@ -622,7 +632,7 @@
           </div>
         </div>
 
-        <!-- Alert Settings + OBS Overlay -->
+        <!-- Alert Settings -->
         <div>
           <div class="glass-card rounded-2xl border border-white/10 p-6">
             <h2 class="font-bold text-lg mb-4">Alert Settings</h2>
@@ -713,8 +723,11 @@
               </button>
             </div>
           </div>
+        </div>
 
-          <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
+        <!-- OBS Widgets -->
+        <div>
+          <div class="glass-card rounded-2xl border border-white/10 p-6">
             <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
 
             <p class="text-sm text-zinc-400 mb-3">
