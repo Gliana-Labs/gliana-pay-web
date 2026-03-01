@@ -1179,7 +1179,7 @@
   {#if toast}
     <div
       transition:slide={{ duration: 300 }}
-      class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 {toastType ===
+      class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-3 rounded-lg shadow-lg z-50 {toastType ===
       'success'
         ? 'bg-green-600'
         : 'bg-red-600'} text-white text-sm font-medium"
