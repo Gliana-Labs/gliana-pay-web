@@ -114,7 +114,7 @@
   }
 
   let wsReconnectAttempts = 0;
-  let wsReconnectDelay = 500;
+  let wsReconnectDelay = 1000;
   let wsConnectionTimeout: ReturnType<typeof setTimeout> | null = null;
   let alertTimeout: ReturnType<typeof setTimeout> | null = null;
   let alertDelayTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -148,7 +148,7 @@
         if (socket && socket.readyState !== WebSocket.OPEN) {
           socket.close();
         }
-      }, 5000);
+      }, 10000);
 
       socket.onopen = () => {
         isConnected = true;
@@ -194,7 +194,7 @@
         wsReconnectAttempts++;
         const delay = Math.min(
           wsReconnectDelay * Math.pow(1.5, wsReconnectAttempts - 1),
-          10000,
+          30000,
         );
         setTimeout(connectWebSocket, delay);
       };
@@ -204,7 +204,7 @@
       };
     } catch (error) {
       console.error("Failed to create WebSocket:", error);
-      setTimeout(connectWebSocket, 1000);
+      setTimeout(connectWebSocket, 3000);
     }
   }
 
@@ -301,8 +301,7 @@
     currentTip = tipData;
     showAlert = true;
 
-    // Reload settings right before playing sound to get latest URL
-    await loadSettings();
+    // Sound plays immediately using preloaded audio
 
     // Play sound
     if (soundEnabled && soundUrl) {

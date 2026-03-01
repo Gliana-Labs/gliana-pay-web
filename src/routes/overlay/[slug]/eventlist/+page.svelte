@@ -26,7 +26,7 @@
     let socket: WebSocket | null = null;
     let isConnected = $state(false);
     let wsReconnectAttempts = 0;
-    let wsReconnectDelay = 500;
+    let wsReconnectDelay = 1000;
     let wsConnectionTimeout: ReturnType<typeof setTimeout> | null = null;
 
     // --- Read URL params on mount ---
@@ -125,7 +125,7 @@
             socket.onopen = () => {
                 isConnected = true;
                 wsReconnectAttempts = 0;
-                wsReconnectDelay = 500;
+                wsReconnectDelay = 1000;
                 if (wsConnectionTimeout) clearTimeout(wsConnectionTimeout);
             };
 
@@ -162,7 +162,7 @@
             };
         } catch (error) {
             console.error("[EventList] Failed to create WebSocket:", error);
-            setTimeout(connectWebSocket, 1000);
+            setTimeout(connectWebSocket, 3000);
         }
     }
 
