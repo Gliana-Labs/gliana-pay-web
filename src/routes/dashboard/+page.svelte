@@ -36,6 +36,7 @@
   let average = 0;
   let donations: any[] = [];
   let biggestTip = 0;
+  let biggestTipper = "";
   let page = 1;
   let hasMore = false;
   let loadingMore = false;
@@ -168,7 +169,12 @@
         average = data.stats.average / 1e9;
         donations = data.donations || [];
         if (donations.length > 0) {
-          biggestTip = Math.max(...donations.map((d: any) => d.amount)) / 1e9;
+          const top = donations.reduce(
+            (max: any, d: any) => (d.amount > max.amount ? d : max),
+            donations[0],
+          );
+          biggestTip = top.amount / 1e9;
+          biggestTipper = top.sender_name || "Anonymous";
         }
         hasMore = data.pagination?.hasMore || false;
       }
@@ -552,6 +558,9 @@
           <p class="text-3xl font-bold text-yellow-400 mt-1">
             {hideEarnings ? "••••" : `${parseFloat(biggestTip.toFixed(3))} SOL`}
           </p>
+          {#if biggestTipper && !hideEarnings}
+            <p class="text-xs text-zinc-500 mt-1">by {biggestTipper}</p>
+          {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Your Page</p>
