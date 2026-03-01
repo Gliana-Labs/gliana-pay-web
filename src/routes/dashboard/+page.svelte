@@ -877,24 +877,24 @@
             </div>
 
             <!-- Instructions -->
-            <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+            <ol class="text-sm text-zinc-300 space-y-2 mb-3">
               <li class="flex gap-2">
-                <span class="text-cyan-400 font-bold">1.</span>
+                <span class="text-purple-400 font-bold">1.</span>
                 <span>In OBS, add a new <strong>Browser Source</strong></span>
               </li>
               <li class="flex gap-2">
-                <span class="text-cyan-400 font-bold">2.</span>
+                <span class="text-purple-400 font-bold">2.</span>
                 <span>Paste the URL above</span>
               </li>
               <li class="flex gap-2">
-                <span class="text-cyan-400 font-bold">3.</span>
+                <span class="text-purple-400 font-bold">3.</span>
                 <span
                   >Set Width: <strong>400</strong>, Height:
                   <strong>300</strong></span
                 >
               </li>
               <li class="flex gap-2">
-                <span class="text-cyan-400 font-bold">4.</span>
+                <span class="text-purple-400 font-bold">4.</span>
                 <span>Position it anywhere on your scene</span>
               </li>
             </ol>
