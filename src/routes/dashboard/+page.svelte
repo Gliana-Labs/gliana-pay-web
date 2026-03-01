@@ -481,7 +481,7 @@
       </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="max-w-[1600px] mx-auto px-4 py-8">
       <!-- Stats -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -576,9 +576,9 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <!-- Recent Donations -->
-        <div>
+        <div class="lg:col-span-2">
           <div
             class="glass-card rounded-2xl border border-white/10 overflow-hidden"
           >
@@ -633,7 +633,7 @@
         </div>
 
         <!-- Right Side: Settings & Widgets -->
-        <div>
+        <div class="lg:col-span-2">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Alert Settings -->
             <div>
