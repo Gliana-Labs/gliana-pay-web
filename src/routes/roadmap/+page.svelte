@@ -277,7 +277,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Stream chat bot (GlianaBot for Twitch/Kick/YouTube)", "Text-to-speech (TTS) alerts", "Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "USDC stablecoin tipping support", "NFT supporter badges (gamification)", "One-click staking for verified/featured status", "Expanded wallet compatibility", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs", "Smart account integration", "Sentiment-based alert styling (alert color follows message mood)"] as item}
+                            {#each ["Stream chat bot (GlianaBot for Twitch/Kick/YouTube)", "Text-to-speech (TTS) alerts", "Monthly on-chain subscriptions (recurring tips)", "Twitch / YouTube OAuth login", "USDC stablecoin tipping support", "Export tipping data (CSV/JSON)", "NFT supporter badges (gamification)", "One-click staking for verified/featured status", "Expanded wallet compatibility", "Creator marketplace (sell digital goods)", "Multi-streamer event tipping (charity streams)", "Mobile app (iOS & Android)", "Public API & developer docs", "Smart account integration", "Sentiment-based alert styling (alert color follows message mood)"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-400"
                                 >

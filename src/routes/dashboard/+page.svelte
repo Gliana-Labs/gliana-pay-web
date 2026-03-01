@@ -54,6 +54,20 @@
   let soundError = "";
   let name = "";
 
+  // Event List Widget settings
+  let eventListMode = "recent";
+  let eventListLimit = 5;
+  let eventListTheme = "dark";
+  let eventListCopied = false;
+
+  $: eventListUrl = `https://glianapay.com/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
+
+  async function copyEventListUrl() {
+    await navigator.clipboard.writeText(eventListUrl);
+    eventListCopied = true;
+    setTimeout(() => (eventListCopied = false), 2000);
+  }
+
   // Copy state
   let copied = false;
   async function copyPageUrl() {
@@ -96,7 +110,12 @@
       event.stopPropagation();
 
       // Don't allow empty or special keys
-      if (event.key === "Control" || event.key === "Shift" || event.key === "Alt" || event.key === "Meta") {
+      if (
+        event.key === "Control" ||
+        event.key === "Shift" ||
+        event.key === "Alt" ||
+        event.key === "Meta"
+      ) {
         return;
       }
 
@@ -266,7 +285,9 @@
           console.log("[Dashboard] Sending settings_changed to overlay");
           wsSocket.send(JSON.stringify({ type: "settings_changed" }));
         } else {
-          console.log("[Dashboard] WebSocket not connected, overlay won't be notified");
+          console.log(
+            "[Dashboard] WebSocket not connected, overlay won't be notified",
+          );
         }
       } else {
         const data = await response.json().catch(() => ({}));
@@ -463,18 +484,43 @@
           <div class="flex justify-between items-start">
             <p class="text-zinc-400 text-sm">Total Received</p>
             <button
-              on:click={() => hideEarnings = !hideEarnings}
+              on:click={() => (hideEarnings = !hideEarnings)}
               class="text-zinc-500 hover:text-white transition-colors cursor-pointer"
               title={hideEarnings ? "Show earnings" : "Hide earnings"}
             >
               {#if hideEarnings}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
                 </svg>
               {:else}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                  />
                 </svg>
               {/if}
             </button>
@@ -485,11 +531,15 @@
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Tips</p>
-          <p class="text-3xl font-bold mt-1">{hideEarnings ? "•••" : totalTips}</p>
+          <p class="text-3xl font-bold mt-1">
+            {hideEarnings ? "•••" : totalTips}
+          </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Average</p>
-          <p class="text-3xl font-bold mt-1">{hideEarnings ? "••••" : `${average.toFixed(3)} SOL`}</p>
+          <p class="text-3xl font-bold mt-1">
+            {hideEarnings ? "••••" : `${average.toFixed(3)} SOL`}
+          </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Your Page</p>
@@ -537,7 +587,9 @@
                     </div>
                     <div class="text-right">
                       <p class="font-bold text-green-400">
-                        {hideEarnings ? "••••" : `${(donation.amount / 1e9).toFixed(3)} SOL`}
+                        {hideEarnings
+                          ? "••••"
+                          : `${(donation.amount / 1e9).toFixed(3)} SOL`}
                       </p>
                       <p class="text-xs text-zinc-500">
                         {new Date(donation.timestamp).toLocaleDateString()}
@@ -624,7 +676,7 @@
                 >
                 <div class="flex items-center gap-2">
                   <button
-                    on:click={() => isRecordingHotkey = true}
+                    on:click={() => (isRecordingHotkey = true)}
                     on:keydown|preventDefault
                     class="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono text-center cursor-pointer"
                   >
@@ -635,7 +687,7 @@
                     {/if}
                   </button>
                   <button
-                    on:click={() => isRecordingHotkey = !isRecordingHotkey}
+                    on:click={() => (isRecordingHotkey = !isRecordingHotkey)}
                     class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300"
                   >
                     {isRecordingHotkey ? "Cancel" : "Change"}
@@ -758,6 +810,102 @@
               right-click the Browser Source in OBS and select "Interact" then refresh
               the page, or remove and re-add the Browser Source.
             </p>
+          </div>
+
+          <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
+            <h2 class="font-bold text-lg mb-1">📋 Event List Widget</h2>
+            <p class="text-sm text-zinc-400 mb-4">
+              Show recent tips or top tippers as a live list on your stream.
+            </p>
+
+            <div class="grid grid-cols-3 gap-3 mb-4">
+              <!-- Mode selector -->
+              <div>
+                <label class="text-xs text-zinc-400 block mb-1">Display</label>
+                <select
+                  bind:value={eventListMode}
+                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                >
+                  <option value="recent">⚡ Recent Tips</option>
+                  <option value="top_today">🏆 Top Today</option>
+                  <option value="top_week">🏆 Top This Week</option>
+                  <option value="top_month">🏆 Top This Month</option>
+                </select>
+              </div>
+
+              <!-- Limit selector -->
+              <div>
+                <label class="text-xs text-zinc-400 block mb-1">Show</label>
+                <select
+                  bind:value={eventListLimit}
+                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                >
+                  <option value={1}>1 item</option>
+                  <option value={3}>3 items</option>
+                  <option value={5}>5 items</option>
+                  <option value={10}>10 items</option>
+                </select>
+              </div>
+
+              <!-- Theme selector -->
+              <div>
+                <label class="text-xs text-zinc-400 block mb-1">Theme</label>
+                <select
+                  bind:value={eventListTheme}
+                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                >
+                  <option value="dark">🌙 Dark</option>
+                  <option value="light">☀️ Light</option>
+                  <option value="minimal">✨ Minimal</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Generated URL -->
+            <div class="flex items-center gap-2 mb-3">
+              <code
+                class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+              >
+                {eventListUrl}
+              </code>
+              <button
+                on:click={copyEventListUrl}
+                class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+              >
+                {eventListCopied ? "✓ Copied!" : "Copy"}
+              </button>
+            </div>
+
+            <!-- Instructions -->
+            <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+              <li class="flex gap-2">
+                <span class="text-cyan-400 font-bold">1.</span>
+                <span>In OBS, add a new <strong>Browser Source</strong></span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-cyan-400 font-bold">2.</span>
+                <span>Paste the URL above</span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-cyan-400 font-bold">3.</span>
+                <span
+                  >Set Width: <strong>400</strong>, Height:
+                  <strong>300</strong></span
+                >
+              </li>
+              <li class="flex gap-2">
+                <span class="text-cyan-400 font-bold">4.</span>
+                <span>Position it anywhere on your scene</span>
+              </li>
+            </ol>
+
+            <a
+              href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+            >
+              <span>Preview Event List</span>
+            </a>
           </div>
         </div>
       </div>
