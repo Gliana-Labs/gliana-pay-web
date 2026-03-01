@@ -453,7 +453,7 @@
     <!-- Header -->
     <div class="border-b border-white/10 relative z-10">
       <div
-        class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between"
+        class="max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between"
       >
         <button
           on:click={goToHomepage}
@@ -585,9 +585,9 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <!-- Recent Donations -->
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-3">
           <div
             class="glass-card rounded-2xl border border-white/10 overflow-hidden"
           >
@@ -641,130 +641,112 @@
           </div>
         </div>
 
-        <!-- Right Side: Settings & Widgets -->
         <div class="lg:col-span-2">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Alert Settings -->
-            <div>
-              <div class="glass-card rounded-2xl border border-white/10 p-6">
-                <h2 class="font-bold text-lg mb-4">Alert Settings</h2>
-                <div class="space-y-4">
-                  <div>
-                    <label
-                      for="min-amount"
-                      class="block text-sm text-zinc-400 mb-2"
-                      >Minimum Tip to Show Alert (SOL)</label
-                    >
+            <div class="glass-card rounded-2xl border border-white/10 p-6">
+              <h2 class="font-bold text-lg mb-4">Alert Settings</h2>
+              <div class="space-y-4">
+                <div>
+                  <label
+                    for="min-amount"
+                    class="block text-sm text-zinc-400 mb-2"
+                    >Minimum Tip to Show Alert (SOL)</label
+                  >
+                  <input
+                    type="number"
+                    id="min-amount"
+                    bind:value={minAmount}
+                    step="0.001"
+                    min="0.001"
+                    class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
+                  />
+                </div>
+                <div>
+                  <label for="sound" class="block text-sm text-zinc-400 mb-2"
+                    >Alert Sound URL</label
+                  >
+                  <div class="space-y-2">
                     <input
-                      type="number"
-                      id="min-amount"
-                      bind:value={minAmount}
-                      step="0.001"
-                      min="0.001"
-                      class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
+                      type="url"
+                      id="sound"
+                      bind:value={soundUrl}
+                      placeholder="https://example.com/sound.mp3"
+                      class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm"
                     />
-                  </div>
-                  <div>
-                    <label for="sound" class="block text-sm text-zinc-400 mb-2"
-                      >Alert Sound URL</label
-                    >
-                    <div class="space-y-2">
-                      <input
-                        type="url"
-                        id="sound"
-                        bind:value={soundUrl}
-                        placeholder="https://example.com/sound.mp3"
-                        class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm"
-                      />
-                      <div class="flex justify-between items-center">
-                        <span class="text-xs text-zinc-500"
-                          >Recommended: short MP3 URLs</span
-                        >
-                        <button
-                          on:click={() =>
-                            (soundUrl =
-                              "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3")}
-                          class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
-                        >
-                          Default
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {#if soundError}
-                    <p class="text-red-400 text-sm">{soundError}</p>
-                  {/if}
-
-                  <!-- Skip Hotkey -->
-                  <div>
-                    <label class="block text-sm text-zinc-400 mb-2"
-                      >Skip Alert Hotkey</label
-                    >
-                    <div class="flex items-center gap-2">
-                      <button
-                        on:click={() => (isRecordingHotkey = true)}
-                        on:keydown|preventDefault
-                        class="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono text-center cursor-pointer"
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-zinc-500"
+                        >Recommended: short MP3 URLs</span
                       >
-                        {#if isRecordingHotkey}
-                          <span class="text-yellow-400"
-                            >Press key or combo...</span
-                          >
-                        {:else}
-                          {skipHotkey || "Click to set"}
-                        {/if}
-                      </button>
                       <button
                         on:click={() =>
-                          (isRecordingHotkey = !isRecordingHotkey)}
-                        class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300"
+                          (soundUrl =
+                            "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3")}
+                        class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
+                        >Default</button
                       >
-                        {isRecordingHotkey ? "Cancel" : "Change"}
-                      </button>
                     </div>
-                    <p class="text-xs text-zinc-500 mt-1">
-                      Works when dashboard or overlay is focused
-                    </p>
                   </div>
-
-                  <button
-                    on:click={saveAlertSettings}
-                    disabled={alertsLoading}
-                    class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
-                  >
-                    {#if alertsLoading}
-                      Saving...
-                    {:else}
-                      Save Alert Settings
-                    {/if}
-                  </button>
                 </div>
+                {#if soundError}
+                  <p class="text-red-400 text-sm">{soundError}</p>
+                {/if}
+                <div>
+                  <label class="block text-sm text-zinc-400 mb-2"
+                    >Skip Alert Hotkey</label
+                  >
+                  <div class="flex items-center gap-2">
+                    <button
+                      on:click={() => (isRecordingHotkey = true)}
+                      on:keydown|preventDefault
+                      class="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono text-center cursor-pointer"
+                    >
+                      {#if isRecordingHotkey}
+                        <span class="text-yellow-400"
+                          >Press key or combo...</span
+                        >
+                      {:else}
+                        {skipHotkey || "Click to set"}
+                      {/if}
+                    </button>
+                    <button
+                      on:click={() => (isRecordingHotkey = !isRecordingHotkey)}
+                      class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300"
+                      >{isRecordingHotkey ? "Cancel" : "Change"}</button
+                    >
+                  </div>
+                  <p class="text-xs text-zinc-500 mt-1">
+                    Works when dashboard or overlay is focused
+                  </p>
+                </div>
+                <button
+                  on:click={saveAlertSettings}
+                  disabled={alertsLoading}
+                  class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
+                >
+                  {#if alertsLoading}Saving...{:else}Save Alert Settings{/if}
+                </button>
               </div>
             </div>
-          </div>
 
-          <!-- OBS Widgets -->
-          <div>
+            <!-- OBS Overlay -->
             <div class="glass-card rounded-2xl border border-white/10 p-6">
               <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
-
               <p class="text-sm text-zinc-400 mb-3">
                 How to add tip alerts to your stream:
               </p>
-
               <ol class="text-sm text-zinc-300 space-y-1 mb-4">
                 <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">1.</span>
-                  <span>In OBS, add a <strong>Browser Source</strong></span>
+                  <span class="text-purple-400 font-bold">1.</span><span
+                    >In OBS, add a <strong>Browser Source</strong></span
+                  >
                 </li>
                 <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">2.</span>
-                  <span
+                  <span class="text-purple-400 font-bold">2.</span><span
                     >Toggle sound below, copy URL, paste in Browser Source</span
                   >
                 </li>
               </ol>
-
               <div class="mb-3">
                 <label
                   class="flex items-center gap-2 text-sm text-zinc-300 mb-2"
@@ -777,174 +759,153 @@
                   Enable sound alerts
                 </label>
               </div>
-
               <div class="space-y-2 mb-3">
                 <div class="flex items-center gap-2">
                   <code
                     class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                  >
-                    https://glianapay.com/overlay/{slug}{soundEnabled
+                    >https://glianapay.com/overlay/{slug}{soundEnabled
                       ? "?sound=1"
-                      : ""}
-                  </code>
+                      : ""}</code
+                  >
                   <button
                     on:click={() =>
                       navigator.clipboard.writeText(
                         `https://glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
                       )}
                     class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                    >Copy</button
                   >
-                    Copy
-                  </button>
                 </div>
               </div>
-
               <ol class="text-sm text-zinc-300 space-y-1 mb-3">
                 <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">3.</span>
-                  <span
+                  <span class="text-purple-400 font-bold">3.</span><span
                     >Set Width: <strong>600</strong>, Height:
                     <strong>400</strong></span
                   >
                 </li>
                 <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">4.</span>
-                  <span>Check "Shutdown source when not visible"</span>
+                  <span class="text-purple-400 font-bold">4.</span><span
+                    >Check "Shutdown source when not visible"</span
+                  >
                 </li>
                 <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">5.</span>
-                  <span>Position the overlay in your scene</span>
+                  <span class="text-purple-400 font-bold">5.</span><span
+                    >Position the overlay in your scene</span
+                  >
                 </li>
               </ol>
-
-              <a
-                href="/overlay/{slug}?sound=1&preview=1"
-                target="_blank"
-                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline ml-3 first:ml-0"
-              >
-                <span>Preview Overlay</span>
-              </a>
-
-              <button
-                on:click={testAlertWS}
-                disabled={testInProgress}
-                class="ml-3 inline-flex items-center gap-2 text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span>{testInProgress ? "Sending..." : "Test Alert"}</span>
-              </button>
-
-              <button
-                on:click={skipCurrentAlert}
-                class="ml-3 inline-flex items-center gap-2 text-sm text-red-400 hover:underline"
-              >
-                <span>Skip Alert</span>
-              </button>
-
+              <div class="flex flex-wrap items-center gap-3 mt-3">
+                <a
+                  href="/overlay/{slug}?sound=1&preview=1"
+                  target="_blank"
+                  class="inline-flex items-center text-sm text-cyan-400 hover:underline"
+                  ><span>Preview Overlay</span></a
+                >
+                <button
+                  on:click={testAlertWS}
+                  disabled={testInProgress}
+                  class="inline-flex items-center text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                  ><span>{testInProgress ? "Sending..." : "Test Alert"}</span
+                  ></button
+                >
+                <button
+                  on:click={skipCurrentAlert}
+                  class="inline-flex items-center text-sm text-red-400 hover:underline"
+                  ><span>Skip Alert</span></button
+                >
+              </div>
               <p class="text-xs text-zinc-500 mt-3">
                 <span class="text-yellow-500">Tip:</span> If settings don't update,
                 right-click the Browser Source in OBS and select "Interact" then
-                refresh the page, or remove and re-add the Browser Source.
+                refresh the page.
               </p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div class="glass-card rounded-2xl border border-white/10 p-6">
-              <h2 class="font-bold text-lg mb-1">Event List Widget</h2>
-              <p class="text-sm text-zinc-400 mb-4">
-                Show recent tips or top tippers as a live list on your stream.
-              </p>
-
-              <div class="grid grid-cols-3 gap-3 mb-4">
-                <!-- Mode selector -->
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Display</label
-                  >
-                  <select
-                    bind:value={eventListMode}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value="recent">Recent Tips</option>
-                    <option value="top_today">Top Today</option>
-                    <option value="top_week">Top This Week</option>
-                    <option value="top_month">Top This Month</option>
-                  </select>
-                </div>
-
-                <!-- Limit selector -->
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Show</label>
-                  <select
-                    bind:value={eventListLimit}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value={1}>1 item</option>
-                    <option value={3}>3 items</option>
-                    <option value={5}>5 items</option>
-                    <option value={10}>10 items</option>
-                  </select>
-                </div>
-
-                <!-- Theme selector -->
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Theme</label>
-                  <select
-                    bind:value={eventListTheme}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                    <option value="minimal">Minimal</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Generated URL -->
-              <div class="flex items-center gap-2 mb-3">
-                <code
-                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+          <!-- Event List Widget -->
+          <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
+            <h2 class="font-bold text-lg mb-1">Event List Widget</h2>
+            <p class="text-sm text-zinc-400 mb-4">
+              Show recent tips or top tippers as a live list on your stream.
+            </p>
+            <div class="grid grid-cols-3 gap-3 mb-4">
+              <div>
+                <label class="text-xs text-zinc-400 block mb-1">Display</label>
+                <select
+                  bind:value={eventListMode}
+                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
                 >
-                  {eventListUrl}
-                </code>
-                <button
-                  on:click={copyEventListUrl}
-                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
-                >
-                  {eventListCopied ? "✓ Copied!" : "Copy"}
-                </button>
+                  <option value="recent">Recent Tips</option>
+                  <option value="top_today">Top Today</option>
+                  <option value="top_week">Top This Week</option>
+                  <option value="top_month">Top This Month</option>
+                </select>
               </div>
-
-              <!-- Instructions -->
-              <ol class="text-sm text-zinc-300 space-y-2 mb-3">
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">1.</span>
-                  <span>In OBS, add a new <strong>Browser Source</strong></span>
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">2.</span>
-                  <span>Paste the URL above</span>
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">3.</span>
-                  <span
-                    >Set Width: <strong>400</strong>, Height:
-                    <strong>300</strong></span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">4.</span>
-                  <span>Position it anywhere on your scene</span>
-                </li>
-              </ol>
-
-              <a
-                href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
-                target="_blank"
-                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
-              >
-                <span>Preview Event List</span>
-              </a>
+              <div>
+                <label class="text-xs text-zinc-400 block mb-1">Show</label>
+                <select
+                  bind:value={eventListLimit}
+                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                >
+                  <option value={1}>1 item</option>
+                  <option value={3}>3 items</option>
+                  <option value={5}>5 items</option>
+                  <option value={10}>10 items</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-zinc-400 block mb-1">Theme</label>
+                <select
+                  bind:value={eventListTheme}
+                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                >
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                  <option value="minimal">Minimal</option>
+                </select>
+              </div>
             </div>
+            <div class="flex items-center gap-2 mb-3">
+              <code
+                class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                >{eventListUrl}</code
+              >
+              <button
+                on:click={copyEventListUrl}
+                class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                >{eventListCopied ? "✓ Copied!" : "Copy"}</button
+              >
+            </div>
+            <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">1.</span><span
+                  >In OBS, add a new <strong>Browser Source</strong></span
+                >
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">2.</span><span
+                  >Paste the URL above</span
+                >
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">3.</span><span
+                  >Set Width: <strong>400</strong>, Height:
+                  <strong>300</strong></span
+                >
+              </li>
+              <li class="flex gap-2">
+                <span class="text-purple-400 font-bold">4.</span><span
+                  >Position it anywhere on your scene</span
+                >
+              </li>
+            </ol>
+            <a
+              href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+              ><span>Preview Event List</span></a
+            >
           </div>
         </div>
       </div>

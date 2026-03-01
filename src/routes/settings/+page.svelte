@@ -95,7 +95,7 @@
     let connectedPlatforms = {
         twitch: false,
         kick: false,
-        youtube: false
+        youtube: false,
     };
     let connectingPlatform = "";
     let streamingLoading = false;
@@ -404,7 +404,10 @@
     async function removeImage(type: "profile" | "banner" | "background") {
         if (type === "profile") {
             // Track for deletion if there was an original image
-            if (originalProfileUrl && !deletedImages.includes(originalProfileUrl)) {
+            if (
+                originalProfileUrl &&
+                !deletedImages.includes(originalProfileUrl)
+            ) {
                 deletedImages.push(originalProfileUrl);
             }
             originalProfileUrl = "";
@@ -414,7 +417,10 @@
             localProfilePreview = "";
         } else if (type === "banner") {
             // Track for deletion if there was an original image
-            if (originalBannerUrl && !deletedImages.includes(originalBannerUrl)) {
+            if (
+                originalBannerUrl &&
+                !deletedImages.includes(originalBannerUrl)
+            ) {
                 deletedImages.push(originalBannerUrl);
             }
             originalBannerUrl = "";
@@ -474,7 +480,9 @@
     async function checkConnectedPlatforms() {
         if (!slug) return;
         try {
-            const res = await fetch(`${WORKER_URL}/api/streamer/${slug}/platforms`);
+            const res = await fetch(
+                `${WORKER_URL}/api/streamer/${slug}/platforms`,
+            );
             const data = await res.json();
             if (data.platforms) {
                 connectedPlatforms = data.platforms;
@@ -489,9 +497,12 @@
         if (!slug) return;
         connectingPlatform = platform;
         try {
-            const res = await fetch(`${WORKER_URL}/api/streamer/${slug}/connect/${platform}`, {
-                method: "POST"
-            });
+            const res = await fetch(
+                `${WORKER_URL}/api/streamer/${slug}/connect/${platform}`,
+                {
+                    method: "POST",
+                },
+            );
             const data = await res.json();
             if (data.authUrl) {
                 // Open OAuth popup
@@ -502,7 +513,7 @@
                 window.open(
                     data.authUrl,
                     `${platform} connect`,
-                    `width=${width},height=${height},left=${left},top=${top}`
+                    `width=${width},height=${height},left=${left},top=${top}`,
                 );
             }
         } catch (e) {
@@ -516,10 +527,14 @@
         if (!slug) return;
         streamingLoading = true;
         try {
-            await fetch(`${WORKER_URL}/api/streamer/${slug}/disconnect/${platform}`, {
-                method: "POST"
-            });
-            connectedPlatforms[platform as keyof typeof connectedPlatforms] = false;
+            await fetch(
+                `${WORKER_URL}/api/streamer/${slug}/disconnect/${platform}`,
+                {
+                    method: "POST",
+                },
+            );
+            connectedPlatforms[platform as keyof typeof connectedPlatforms] =
+                false;
             showToast(`Disconnected from ${platform}`, "success");
         } catch (e) {
             showToast(`Failed to disconnect ${platform}`, "error");
@@ -552,7 +567,7 @@
         <!-- Header -->
         <div class="border-b border-white/10 relative z-10">
             <div
-                class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between"
+                class="max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between"
             >
                 <button
                     on:click={goToHomepage}
@@ -586,7 +601,7 @@
             </div>
         </div>
 
-        <div class="max-w-3xl mx-auto px-4 py-8 relative z-10">
+        <div class="max-w-[1600px] mx-auto px-4 py-8 relative z-10">
             <!-- Page Title -->
             <div class="mb-8">
                 <h1 class="text-2xl font-bold">Settings</h1>
@@ -976,52 +991,110 @@
                         Stream Chat Alerts
                     </h3>
                     <p class="text-xs text-zinc-500">
-                        Connect your streaming accounts to post tip alerts in your chat automatically.
+                        Connect your streaming accounts to post tip alerts in
+                        your chat automatically.
                     </p>
 
                     <div class="space-y-3">
                         <!-- Twitch -->
-                        <div class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5">
+                        <div
+                            class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5"
+                        >
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-[#9146FF] rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+                                <div
+                                    class="w-10 h-10 bg-[#9146FF] rounded-lg flex items-center justify-center"
+                                >
+                                    <svg
+                                        class="w-6 h-6 text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                        ><path
+                                            d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"
+                                        /></svg
+                                    >
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-white">Twitch</div>
-                                    <div class="text-xs text-zinc-500">Coming Soon</div>
+                                    <div class="text-sm font-medium text-white">
+                                        Twitch
+                                    </div>
+                                    <div class="text-xs text-zinc-500">
+                                        Coming Soon
+                                    </div>
                                 </div>
                             </div>
-                            <span class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-400 rounded-lg cursor-not-allowed">
+                            <span
+                                class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-400 rounded-lg cursor-not-allowed"
+                            >
                                 Coming Soon
                             </span>
                         </div>
 
                         <!-- Kick -->
-                        <div class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5">
+                        <div
+                            class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5"
+                        >
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-[#53FC18] rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-black" viewBox="0 0 512 512" fill="currentColor"><path d="M37 .036h164.448v113.621h54.71v-56.82h54.731V.036h164.448v170.777h-54.73v56.82h-54.711v56.8h54.71v56.82h54.73V512.03H310.89v-56.82h-54.73v-56.8h-54.711v113.62H37V.036z"/></svg>
+                                <div
+                                    class="w-10 h-10 bg-[#53FC18] rounded-lg flex items-center justify-center"
+                                >
+                                    <svg
+                                        class="w-6 h-6 text-black"
+                                        viewBox="0 0 512 512"
+                                        fill="currentColor"
+                                        ><path
+                                            d="M37 .036h164.448v113.621h54.71v-56.82h54.731V.036h164.448v170.777h-54.73v56.82h-54.711v56.8h54.71v56.82h54.73V512.03H310.89v-56.82h-54.73v-56.8h-54.711v113.62H37V.036z"
+                                        /></svg
+                                    >
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-white">Kick</div>
-                                    <div class="text-xs text-zinc-500">{connectedPlatforms.kick ? 'Connected' : 'Coming Soon'}</div>
+                                    <div class="text-sm font-medium text-white">
+                                        Kick
+                                    </div>
+                                    <div class="text-xs text-zinc-500">
+                                        {connectedPlatforms.kick
+                                            ? "Connected"
+                                            : "Coming Soon"}
+                                    </div>
                                 </div>
                             </div>
-                            <span class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-500 rounded-lg">Coming Soon</span>
+                            <span
+                                class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-500 rounded-lg"
+                                >Coming Soon</span
+                            >
                         </div>
 
                         <!-- YouTube -->
-                        <div class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5">
+                        <div
+                            class="flex items-center justify-between p-3 bg-zinc-900/50 rounded-lg border border-white/5"
+                        >
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-[#FF0000] rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                <div
+                                    class="w-10 h-10 bg-[#FF0000] rounded-lg flex items-center justify-center"
+                                >
+                                    <svg
+                                        class="w-6 h-6 text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                        ><path
+                                            d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+                                        /></svg
+                                    >
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-white">YouTube</div>
-                                    <div class="text-xs text-zinc-500">{connectedPlatforms.youtube ? 'Connected' : 'Coming Soon'}</div>
+                                    <div class="text-sm font-medium text-white">
+                                        YouTube
+                                    </div>
+                                    <div class="text-xs text-zinc-500">
+                                        {connectedPlatforms.youtube
+                                            ? "Connected"
+                                            : "Coming Soon"}
+                                    </div>
                                 </div>
                             </div>
-                            <span class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-500 rounded-lg">Coming Soon</span>
+                            <span
+                                class="px-3 py-1.5 text-xs bg-zinc-800 text-zinc-500 rounded-lg"
+                                >Coming Soon</span
+                            >
                         </div>
                     </div>
                 </div>
