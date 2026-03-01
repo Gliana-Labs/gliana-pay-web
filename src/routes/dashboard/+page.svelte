@@ -186,24 +186,22 @@
           data.status?.indicator === "none" ? "operational" : "partial_outage";
       }
 
-      // Check key services
-      const keyServices = [
-        "D1",
-        "Workers",
-        "Durable Objects",
-        "Pages",
-        "R2",
-        "Workers KV",
-      ];
-      const degradedServices = data.components
-        .filter(
-          (c: any) =>
-            keyServices.includes(c.name) && c.status !== "operational",
-        )
-        .map((c: any) => ({ name: c.name, status: c.status }));
-      if (degradedServices.length > 0) {
-        cfDegradedItems = [...degradedServices, ...cfDegradedItems];
-        if (cfStatus === "operational") cfStatus = "partial_outage";
+      // Find "Cloudflare Sites and Services" group and get all non-operational services
+      const sitesGroup = data.components.find(
+        (c: any) =>
+          c.group === true && c.name === "Cloudflare Sites and Services",
+      );
+      if (sitesGroup) {
+        const svcIds: string[] = sitesGroup.components || [];
+        const degradedServices = data.components
+          .filter(
+            (c: any) => svcIds.includes(c.id) && c.status !== "operational",
+          )
+          .map((c: any) => ({ name: c.name, status: c.status }));
+        if (degradedServices.length > 0) {
+          cfDegradedItems = [...degradedServices, ...cfDegradedItems];
+          if (cfStatus === "operational") cfStatus = "partial_outage";
+        }
       }
 
       sessionStorage.setItem(
@@ -649,136 +647,6 @@
     </div>
 
     <div class="max-w-[1600px] mx-auto px-4 py-8">
-      <!-- Status + Stats -->
-      {#if cfStatus !== "loading"}
-        <div class="flex justify-end mb-2" transition:fade>
-          <div
-            class="relative"
-            on:mouseenter={() => (showStatusDropdown = true)}
-            on:mouseleave={() => (showStatusDropdown = false)}
-            role="status"
-          >
-            <button
-              on:click={() => (showStatusDropdown = !showStatusDropdown)}
-              class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border cursor-pointer transition-all
-                {cfStatus === 'operational'
-                ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
-                : cfStatus === 'under_maintenance'
-                  ? 'text-blue-400 border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20'
-                  : cfStatus === 'partial_outage'
-                    ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10 hover:bg-yellow-500/20'
-                    : cfStatus === 'major_outage'
-                      ? 'text-red-400 border-red-500/30 bg-red-500/10 hover:bg-red-500/20'
-                      : 'text-zinc-400 border-zinc-500/30 bg-zinc-500/10 hover:bg-zinc-500/20'}"
-            >
-              <span
-                class="w-1.5 h-1.5 rounded-full
-                {cfStatus === 'operational'
-                  ? 'bg-emerald-400 animate-pulse'
-                  : cfStatus === 'under_maintenance'
-                    ? 'bg-blue-400'
-                    : cfStatus === 'partial_outage'
-                      ? 'bg-yellow-400 animate-pulse'
-                      : cfStatus === 'major_outage'
-                        ? 'bg-red-400 animate-pulse'
-                        : 'bg-zinc-400'}"
-              ></span>
-              <span class="hidden sm:inline">
-                {cfStatus === "operational"
-                  ? "Operational"
-                  : cfStatus === "under_maintenance"
-                    ? "Maintenance"
-                    : cfStatus === "partial_outage"
-                      ? "Degraded"
-                      : cfStatus === "major_outage"
-                        ? "Outage"
-                        : "—"}
-              </span>
-            </button>
-
-            {#if showStatusDropdown}
-              <div
-                class="absolute right-0 top-full mt-2 w-72 glass-card rounded-xl border border-white/10 p-4 z-50 shadow-2xl"
-                transition:fade={{ duration: 150 }}
-              >
-                <!-- User's city at top -->
-                {#if cfCityName}
-                  <div
-                    class="flex items-center justify-between mb-2 pb-2 border-b border-white/5"
-                  >
-                    <span class="text-xs font-semibold text-white truncate mr-2"
-                      >{cfCityName}</span
-                    >
-                    <span
-                      class="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium
-                      {cfCityStatus === 'operational'
-                        ? 'text-emerald-400 bg-emerald-500/10'
-                        : cfCityStatus === 'partial_outage'
-                          ? 'text-yellow-400 bg-yellow-500/10'
-                          : cfCityStatus === 'major_outage'
-                            ? 'text-red-400 bg-red-500/10'
-                            : cfCityStatus === 'under_maintenance'
-                              ? 'text-blue-400 bg-blue-500/10'
-                              : 'text-zinc-400 bg-zinc-500/10'}"
-                    >
-                      {getStatusLabel(cfCityStatus)}
-                    </span>
-                  </div>
-                {/if}
-
-                <div class="flex items-center justify-between mb-2">
-                  <span
-                    class="text-[10px] font-medium text-zinc-400 uppercase tracking-wider"
-                    >Services</span
-                  >
-                  <span class="text-[10px] text-zinc-500">{cfRegionName}</span>
-                </div>
-
-                {#if cfStatus === "operational" && cfDegradedItems.length === 0}
-                  <div class="flex items-center gap-2 text-emerald-400 text-xs">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    All systems operational
-                  </div>
-                {:else if cfDegradedItems.length > 0}
-                  <div class="space-y-1.5 max-h-48 overflow-y-auto">
-                    {#each cfDegradedItems as item}
-                      <div class="flex items-center justify-between text-xs">
-                        <span class="text-zinc-300 truncate mr-2"
-                          >{item.name}</span
-                        >
-                        <span
-                          class="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium
-                          {item.status === 'partial_outage'
-                            ? 'text-yellow-400 bg-yellow-500/10'
-                            : item.status === 'major_outage'
-                              ? 'text-red-400 bg-red-500/10'
-                              : item.status === 'under_maintenance'
-                                ? 'text-blue-400 bg-blue-500/10'
-                                : 'text-zinc-400 bg-zinc-500/10'}"
-                        >
-                          {getStatusLabel(item.status)}
-                        </span>
-                      </div>
-                    {/each}
-                  </div>
-                {:else}
-                  <div class="text-xs text-zinc-500">No details available</div>
-                {/if}
-
-                <a
-                  href="https://www.cloudflarestatus.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="block mt-3 text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors"
-                >
-                  cloudflarestatus.com ↗
-                </a>
-              </div>
-            {/if}
-          </div>
-        </div>
-      {/if}
-
       <!-- Stats -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -1203,11 +1071,147 @@
     </div>
 
     <!-- Footer -->
-    <div class="relative md:absolute md:bottom-6 left-0 px-4 py-6 md:py-0">
-      <a
-        href="mailto:support@glianapay.com?subject=Report Bug"
-        class="text-xs text-zinc-500 hover:text-white">Report Bug</a
+    <div class="relative z-10 border-t border-white/5 mt-8">
+      <div
+        class="max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between"
       >
+        <a
+          href="mailto:support@glianapay.com?subject=Report Bug"
+          class="text-xs text-zinc-500 hover:text-white transition-colors"
+          >Report Bug</a
+        >
+
+        <!-- Cloudflare Status -->
+        {#if cfStatus !== "loading"}
+          <div
+            class="relative"
+            on:mouseenter={() => (showStatusDropdown = true)}
+            on:mouseleave={() => (showStatusDropdown = false)}
+            role="status"
+          >
+            <button
+              on:click={() => (showStatusDropdown = !showStatusDropdown)}
+              class="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+            >
+              <span
+                class="w-1.5 h-1.5 rounded-full
+                {cfStatus === 'operational'
+                  ? 'bg-emerald-400'
+                  : cfStatus === 'under_maintenance'
+                    ? 'bg-blue-400'
+                    : cfStatus === 'partial_outage'
+                      ? 'bg-yellow-400'
+                      : cfStatus === 'major_outage'
+                        ? 'bg-red-400'
+                        : 'bg-zinc-400'}"
+              ></span>
+              <span class="hidden sm:inline">
+                {cfStatus === "operational"
+                  ? "All Systems Operational"
+                  : cfStatus === "under_maintenance"
+                    ? "Under Maintenance"
+                    : cfStatus === "partial_outage"
+                      ? "Partial Degradation"
+                      : cfStatus === "major_outage"
+                        ? "Major Outage"
+                        : "Status Unavailable"}
+              </span>
+            </button>
+
+            {#if showStatusDropdown}
+              <div
+                class="absolute right-0 bottom-full mb-2 w-80 glass-card rounded-xl border border-white/10 p-4 z-50 shadow-2xl"
+                transition:fade={{ duration: 150 }}
+              >
+                <div class="text-[10px] text-zinc-500 mb-3">
+                  Cloudflare Sites & Services
+                </div>
+
+                <!-- User's city -->
+                {#if cfCityName}
+                  <div
+                    class="flex items-center justify-between mb-3 pb-2 border-b border-white/5"
+                  >
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="w-2 h-2 rounded-full shrink-0
+                        {cfCityStatus === 'operational'
+                          ? 'bg-emerald-400'
+                          : cfCityStatus === 'partial_outage'
+                            ? 'bg-yellow-400'
+                            : cfCityStatus === 'major_outage'
+                              ? 'bg-red-400'
+                              : cfCityStatus === 'under_maintenance'
+                                ? 'bg-blue-400'
+                                : 'bg-zinc-400'}"
+                      ></span>
+                      <span class="text-xs font-medium text-white"
+                        >{cfCityName}</span
+                      >
+                    </div>
+                    <span
+                      class="text-[10px] px-1.5 py-0.5 rounded font-medium
+                      {cfCityStatus === 'operational'
+                        ? 'text-emerald-400 bg-emerald-500/10'
+                        : cfCityStatus === 'partial_outage'
+                          ? 'text-yellow-400 bg-yellow-500/10'
+                          : cfCityStatus === 'major_outage'
+                            ? 'text-red-400 bg-red-500/10'
+                            : cfCityStatus === 'under_maintenance'
+                              ? 'text-blue-400 bg-blue-500/10'
+                              : 'text-zinc-400 bg-zinc-500/10'}"
+                    >
+                      {getStatusLabel(cfCityStatus)}
+                    </span>
+                  </div>
+                {/if}
+
+                <!-- Key services -->
+                {#if cfDegradedItems.length > 0}
+                  <div class="space-y-1.5">
+                    {#each cfDegradedItems.slice(0, 3) as item}
+                      <div class="flex items-center justify-between text-xs">
+                        <span class="text-zinc-300">{item.name}</span>
+                        <span
+                          class="px-1.5 py-0.5 rounded text-[10px] font-medium
+                          {item.status === 'partial_outage'
+                            ? 'text-yellow-400 bg-yellow-500/10'
+                            : item.status === 'major_outage'
+                              ? 'text-red-400 bg-red-500/10'
+                              : item.status === 'under_maintenance'
+                                ? 'text-blue-400 bg-blue-500/10'
+                                : 'text-zinc-400 bg-zinc-500/10'}"
+                        >
+                          {getStatusLabel(item.status)}
+                        </span>
+                      </div>
+                    {/each}
+                    {#if cfDegradedItems.length > 3}
+                      <div class="text-[10px] text-zinc-500">
+                        +{cfDegradedItems.length - 3} more affected
+                      </div>
+                    {/if}
+                  </div>
+                {:else}
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    All systems operational
+                  </div>
+                {/if}
+
+                <a
+                  href="https://www.cloudflarestatus.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block mt-3 pt-2 border-t border-white/5 text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors"
+                >
+                  cloudflarestatus.com ↗
+                </a>
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 
