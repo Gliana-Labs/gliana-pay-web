@@ -65,6 +65,17 @@
 
   $: eventListUrl = `https://glianapay.com/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
 
+  // Tipping Goals
+  let goals: any[] = [];
+  let newGoalTitle = "";
+  let newGoalTarget = "";
+  let goalsLoading = false;
+  let goalBarTheme = "dark";
+  let goalBarColor = "a855f7";
+  let goalBarCopied = false;
+
+  $: goalBarUrl = `https://glianapay.com/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
+
   // Cloudflare Status
   let cfStatus:
     | "operational"
@@ -129,6 +140,150 @@
     await navigator.clipboard.writeText(eventListUrl);
     eventListCopied = true;
     setTimeout(() => (eventListCopied = false), 2000);
+  }
+
+  async function copyGoalBarUrl() {
+    await navigator.clipboard.writeText(goalBarUrl);
+    goalBarCopied = true;
+    setTimeout(() => (goalBarCopied = false), 2000);
+  }
+
+  async function loadGoals() {
+    if (!slug) return;
+    try {
+      const res = await fetch(`${WORKER_URL}/api/streamer/${slug}/goals`);
+      if (res.ok) {
+        const data = await res.json();
+        goals = data.goals || [];
+      }
+    } catch (e) {
+      console.error("Failed to load goals:", e);
+    }
+  }
+
+  async function createGoal() {
+    if (!newGoalTarget || parseFloat(newGoalTarget) <= 0) {
+      showToast("Enter a valid target amount", "error");
+      return;
+    }
+    goalsLoading = true;
+    try {
+      const wallets = getAvailableWallets();
+      const savedSession = localStorage.getItem("gliana_session");
+      const sessionData = savedSession ? JSON.parse(savedSession) : {};
+      const savedWalletName = sessionData.walletName || "";
+      let currentProvider =
+        wallets.find((w) => w.name === savedWalletName) || wallets[0];
+      if (!currentProvider) {
+        showToast("Reconnect wallet", "error");
+        goalsLoading = false;
+        return;
+      }
+
+      const message = `Update GlianaPay settings for ${slug}`;
+      const sig = await signMessage(currentProvider, message);
+      if (!sig) {
+        goalsLoading = false;
+        return;
+      }
+
+      const res = await fetch(`${WORKER_URL}/api/streamer/${slug}/goals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${walletAddress}:${sig.signature}`,
+        },
+        body: JSON.stringify({
+          title: newGoalTitle || "Tipping Goal",
+          target_amount: Math.floor(parseFloat(newGoalTarget) * 1e9),
+        }),
+      });
+      if (res.ok) {
+        showToast("Goal created!", "success");
+        newGoalTitle = "";
+        newGoalTarget = "";
+        await loadGoals();
+      } else {
+        const d = await res.json().catch(() => ({}));
+        showToast((d as any).error || "Failed", "error");
+      }
+    } catch (e) {
+      showToast("Failed to create goal", "error");
+    } finally {
+      goalsLoading = false;
+    }
+  }
+
+  async function deleteGoal(goalId: number) {
+    try {
+      const wallets = getAvailableWallets();
+      const savedSession = localStorage.getItem("gliana_session");
+      const sessionData = savedSession ? JSON.parse(savedSession) : {};
+      const savedWalletName = sessionData.walletName || "";
+      let currentProvider =
+        wallets.find((w) => w.name === savedWalletName) || wallets[0];
+      if (!currentProvider) {
+        showToast("Reconnect wallet", "error");
+        return;
+      }
+
+      const message = `Update GlianaPay settings for ${slug}`;
+      const sig = await signMessage(currentProvider, message);
+      if (!sig) return;
+
+      const res = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/goals/${goalId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${walletAddress}:${sig.signature}`,
+          },
+        },
+      );
+      if (res.ok) {
+        showToast("Goal deleted", "success");
+        await loadGoals();
+      }
+    } catch (e) {
+      showToast("Failed", "error");
+    }
+  }
+
+  async function resetGoal(goalId: number) {
+    try {
+      const wallets = getAvailableWallets();
+      const savedSession = localStorage.getItem("gliana_session");
+      const sessionData = savedSession ? JSON.parse(savedSession) : {};
+      const savedWalletName = sessionData.walletName || "";
+      let currentProvider =
+        wallets.find((w) => w.name === savedWalletName) || wallets[0];
+      if (!currentProvider) {
+        showToast("Reconnect wallet", "error");
+        return;
+      }
+
+      const message = `Update GlianaPay settings for ${slug}`;
+      const sig = await signMessage(currentProvider, message);
+      if (!sig) return;
+
+      const res = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/goals/${goalId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${walletAddress}:${sig.signature}`,
+          },
+          body: JSON.stringify({ current_amount: 0, is_active: 1 }),
+        },
+      );
+      if (res.ok) {
+        showToast("Goal reset", "success");
+        await loadGoals();
+      }
+    } catch (e) {
+      showToast("Failed", "error");
+    }
   }
 
   // Copy state
@@ -474,6 +629,7 @@
     }
 
     loadDashboardData();
+    loadGoals();
     loading = false;
 
     // Fetch Cloudflare status (non-blocking)
@@ -887,89 +1043,252 @@
             </div>
           </div>
 
-          <!-- Event List Widget -->
-          <div class="glass-card rounded-2xl border border-white/10 p-6 mt-4">
-            <h2 class="font-bold text-lg mb-1">Event List Widget</h2>
-            <p class="text-sm text-zinc-400 mb-4">
-              Show recent tips or top tippers as a live list on your stream.
-            </p>
-            <div class="grid grid-cols-3 gap-3 mb-4">
-              <div>
-                <label class="text-xs text-zinc-400 block mb-1">Display</label>
-                <select
-                  bind:value={eventListMode}
-                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                >
-                  <option value="recent">Recent Tips</option>
-                  <option value="top_today">Top Today</option>
-                  <option value="top_week">Top This Week</option>
-                  <option value="top_month">Top This Month</option>
-                </select>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <!-- Event List Widget -->
+            <div class="glass-card rounded-2xl border border-white/10 p-6">
+              <h2 class="font-bold text-lg mb-1">Event List Widget</h2>
+              <p class="text-sm text-zinc-400 mb-4">
+                Show recent tips or top tippers as a live list on your stream.
+              </p>
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Display</label
+                  >
+                  <select
+                    bind:value={eventListMode}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="recent">Recent Tips</option>
+                    <option value="top_today">Top Today</option>
+                    <option value="top_week">Top This Week</option>
+                    <option value="top_month">Top This Month</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Show</label>
+                  <select
+                    bind:value={eventListLimit}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value={1}>1 item</option>
+                    <option value={3}>3 items</option>
+                    <option value={5}>5 items</option>
+                    <option value={10}>10 items</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Theme</label>
+                  <select
+                    bind:value={eventListTheme}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="minimal">Minimal</option>
+                  </select>
+                </div>
               </div>
-              <div>
-                <label class="text-xs text-zinc-400 block mb-1">Show</label>
-                <select
-                  bind:value={eventListLimit}
-                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+              <div class="flex items-center gap-2 mb-3">
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                  >{eventListUrl}</code
                 >
-                  <option value={1}>1 item</option>
-                  <option value={3}>3 items</option>
-                  <option value={5}>5 items</option>
-                  <option value={10}>10 items</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-xs text-zinc-400 block mb-1">Theme</label>
-                <select
-                  bind:value={eventListTheme}
-                  class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                <button
+                  on:click={copyEventListUrl}
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                  >{eventListCopied ? "✓ Copied!" : "Copy"}</button
                 >
-                  <option value="dark">Dark</option>
-                  <option value="light">Light</option>
-                  <option value="minimal">Minimal</option>
-                </select>
               </div>
-            </div>
-            <div class="flex items-center gap-2 mb-3">
-              <code
-                class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                >{eventListUrl}</code
+              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">1.</span><span
+                    >In OBS, add a new <strong>Browser Source</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">2.</span><span
+                    >Paste the URL above</span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">3.</span><span
+                    >Set Width: <strong>400</strong>, Height:
+                    <strong>300</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">4.</span><span
+                    >Position it anywhere on your scene</span
+                  >
+                </li>
+              </ol>
+              <a
+                href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
+                target="_blank"
+                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+                ><span>Preview Event List</span></a
               >
-              <button
-                on:click={copyEventListUrl}
-                class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
-                >{eventListCopied ? "✓ Copied!" : "Copy"}</button
+            </div>
+
+            <!-- Goal Bar Widget -->
+            <div class="glass-card rounded-2xl border border-white/10 p-6">
+              <h2 class="font-bold text-lg mb-1">Tipping Goals</h2>
+              <p class="text-sm text-zinc-400 mb-4">
+                Set a tipping goal that your audience can see and contribute to
+                in real time.
+              </p>
+
+              <!-- Create Goal -->
+              <div class="space-y-2 mb-4">
+                <input
+                  type="text"
+                  bind:value={newGoalTitle}
+                  placeholder="Goal title (e.g. New Mic)"
+                  class="w-full text-sm bg-black/40 border border-white/10 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500/50"
+                />
+                <input
+                  type="number"
+                  bind:value={newGoalTarget}
+                  placeholder="Target amount in SOL"
+                  step="0.01"
+                  min="0.01"
+                  class="w-full text-sm bg-black/40 border border-white/10 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500/50"
+                />
+                <button
+                  on:click={createGoal}
+                  disabled={goalsLoading}
+                  class="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-50 px-4 py-2 rounded-lg text-sm cursor-pointer"
+                  >{goalsLoading ? "Creating..." : "+ Create Goal"}</button
+                >
+              </div>
+
+              <!-- Active Goals List -->
+              {#if goals.length > 0}
+                <div class="space-y-3 mb-4">
+                  {#each goals as goal}
+                    {@const pct =
+                      goal.target_amount > 0
+                        ? Math.min(
+                            (goal.current_amount / goal.target_amount) * 100,
+                            100,
+                          )
+                        : 0}
+                    <div
+                      class="bg-black/30 rounded-xl p-3 border border-white/5"
+                    >
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium">
+                          {goal.title}
+                          {#if !goal.is_active}
+                            <span class="text-green-400 text-xs ml-1"
+                              >✓ Done</span
+                            >
+                          {/if}
+                        </span>
+                        <div class="flex items-center gap-1">
+                          <button
+                            on:click={() => resetGoal(goal.id)}
+                            class="text-xs text-zinc-500 hover:text-cyan-400 px-1.5 py-0.5 rounded cursor-pointer"
+                            title="Reset progress">↻</button
+                          >
+                          <button
+                            on:click={() => deleteGoal(goal.id)}
+                            class="text-xs text-zinc-500 hover:text-red-400 px-1.5 py-0.5 rounded cursor-pointer"
+                            title="Delete">✕</button
+                          >
+                        </div>
+                      </div>
+                      <div
+                        class="relative h-4 bg-white/5 rounded-full overflow-hidden"
+                      >
+                        <div
+                          class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-700"
+                          style="width: {pct}%"
+                        ></div>
+                      </div>
+                      <div class="text-xs text-zinc-500 mt-1">
+                        {(goal.current_amount / 1e9).toFixed(2)} / {(
+                          goal.target_amount / 1e9
+                        ).toFixed(2)} SOL
+                        <span class="text-zinc-600">({pct.toFixed(0)}%)</span>
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {:else}
+                <p class="text-sm text-zinc-500 mb-4">
+                  No goals yet. Create one above.
+                </p>
+              {/if}
+
+              <!-- Goal Bar OBS URL -->
+              <h3 class="text-sm font-semibold text-zinc-300 mb-2">
+                OBS Goal Bar
+              </h3>
+              <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Theme</label>
+                  <select
+                    bind:value={goalBarTheme}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1"
+                    >Bar Color</label
+                  >
+                  <input
+                    type="text"
+                    bind:value={goalBarColor}
+                    placeholder="a855f7"
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  />
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mb-3">
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                  >{goalBarUrl}</code
+                >
+                <button
+                  on:click={copyGoalBarUrl}
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                  >{goalBarCopied ? "✓ Copied!" : "Copy"}</button
+                >
+              </div>
+              <ol class="text-sm text-zinc-300 space-y-1">
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">1.</span><span
+                    >In OBS, add a new <strong>Browser Source</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">2.</span><span
+                    >Paste the URL above</span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">3.</span><span
+                    >Set Width: <strong>400</strong>, Height:
+                    <strong>80</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">4.</span><span
+                    >Position it anywhere on your scene</span
+                  >
+                </li>
+              </ol>
+              <a
+                href="/overlay/{slug}/goalbar?theme={goalBarTheme}&color={goalBarColor}&preview=1"
+                target="_blank"
+                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline mt-2"
+                ><span>Preview Goal Bar</span></a
               >
             </div>
-            <ol class="text-sm text-zinc-300 space-y-1 mb-3">
-              <li class="flex gap-2">
-                <span class="text-purple-400 font-bold">1.</span><span
-                  >In OBS, add a new <strong>Browser Source</strong></span
-                >
-              </li>
-              <li class="flex gap-2">
-                <span class="text-purple-400 font-bold">2.</span><span
-                  >Paste the URL above</span
-                >
-              </li>
-              <li class="flex gap-2">
-                <span class="text-purple-400 font-bold">3.</span><span
-                  >Set Width: <strong>400</strong>, Height:
-                  <strong>300</strong></span
-                >
-              </li>
-              <li class="flex gap-2">
-                <span class="text-purple-400 font-bold">4.</span><span
-                  >Position it anywhere on your scene</span
-                >
-              </li>
-            </ol>
-            <a
-              href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
-              target="_blank"
-              class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
-              ><span>Preview Event List</span></a
-            >
           </div>
         </div>
       </div>

@@ -24,6 +24,9 @@
   let skipHotkey = $state("s");
   let isPreview = $state(false);
 
+  // Custom alert image URL (loaded from settings)
+  let alertImageUrl = $state("");
+
   // Load hotkey and preview mode from URL params
   function loadHotkey() {
     const urlParams = new URLSearchParams(
@@ -88,6 +91,14 @@
         const result = await response.json();
         if (result.settings?.sound_url) {
           soundUrl = result.settings.sound_url;
+        }
+        // Load custom alert image
+        if (
+          result.settings?.image_url &&
+          result.settings.image_url !==
+            "https://cdn.gliana.app/alerts/default.png"
+        ) {
+          alertImageUrl = result.settings.image_url;
         }
         // Load skip_hotkey from streamer
         if (result.streamer?.skip_hotkey) {
@@ -485,11 +496,23 @@
           <div class="relative flex items-center gap-4">
             <!-- Avatar -->
             <div class="relative flex-shrink-0">
-              <div
-                class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
-              >
-                <span class="text-2xl">💎</span>
-              </div>
+              {#if alertImageUrl}
+                <div
+                  class="w-14 h-14 rounded-full overflow-hidden shadow-lg border-2 border-white/20"
+                >
+                  <img
+                    src="/api/media/{alertImageUrl}"
+                    alt=""
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              {:else}
+                <div
+                  class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
+                >
+                  <span class="text-2xl">💎</span>
+                </div>
+              {/if}
               <!-- Sparkles -->
               <div class="absolute -top-1 -right-1 text-lg animate-bounce">
                 ✨

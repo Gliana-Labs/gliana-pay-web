@@ -66,29 +66,35 @@
     let profileImageUrl = "";
     let bannerUrl = "";
     let tipBgUrl = "";
+    let alertImageUrl = "";
     let imageVersion = 1;
 
     // Track original URLs to detect deletions
     let originalProfileUrl = "";
     let originalBannerUrl = "";
     let originalTipBgUrl = "";
+    let originalAlertImageUrl = "";
 
     // Local Files Pending Upload
     let pendingProfileFile: File | null = null;
     let pendingBannerFile: File | null = null;
     let pendingBgFile: File | null = null;
+    let pendingAlertImageFile: File | null = null;
 
     // Local URLs for immediate UI Preview before save
     let localProfilePreview = "";
     let localBannerPreview = "";
     let localBgPreview = "";
+    let localAlertImagePreview = "";
 
     let uploadingProfile = false;
     let uploadingBanner = false;
     let uploadingBg = false;
+    let uploadingAlertImage = false;
     let profileInput: HTMLInputElement;
     let bannerInput: HTMLInputElement;
     let bgInput: HTMLInputElement;
+    let alertImageInput: HTMLInputElement;
     let cacheBust = Date.now();
 
     // Streaming Platform Chat Connections
@@ -121,6 +127,7 @@
         if (localProfilePreview) URL.revokeObjectURL(localProfilePreview);
         if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
         if (localBgPreview) URL.revokeObjectURL(localBgPreview);
+        if (localAlertImagePreview) URL.revokeObjectURL(localAlertImagePreview);
     });
 
     // Load session
@@ -166,6 +173,15 @@
                     originalProfileUrl = data.streamer.profile_image_url || "";
                     originalBannerUrl = data.streamer.banner_url || "";
                     originalTipBgUrl = data.streamer.tip_bg_url || "";
+                }
+                // Load alert image from settings
+                if (
+                    data.settings?.image_url &&
+                    data.settings.image_url !==
+                        "https://cdn.gliana.app/alerts/default.png"
+                ) {
+                    alertImageUrl = data.settings.image_url;
+                    originalAlertImageUrl = data.settings.image_url;
                 }
             }
         } catch (e) {
@@ -226,7 +242,12 @@
             }
 
             // Upload any pending pending images first
-            if (pendingProfileFile || pendingBannerFile || pendingBgFile) {
+            if (
+                pendingProfileFile ||
+                pendingBannerFile ||
+                pendingBgFile ||
+                pendingAlertImageFile
+            ) {
                 // If there are files to upload, we'll do it sequentially here using the same signature
                 if (pendingProfileFile) {
                     uploadingProfile = true;
@@ -272,6 +293,21 @@
                     }
                     uploadingBg = false;
                 }
+
+                if (pendingAlertImageFile) {
+                    uploadingAlertImage = true;
+                    showToast("Uploading alert image...", "success");
+                    const ok = await performImageUpload(
+                        "alert_image",
+                        pendingAlertImageFile,
+                        signatureData.signature,
+                    );
+                    if (!ok) {
+                        socialsLoading = false;
+                        return;
+                    }
+                    uploadingAlertImage = false;
+                }
             }
 
             const response = await fetch(
@@ -308,13 +344,17 @@
                 pendingProfileFile = null;
                 pendingBannerFile = null;
                 pendingBgFile = null;
+                pendingAlertImageFile = null;
                 if (localProfilePreview)
                     URL.revokeObjectURL(localProfilePreview);
                 if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
                 if (localBgPreview) URL.revokeObjectURL(localBgPreview);
+                if (localAlertImagePreview)
+                    URL.revokeObjectURL(localAlertImagePreview);
                 localProfilePreview = "";
                 localBannerPreview = "";
                 localBgPreview = "";
+                localAlertImagePreview = "";
 
                 // Clear deleted images tracking after successful save
                 deletedImages = [];
@@ -336,7 +376,7 @@
 
     // Helper to actually perform backend upload using an already-obtained signature
     async function performImageUpload(
-        type: "profile" | "banner" | "background",
+        type: "profile" | "banner" | "background" | "alert_image",
         file: File,
         signature: string,
     ): Promise<boolean> {
@@ -344,8 +384,9 @@
             const formData = new FormData();
             formData.append("file", file);
 
+            const skipDb = type === "alert_image" ? "false" : "true";
             const response = await fetch(
-                `${WORKER_URL}/api/streamer/${slug}/upload?type=${type}&skipDb=true`,
+                `${WORKER_URL}/api/streamer/${slug}/upload?type=${type}&skipDb=${skipDb}`,
                 {
                     method: "POST",
                     body: formData,
@@ -359,6 +400,7 @@
                 const data = await response.json();
                 if (type === "profile") profileImageUrl = data.url;
                 else if (type === "banner") bannerUrl = data.url;
+                else if (type === "alert_image") alertImageUrl = data.url;
                 else tipBgUrl = data.url;
                 // Increment version to bust cache after upload
                 imageVersion += 1;
@@ -401,9 +443,20 @@
         }
     }
 
-    async function removeImage(type: "profile" | "banner" | "background") {
+    function handleAlertImageSelect(e: Event) {
+        const input = e.target as HTMLInputElement;
+        if (input.files?.[0]) {
+            pendingAlertImageFile = input.files[0];
+            if (localAlertImagePreview)
+                URL.revokeObjectURL(localAlertImagePreview);
+            localAlertImagePreview = URL.createObjectURL(pendingAlertImageFile);
+        }
+    }
+
+    async function removeImage(
+        type: "profile" | "banner" | "background" | "alert_image",
+    ) {
         if (type === "profile") {
-            // Track for deletion if there was an original image
             if (
                 originalProfileUrl &&
                 !deletedImages.includes(originalProfileUrl)
@@ -416,7 +469,6 @@
             if (localProfilePreview) URL.revokeObjectURL(localProfilePreview);
             localProfilePreview = "";
         } else if (type === "banner") {
-            // Track for deletion if there was an original image
             if (
                 originalBannerUrl &&
                 !deletedImages.includes(originalBannerUrl)
@@ -428,8 +480,20 @@
             pendingBannerFile = null;
             if (localBannerPreview) URL.revokeObjectURL(localBannerPreview);
             localBannerPreview = "";
+        } else if (type === "alert_image") {
+            if (
+                originalAlertImageUrl &&
+                !deletedImages.includes(originalAlertImageUrl)
+            ) {
+                deletedImages.push(originalAlertImageUrl);
+            }
+            originalAlertImageUrl = "";
+            alertImageUrl = "";
+            pendingAlertImageFile = null;
+            if (localAlertImagePreview)
+                URL.revokeObjectURL(localAlertImagePreview);
+            localAlertImagePreview = "";
         } else {
-            // Track for deletion if there was an original image
             if (originalTipBgUrl && !deletedImages.includes(originalTipBgUrl)) {
                 deletedImages.push(originalTipBgUrl);
             }
@@ -439,7 +503,6 @@
             if (localBgPreview) URL.revokeObjectURL(localBgPreview);
             localBgPreview = "";
         }
-        // Increment version to bust cache after removal
         imageVersion += 1;
     }
 
@@ -835,6 +898,77 @@
                             class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white resize-y"
                         ></textarea>
                     </div>
+                </div>
+
+                <!-- Alert Image Upload -->
+                <div class="mt-6 space-y-3 pt-4 border-t border-white/10">
+                    <h3 class="text-sm font-semibold text-zinc-300">
+                        Alert Image
+                    </h3>
+                    <p class="text-xs text-zinc-500">
+                        Custom image or GIF displayed in your OBS tip alert
+                        overlay. Replaces the default avatar.
+                    </p>
+                    <div class="relative inline-block">
+                        <button
+                            on:click={() => alertImageInput.click()}
+                            class="w-28 h-28 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
+                        >
+                            {#if localAlertImagePreview || alertImageUrl}
+                                <img
+                                    src={localAlertImagePreview
+                                        ? localAlertImagePreview
+                                        : `${WORKER_URL}/api/media/${alertImageUrl}?v=${imageVersion}`}
+                                    alt="Alert preview"
+                                    class="w-full h-full object-contain bg-black/50"
+                                />
+                                <div
+                                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                >
+                                    <span class="text-xs font-medium"
+                                        >Change</span
+                                    >
+                                </div>
+                            {:else}
+                                <div
+                                    class="w-full h-full bg-gradient-to-br from-cyan-400/10 via-purple-500/10 to-pink-500/10 flex items-center justify-center"
+                                >
+                                    {#if uploadingAlertImage}
+                                        <div
+                                            class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                                        ></div>
+                                    {:else}
+                                        <div class="text-center">
+                                            <span class="text-2xl block mb-1"
+                                                >🎨</span
+                                            >
+                                            <span
+                                                class="text-[10px] text-zinc-400"
+                                                >Upload</span
+                                            >
+                                        </div>
+                                    {/if}
+                                </div>
+                            {/if}
+                        </button>
+                        <input
+                            bind:this={alertImageInput}
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp,image/gif"
+                            on:change={handleAlertImageSelect}
+                            class="hidden"
+                        />
+                        {#if localAlertImagePreview || alertImageUrl}
+                            <button
+                                on:click={() => removeImage("alert_image")}
+                                class="absolute -top-1 -right-1 z-10 w-5 h-5 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-[10px]"
+                                title="Remove alert image">✕</button
+                            >
+                        {/if}
+                    </div>
+                    <p class="text-[10px] text-zinc-600">
+                        Max 5MB · PNG, JPEG, WebP, GIF
+                    </p>
                 </div>
 
                 <div class="mt-6 space-y-4 pt-4 border-t border-white/10">
