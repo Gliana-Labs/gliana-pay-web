@@ -335,7 +335,13 @@
                         banner_url: bannerUrl,
                         tip_bg_url: tipBgUrl,
                         image_url: alertImageUrl,
-                        deleted_images: deletedImages,
+                        deleted_images: deletedImages.filter(
+                            (url) =>
+                                url !== profileImageUrl &&
+                                url !== bannerUrl &&
+                                url !== tipBgUrl &&
+                                url !== alertImageUrl,
+                        ),
                     }),
                 },
             );
