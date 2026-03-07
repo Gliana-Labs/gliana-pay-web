@@ -98,7 +98,10 @@
           result.settings.image_url !==
             "https://cdn.gliana.app/alerts/default.png"
         ) {
-          alertImageUrl = result.settings.image_url;
+          const version = result.streamer?.image_version || Date.now();
+          alertImageUrl = `${result.settings.image_url}?v=${version}`;
+        } else {
+          alertImageUrl = "";
         }
         // Load skip_hotkey from streamer
         if (result.streamer?.skip_hotkey) {
