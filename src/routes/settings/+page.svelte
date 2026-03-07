@@ -334,6 +334,7 @@
                         profile_image_url: profileImageUrl,
                         banner_url: bannerUrl,
                         tip_bg_url: tipBgUrl,
+                        image_url: alertImageUrl,
                         deleted_images: deletedImages,
                     }),
                 },
