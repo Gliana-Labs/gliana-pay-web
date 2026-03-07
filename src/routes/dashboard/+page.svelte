@@ -70,6 +70,13 @@
   let newGoalTitle = "";
   let newGoalTarget = "";
   let goalsLoading = false;
+
+  // Edit Goal State
+  let editingGoalId: number | null = null;
+  let editGoalTitle = "";
+  let editGoalTarget = "";
+  let editGoalLoading = false;
+
   let goalBarTheme = "dark";
   let goalBarColor = "a855f7";
   let goalBarCopied = false;
@@ -283,6 +290,77 @@
       }
     } catch (e) {
       showToast("Failed", "error");
+    }
+  }
+
+  function startEditGoal(goal: any) {
+    editingGoalId = goal.id;
+    editGoalTitle = goal.title;
+    editGoalTarget = (goal.target_amount / 1e9).toString();
+  }
+
+  function cancelEditGoal() {
+    editingGoalId = null;
+    editGoalTitle = "";
+    editGoalTarget = "";
+  }
+
+  async function updateGoal(goalId: number) {
+    if (!editGoalTarget || parseFloat(editGoalTarget) <= 0) {
+      showToast("Enter a valid target amount", "error");
+      return;
+    }
+
+    editGoalLoading = true;
+    try {
+      const wallets = getAvailableWallets();
+      const savedSession = localStorage.getItem("gliana_session");
+      const sessionData = savedSession ? JSON.parse(savedSession) : {};
+      const savedWalletName = sessionData.walletName || "";
+      let currentProvider =
+        wallets.find((w) => w.name === savedWalletName) || wallets[0];
+      if (!currentProvider) {
+        showToast("Reconnect wallet", "error");
+        editGoalLoading = false;
+        return;
+      }
+
+      const message = `Update GlianaPay settings for ${slug}`;
+      const sig = await signMessage(currentProvider, message);
+      if (!sig) {
+        editGoalLoading = false;
+        return;
+      }
+
+      const targetAmountLamports = Math.floor(parseFloat(editGoalTarget) * 1e9);
+
+      const res = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/goals/${goalId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${walletAddress}:${sig.signature}`,
+          },
+          body: JSON.stringify({
+            title: editGoalTitle || "Tipping Goal",
+            target_amount: targetAmountLamports,
+          }),
+        },
+      );
+
+      if (res.ok) {
+        showToast("Goal updated!", "success");
+        cancelEditGoal();
+        await loadGoals();
+      } else {
+        const d = await res.json().catch(() => ({}));
+        showToast((d as any).error || "Failed to update", "error");
+      }
+    } catch (e) {
+      showToast("Failed to update goal", "error");
+    } finally {
+      editGoalLoading = false;
     }
   }
 
@@ -1176,42 +1254,85 @@
                     <div
                       class="bg-black/30 rounded-xl p-3 border border-white/5"
                     >
-                      <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium">
-                          {goal.title}
-                          {#if !goal.is_active}
-                            <span class="text-green-400 text-xs ml-1"
-                              >✓ Done</span
+                      {#if editingGoalId === goal.id}
+                        <!-- Edit Form -->
+                        <div class="space-y-2 mb-2">
+                          <input
+                            type="text"
+                            bind:value={editGoalTitle}
+                            placeholder="Goal title"
+                            class="w-full text-sm bg-black/60 border border-white/20 text-white rounded-lg px-2 py-1.5 focus:outline-none focus:border-purple-500/50"
+                          />
+                          <input
+                            type="number"
+                            bind:value={editGoalTarget}
+                            placeholder="Target amount in SOL"
+                            step="0.01"
+                            min="0.01"
+                            class="w-full text-sm bg-black/60 border border-white/20 text-white rounded-lg px-2 py-1.5 focus:outline-none focus:border-purple-500/50"
+                          />
+                          <div class="flex gap-2">
+                            <button
+                              on:click={() => updateGoal(goal.id)}
+                              disabled={editGoalLoading}
+                              class="flex-1 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 py-1.5 rounded-lg text-sm transition-colors cursor-pointer"
                             >
-                          {/if}
-                        </span>
-                        <div class="flex items-center gap-1">
-                          <button
-                            on:click={() => resetGoal(goal.id)}
-                            class="text-xs text-zinc-500 hover:text-cyan-400 px-1.5 py-0.5 rounded cursor-pointer"
-                            title="Reset progress">↻</button
-                          >
-                          <button
-                            on:click={() => deleteGoal(goal.id)}
-                            class="text-xs text-zinc-500 hover:text-red-400 px-1.5 py-0.5 rounded cursor-pointer"
-                            title="Delete">✕</button
-                          >
+                              {editGoalLoading ? "..." : "Save"}
+                            </button>
+                            <button
+                              on:click={cancelEditGoal}
+                              disabled={editGoalLoading}
+                              class="flex-1 bg-zinc-700 hover:bg-zinc-600 disabled:opacity-50 py-1.5 rounded-lg text-sm transition-colors cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        class="relative h-4 bg-white/5 rounded-full overflow-hidden"
-                      >
+                      {:else}
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="text-sm font-medium">
+                            {goal.title}
+                            {#if !goal.is_active}
+                              <span class="text-green-400 text-xs ml-1"
+                                >✓ Done</span
+                              >
+                            {/if}
+                          </span>
+                          <div class="flex items-center gap-1">
+                            {#if goal.is_active}
+                              <button
+                                on:click={() => startEditGoal(goal)}
+                                class="text-xs text-zinc-500 hover:text-purple-400 px-1.5 py-0.5 rounded cursor-pointer"
+                                title="Edit goal">✎</button
+                              >
+                            {/if}
+                            <button
+                              on:click={() => resetGoal(goal.id)}
+                              class="text-xs text-zinc-500 hover:text-cyan-400 px-1.5 py-0.5 rounded cursor-pointer"
+                              title="Reset progress">↻</button
+                            >
+                            <button
+                              on:click={() => deleteGoal(goal.id)}
+                              class="text-xs text-zinc-500 hover:text-red-400 px-1.5 py-0.5 rounded cursor-pointer"
+                              title="Delete">✕</button
+                            >
+                          </div>
+                        </div>
                         <div
-                          class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-700"
-                          style="width: {pct}%"
-                        ></div>
-                      </div>
-                      <div class="text-xs text-zinc-500 mt-1">
-                        {(goal.current_amount / 1e9).toFixed(2)} / {(
-                          goal.target_amount / 1e9
-                        ).toFixed(2)} SOL
-                        <span class="text-zinc-600">({pct.toFixed(0)}%)</span>
-                      </div>
+                          class="relative h-4 bg-white/5 rounded-full overflow-hidden"
+                        >
+                          <div
+                            class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-700"
+                            style="width: {pct}%"
+                          ></div>
+                        </div>
+                        <div class="text-xs text-zinc-500 mt-1">
+                          {(goal.current_amount / 1e9).toFixed(2)} / {(
+                            goal.target_amount / 1e9
+                          ).toFixed(2)} SOL
+                          <span class="text-zinc-600">({pct.toFixed(0)}%)</span>
+                        </div>
+                      {/if}
                     </div>
                   {/each}
                 </div>
