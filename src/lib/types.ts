@@ -70,7 +70,7 @@ export interface WSJoinEvent {
 }
 
 export interface WSMessage {
-  type: 'tip' | 'join' | 'welcome' | 'error' | 'skip' | 'settings_changed';
+  type: 'tip' | 'join' | 'welcome' | 'error' | 'skip' | 'settings_changed' | 'goal_update';
   data?: unknown;
   message?: string;
 }
