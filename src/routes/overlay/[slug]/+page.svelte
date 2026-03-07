@@ -478,100 +478,125 @@
     class:opacity-0={!showAlert}
   >
     {#if currentTip}
-      <div class="relative">
-        <!-- Glow -->
-        <div
-          class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"
-        ></div>
+      {#if alertImageUrl}
+        <!-- Custom image alert: StreamElements-style vertical layout -->
+        <div class="custom-alert relative text-center">
+          <!-- Big custom image/GIF -->
+          <div class="mb-3">
+            <img
+              src="/api/media/{alertImageUrl}"
+              alt=""
+              class="mx-auto max-w-[200px] max-h-[200px] object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"
+            />
+          </div>
 
-        <!-- Main Card -->
-        <div
-          class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl p-5 shadow-2xl"
-        >
-          <!-- Animated gradient border -->
+          <!-- Name + Amount -->
+          <div class="text-lg font-bold text-white drop-shadow-lg">
+            {#if currentTip.sender_name}
+              <span class="text-purple-300">{currentTip.sender_name}</span>
+              <span class="text-zinc-400 mx-1">tipped</span>
+            {/if}
+            <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400"
+            >
+              {formatSOL(currentTip.amount)} SOL
+            </span>
+          </div>
+
+          <!-- Message -->
+          {#if currentTip.message}
+            <div
+              class="mt-2 text-sm text-zinc-200 bg-black/40 backdrop-blur rounded-lg px-4 py-2 inline-block max-w-[400px]"
+            >
+              {currentTip.message}
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <!-- Default alert: horizontal card layout -->
+        <div class="relative">
+          <!-- Glow -->
           <div
-            class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-30 animate-pulse"
+            class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"
           ></div>
 
-          <div class="relative flex items-center gap-4">
-            <!-- Avatar -->
-            <div class="relative flex-shrink-0">
-              {#if alertImageUrl}
-                <div
-                  class="w-14 h-14 rounded-full overflow-hidden shadow-lg border-2 border-white/20"
-                >
-                  <img
-                    src="/api/media/{alertImageUrl}"
-                    alt=""
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-              {:else}
+          <!-- Main Card -->
+          <div
+            class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl p-5 shadow-2xl"
+          >
+            <!-- Animated gradient border -->
+            <div
+              class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-30 animate-pulse"
+            ></div>
+
+            <div class="relative flex items-center gap-4">
+              <!-- Avatar -->
+              <div class="relative flex-shrink-0">
                 <div
                   class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
                 >
                   <span class="text-2xl">💎</span>
                 </div>
-              {/if}
-              <!-- Sparkles -->
-              <div class="absolute -top-1 -right-1 text-lg animate-bounce">
-                ✨
+                <!-- Sparkles -->
+                <div class="absolute -top-1 -right-1 text-lg animate-bounce">
+                  ✨
+                </div>
               </div>
+
+              <!-- Content -->
+              <div class="flex-1 min-w-0">
+                <!-- Header -->
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-sm font-bold text-cyan-400 animate-pulse">
+                    🎉 NEW TIP!
+                  </span>
+                </div>
+
+                <!-- Amount -->
+                <div class="text-2xl font-bold text-white mb-1">
+                  {formatSOL(currentTip.amount)} SOL
+                </div>
+
+                <!-- Name & Message -->
+                {#if currentTip.sender_name}
+                  <div class="text-base font-semibold text-purple-300 truncate">
+                    {currentTip.sender_name}
+                  </div>
+                {/if}
+
+                {#if currentTip.message}
+                  <div
+                    class="text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1 mt-1 truncate"
+                  >
+                    {currentTip.message}
+                  </div>
+                {/if}
+              </div>
+
+              <!-- Coin icon -->
+              <div class="flex-shrink-0 text-3xl animate-bounce">🪙</div>
             </div>
 
-            <!-- Content -->
-            <div class="flex-1 min-w-0">
-              <!-- Header -->
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-sm font-bold text-cyan-400 animate-pulse">
-                  🎉 NEW TIP!
-                </span>
-              </div>
-
-              <!-- Amount -->
-              <div class="text-2xl font-bold text-white mb-1">
-                {formatSOL(currentTip.amount)} SOL
-              </div>
-
-              <!-- Name & Message -->
-              {#if currentTip.sender_name}
-                <div class="text-base font-semibold text-purple-300 truncate">
-                  {currentTip.sender_name}
-                </div>
-              {/if}
-
-              {#if currentTip.message}
-                <div
-                  class="text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1 mt-1 truncate"
-                >
-                  {currentTip.message}
-                </div>
-              {/if}
+            <!-- Sparkle decorations -->
+            <div class="absolute top-2 right-8">
+              <span
+                class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"
+              ></span>
             </div>
-
-            <!-- Coin icon -->
-            <div class="flex-shrink-0 text-3xl animate-bounce">🪙</div>
+            <div class="absolute bottom-3 left-6">
+              <span
+                class="absolute w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping"
+                style="animation-delay: 0.3s;"
+              ></span>
+            </div>
           </div>
 
-          <!-- Sparkle decorations -->
-          <div class="absolute top-2 right-8">
-            <span
-              class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"
-            ></span>
-          </div>
-          <div class="absolute bottom-3 left-6">
-            <span
-              class="absolute w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping"
-              style="animation-delay: 0.3s;"
-            ></span>
-          </div>
+          <!-- Bottom line -->
+          <div
+            class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-3/4 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"
+          ></div>
         </div>
-
-        <!-- Bottom line -->
-        <div
-          class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-3/4 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"
-        ></div>
-      </div>
+      {/if}
     {/if}
   </div>
 </div>
