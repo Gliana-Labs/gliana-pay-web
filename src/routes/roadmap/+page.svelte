@@ -223,7 +223,7 @@
                         <span
                             class="px-3 py-1 bg-cyan-500/15 border border-cyan-500/30 rounded-full text-xs font-semibold text-cyan-300"
                         >
-                            ✓ Done
+                            ✓ Live
                         </span>
                     </div>
                     <div class="px-6 py-4">
