@@ -84,12 +84,7 @@ export async function connectWallet(wallet: WalletInfo): Promise<string | null> 
       try {
         response = await wallet.provider.connect();
       } catch (connectErr: any) {
-        // If regular connect fails, try with network parameter for Phantom
-        if (wallet.name === 'Phantom') {
-          response = await wallet.provider.connect({ network: 'devnet' });
-        } else {
-          throw connectErr;
-        }
+        throw connectErr;
       }
       address = response?.publicKey?.toString() || response?.pubkey?.toString();
     }
@@ -119,11 +114,11 @@ export async function disconnectWallet(wallet?: WalletInfo): Promise<void> {
     if (typeof window !== 'undefined') {
       const solana = (window as any).solana;
       if (solana?.disconnect) {
-        try { await solana.disconnect(); } catch {}
+        try { await solana.disconnect(); } catch { }
       }
       const solflare = (window as any).solflare;
       if (solflare?.disconnect) {
-        try { await solflare.disconnect(); } catch {}
+        try { await solflare.disconnect(); } catch { }
       }
     }
     connectedWallet.set('');

@@ -194,10 +194,9 @@
             <h2 class="font-semibold text-base">Receive Real-Time Alerts</h2>
             <p class="text-sm text-zinc-400 mt-1">
               When a viewer sends a tip, your OBS overlay instantly shows their
-              name, the SOL amount, and their message. GlianaPay is currently on <span
-                class="text-yellow-400 font-medium">Devnet (Beta)</span
-              > — tips use test SOL with no real monetary value. Mainnet is coming
-              soon!
+              name, the SOL amount, and their message. GlianaPay runs on <span
+                class="text-green-400 font-medium">Solana Mainnet</span
+              > — tips use real SOL!
             </p>
           </div>
         </div>

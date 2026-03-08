@@ -354,14 +354,14 @@
       <!-- Beta Badge -->
       <div class="flex justify-center mb-4">
         <div
-          class="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/40 rounded-full"
+          class="flex items-center gap-2 px-3 py-1 bg-green-500/20 border border-green-500/40 rounded-full"
         >
-          <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-          <span class="text-xs font-medium text-yellow-400">Beta - Devnet</span>
+          <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+          <span class="text-xs font-medium text-green-400">Mainnet</span>
         </div>
       </div>
-      <p class="text-xs text-yellow-400/70 text-center mb-4">
-        Make sure your wallet is set to Devnet
+      <p class="text-xs text-green-400/70 text-center mb-4">
+        Make sure your wallet is set to Mainnet
       </p>
 
       <div class="text-center mb-8">

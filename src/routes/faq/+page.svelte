@@ -11,7 +11,7 @@
     {
       question: "Why GlianaPay?",
       answer:
-        "Here's the hard truth about traditional platforms: they charge a $0.30–$0.49 flat fee + 2.9–3.5% processing fee + 0–10% platform fee + 2.5–3% fiat conversion. That's 6–56% gone per tip! GlianaPay? Zero platform fees, zero conversion — just ~$0.0002 in Solana gas.\n\n<div class=\"fee-table\"><table><thead><tr><th>Tip Amount</th><th>StreamElements*</th><th>StreamLabs*</th><th>Patreon*</th><th>GlianaPay</th></tr></thead><tbody><tr><td>$1</td><td>$0.36 (36%)</td><td>$0.56 (56%)</td><td>$0.28 (28%)</td><td>$0.0002</td></tr><tr><td>$5</td><td>$0.59 (12%)</td><td>$0.80 (16%)</td><td>$1.09 (22%)</td><td>$0.0002</td></tr><tr><td>$10</td><td>$0.87 (9%)</td><td>$1.12 (11%)</td><td>$1.58 (16%)</td><td>$0.0002</td></tr><tr><td>$100</td><td>$5.95 (6%)</td><td>$6.74 (7%)</td><td>$13.05 (13%)</td><td>$0.0002</td></tr><tr><td>$1,000</td><td>$56.70 (6%)</td><td>$62.90 (6%)</td><td>$127.80 (13%)</td><td>$0.0005</td></tr><tr><td>$10,000</td><td>$565.20 (6%)</td><td>$625.40 (6%)</td><td>$1,275.30 (13%)</td><td>$0.001</td></tr></tbody></table></div>\n\n<div class=\"fee-notes\">* All fees are per tip. Includes: Stripe/PayPal flat fee ($0.30–$0.49) + processing (2.9–3.5%) + platform (0–10%) + fiat conversion (2.75%). Excludes withdrawal fees. GlianaPay fees under $0.001 per tip — you keep 99.9%+.</div>",
+        'Here\'s the hard truth about traditional platforms: they charge a $0.30–$0.49 flat fee + 2.9–3.5% processing fee + 0–10% platform fee + 2.5–3% fiat conversion. That\'s 6–56% gone per tip! GlianaPay? Zero platform fees, zero conversion — just ~$0.0002 in Solana gas.\n\n<div class="fee-table"><table><thead><tr><th>Tip Amount</th><th>StreamElements*</th><th>StreamLabs*</th><th>Patreon*</th><th>GlianaPay</th></tr></thead><tbody><tr><td>$1</td><td>$0.36 (36%)</td><td>$0.56 (56%)</td><td>$0.28 (28%)</td><td>$0.0002</td></tr><tr><td>$5</td><td>$0.59 (12%)</td><td>$0.80 (16%)</td><td>$1.09 (22%)</td><td>$0.0002</td></tr><tr><td>$10</td><td>$0.87 (9%)</td><td>$1.12 (11%)</td><td>$1.58 (16%)</td><td>$0.0002</td></tr><tr><td>$100</td><td>$5.95 (6%)</td><td>$6.74 (7%)</td><td>$13.05 (13%)</td><td>$0.0002</td></tr><tr><td>$1,000</td><td>$56.70 (6%)</td><td>$62.90 (6%)</td><td>$127.80 (13%)</td><td>$0.0005</td></tr><tr><td>$10,000</td><td>$565.20 (6%)</td><td>$625.40 (6%)</td><td>$1,275.30 (13%)</td><td>$0.001</td></tr></tbody></table></div>\n\n<div class="fee-notes">* All fees are per tip. Includes: Stripe/PayPal flat fee ($0.30–$0.49) + processing (2.9–3.5%) + platform (0–10%) + fiat conversion (2.75%). Excludes withdrawal fees. GlianaPay fees under $0.001 per tip — you keep 99.9%+.</div>',
     },
     {
       question: "Which wallets are supported?",
@@ -21,7 +21,7 @@
     {
       question: "Is this on mainnet or devnet?",
       answer:
-        "GlianaPay is currently in Beta and runs on Solana Devnet, which uses test SOL with no real monetary value. Make sure your wallet is set to Devnet mode before connecting. Mainnet support is on the roadmap.",
+        "GlianaPay now runs on Solana Mainnet! All tips use real SOL with real monetary value. Make sure your wallet is set to Mainnet mode before connecting.",
     },
     {
       question: "How do OBS alerts work?",

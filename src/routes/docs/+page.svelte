@@ -176,13 +176,13 @@
 
       <!-- Network Status -->
       <div
-        class="glass-card rounded-2xl border border-yellow-500/20 overflow-hidden"
+        class="glass-card rounded-2xl border border-green-500/20 overflow-hidden"
       >
         <div
-          class="px-6 py-4 border-b border-yellow-500/10 flex items-center gap-3"
+          class="px-6 py-4 border-b border-green-500/10 flex items-center gap-3"
         >
           <div
-            class="w-8 h-8 rounded-lg bg-yellow-500/15 flex items-center justify-center text-yellow-400"
+            class="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center text-green-400"
           >
             <svg
               class="w-4 h-4"
@@ -197,18 +197,17 @@
               /></svg
             >
           </div>
-          <h2 class="font-semibold text-base">Network: Devnet (Beta)</h2>
+          <h2 class="font-semibold text-base">Network: Solana Mainnet</h2>
           <span
-            class="ml-auto px-2.5 py-0.5 bg-yellow-500/15 border border-yellow-500/30 rounded-full text-xs font-medium text-yellow-400"
-            >Beta</span
+            class="ml-auto px-2.5 py-0.5 bg-green-500/15 border border-green-500/30 rounded-full text-xs font-medium text-green-400"
+            >Live</span
           >
         </div>
         <div class="px-6 py-4 text-sm text-zinc-400 leading-relaxed">
-          GlianaPay is currently running on <span
-            class="text-yellow-400 font-medium">Solana Devnet</span
-          >. All tips use test SOL — there is no real monetary value. Before
-          connecting, make sure your wallet is switched to Devnet mode. Mainnet
-          support is on the roadmap.
+          GlianaPay is running on <span class="text-green-400 font-medium"
+            >Solana Mainnet</span
+          >. All tips use real SOL with real monetary value. Make sure your
+          wallet is set to Mainnet mode before connecting.
         </div>
       </div>
 
