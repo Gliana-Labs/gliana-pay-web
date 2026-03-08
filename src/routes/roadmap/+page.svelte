@@ -174,7 +174,7 @@
                         <span
                             class="px-3 py-1 bg-purple-500/15 border border-purple-500/30 rounded-full text-xs font-semibold text-purple-300"
                         >
-                            ✓ Live Now
+                            ✓ Done
                         </span>
                     </div>
                     <div class="px-6 py-4">
@@ -223,7 +223,7 @@
                         <span
                             class="px-3 py-1 bg-cyan-500/15 border border-cyan-500/30 rounded-full text-xs font-semibold text-cyan-300"
                         >
-                            🔨 In Progress
+                            ✓ Done
                         </span>
                     </div>
                     <div class="px-6 py-4">
@@ -234,7 +234,7 @@
                                 >
                                     <span
                                         class="text-cyan-400/50 mt-0.5 flex-shrink-0"
-                                        >○</span
+                                        >✓</span
                                     >
                                     {item}
                                 </div>
