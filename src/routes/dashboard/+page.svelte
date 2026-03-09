@@ -456,7 +456,7 @@
 
     try {
       // Fetch SOL price for $ conversion
-      const priceRes = await fetch(`${WORKER_URL}/api/sol-price`);
+      const priceRes = await fetch(`${WORKER_URL}/api/price/sol`);
       if (priceRes.ok) {
         const priceData = await priceRes.json();
         solPrice = priceData.price || 0;
@@ -866,9 +866,6 @@
             class="text-3xl font-bold text-gradient mt-1 flex items-baseline gap-2"
           >
             {hideEarnings ? "••••••" : `$${totalUsdc.toFixed(2)}`}
-            {#if !hideEarnings}
-              <span class="text-sm font-medium text-blue-400">USDC</span>
-            {/if}
           </p>
           {#if !hideEarnings}
             <p class="text-sm text-zinc-400 font-medium mt-1">
