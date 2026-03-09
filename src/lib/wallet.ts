@@ -119,11 +119,11 @@ export async function disconnectWallet(wallet?: WalletInfo): Promise<void> {
     if (typeof window !== 'undefined') {
       const solana = (window as any).solana;
       if (solana?.disconnect) {
-        try { await solana.disconnect(); } catch {}
+        try { await solana.disconnect(); } catch { }
       }
       const solflare = (window as any).solflare;
       if (solflare?.disconnect) {
-        try { await solflare.disconnect(); } catch {}
+        try { await solflare.disconnect(); } catch { }
       }
     }
     connectedWallet.set('');

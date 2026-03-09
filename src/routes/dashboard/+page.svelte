@@ -51,7 +51,7 @@
   let isRecordingHotkey = false;
 
   // Alert Settings
-  let minAmount = 0.001;
+  let minAmount = 0.01;
   let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
   let soundEnabled = false;
   let soundError = "";
@@ -481,8 +481,8 @@
       if (response.ok) {
         const data = await response.json();
         if (data.settings) {
-          const loadedAmount = data.settings.min_amount || 1000000;
-          minAmount = Math.max(loadedAmount, 1000000) / 1e9;
+          const loadedAmount = data.settings.min_amount || 10000000;
+          minAmount = Math.max(loadedAmount, 10000000) / 1e9;
           soundUrl =
             data.settings.sound_url ||
             "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
@@ -524,8 +524,8 @@
   async function saveAlertSettings() {
     soundError = "";
 
-    if (minAmount < 0.001) {
-      minAmount = 0.001;
+    if (minAmount < 0.01) {
+      minAmount = 0.01;
     }
 
     if (
@@ -955,8 +955,8 @@
                     type="number"
                     id="min-amount"
                     bind:value={minAmount}
-                    step="0.001"
-                    min="0.001"
+                    step="0.01"
+                    min="0.01"
                     class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
                   />
                 </div>
