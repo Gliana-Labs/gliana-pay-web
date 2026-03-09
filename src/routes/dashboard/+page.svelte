@@ -38,6 +38,7 @@
   let donations: any[] = [];
   let biggestTip = 0;
   let biggestTipper = "";
+  let biggestTipCurrency = "SOL";
   let page = 1;
   let hasMore = false;
   let loadingMore = false;
@@ -458,16 +459,19 @@
       );
       if (response.ok) {
         const data = await response.json();
-        totalReceived = data.stats.totalReceived / 1e9;
+        totalReceived = data.stats.totalReceived || 0;
         totalTips = data.stats.totalTips;
-        average = data.stats.average / 1e9;
+        average = data.stats.average || 0;
         donations = data.donations || [];
         if (donations.length > 0) {
-          const top = donations.reduce(
-            (max: any, d: any) => (d.amount > max.amount ? d : max),
-            donations[0],
-          );
-          biggestTip = top.amount / 1e9;
+          const top = donations.reduce((max: any, d: any) => {
+            const maxNorm =
+              max.currency === "USDC" ? max.amount * 1000 : max.amount;
+            const dNorm = d.currency === "USDC" ? d.amount * 1000 : d.amount;
+            return dNorm > maxNorm ? d : max;
+          }, donations[0]);
+          biggestTip = top.amount_usd || 0;
+          biggestTipCurrency = "";
           biggestTipper = top.sender_name || "Anonymous";
         }
         hasMore = data.pagination?.hasMore || false;
@@ -834,9 +838,7 @@
             </button>
           </div>
           <p class="text-3xl font-bold text-gradient mt-1">
-            {hideEarnings
-              ? "••••••"
-              : `${parseFloat(totalReceived.toFixed(3))} SOL`}
+            {hideEarnings ? "••••••" : `$${totalReceived.toFixed(2)}`}
           </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -848,13 +850,13 @@
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Average</p>
           <p class="text-3xl font-bold mt-1">
-            {hideEarnings ? "••••" : `${parseFloat(average.toFixed(3))} SOL`}
+            {hideEarnings ? "••••" : `$${average.toFixed(2)}`}
           </p>
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Biggest Tip</p>
           <p class="text-3xl font-bold text-yellow-400 mt-1">
-            {hideEarnings ? "••••" : `${parseFloat(biggestTip.toFixed(3))} SOL`}
+            {hideEarnings ? "••••" : `$${biggestTip.toFixed(2)}`}
           </p>
           {#if biggestTipper && !hideEarnings}
             <p class="text-xs text-zinc-500 mt-1">by {biggestTipper}</p>
@@ -908,7 +910,9 @@
                       <p class="font-bold text-green-400">
                         {hideEarnings
                           ? "••••"
-                          : `${parseFloat((donation.amount / 1e9).toFixed(3))} SOL`}
+                          : donation.currency === "USDC"
+                            ? `${parseFloat((donation.amount / 1e6).toFixed(2))} USDC`
+                            : `${parseFloat((donation.amount / 1e9).toFixed(3))} SOL`}
                       </p>
                       <p class="text-xs text-zinc-500">
                         {new Date(donation.timestamp).toLocaleDateString()}

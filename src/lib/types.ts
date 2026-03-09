@@ -32,7 +32,9 @@ export interface Donation {
   id: number;
   streamer_id: number;
   tx_hash: string;
-  amount: number; // in lamports
+  amount: number; // in smallest units (lamports for SOL, 1e6 for USDC)
+  amount_usd: number; // USD value at time of donation
+  currency: string; // 'SOL' or 'USDC'
   sender: string;
   message: string;
   timestamp: string;
@@ -54,6 +56,7 @@ export interface WSTipEvent {
   data: {
     tx_hash: string;
     amount: number;
+    amount_usd: number;
     currency: string;
     sender: string;
     sender_name?: string;

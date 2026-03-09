@@ -1034,8 +1034,8 @@
                           ? 'text-yellow-400'
                           : 'text-green-400'}"
                       >
-                        {(tipper.total / 1e9).toFixed(2)}
-                        <span class="text-xs font-normal">SOL</span>
+                        ${tipper.total.toFixed(2)}
+                        <span class="text-xs font-normal">USD</span>
                       </div>
                     </div>
                   </div>
