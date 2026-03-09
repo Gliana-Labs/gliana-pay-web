@@ -1287,8 +1287,8 @@
                     type="number"
                     id="amount"
                     bind:value={amount}
-                    min="0.01"
-                    step="0.01"
+                    min={selectedCurrency === "USDC" ? "1" : "0.01"}
+                    step={selectedCurrency === "USDC" ? "1" : "0.01"}
                     class="w-full px-4 py-3 pr-16 bg-zinc-900/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500/50"
                   />
                   <div
@@ -1302,9 +1302,7 @@
                 </div>
                 <div class="mt-2 flex items-center justify-between">
                   <p class="text-xs text-zinc-500">
-                    Min: {selectedCurrency === "USDC"
-                      ? "0.01 USDC"
-                      : "0.01 SOL"}
+                    Min: {selectedCurrency === "USDC" ? "1 USDC" : "0.01 SOL"}
                   </p>
                   {#if usdEquivalent}
                     <p class="text-xs text-zinc-400">

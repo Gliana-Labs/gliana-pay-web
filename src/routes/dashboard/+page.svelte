@@ -33,6 +33,8 @@
 
   // Dashboard data
   let totalReceived = 0;
+  let totalSol = 0; // in SOL (human units)
+  let totalUsdc = 0; // in USDC (human units)
   let totalTips = 0;
   let average = 0;
   let donations: any[] = [];
@@ -469,10 +471,11 @@
       if (response.ok) {
         const data = await response.json();
         totalTips = data.stats.totalTips;
-        // Convert to USD client-side
-        const solUsd = ((data.stats.totalSolLamports || 0) / 1e9) * solPrice;
-        const usdcUsd = (data.stats.totalUsdcUnits || 0) / 1e6;
-        totalReceived = solUsd + usdcUsd;
+        // Convert to human-readable units
+        totalSol = (data.stats.totalSolLamports || 0) / 1e9;
+        totalUsdc = (data.stats.totalUsdcUnits || 0) / 1e6;
+        // Total in USD
+        totalReceived = totalSol * solPrice + totalUsdc;
         average = totalTips > 0 ? totalReceived / totalTips : 0;
         donations = data.donations || [];
         if (donations.length > 0) {
@@ -859,6 +862,15 @@
           <p class="text-3xl font-bold text-gradient mt-1">
             {hideEarnings ? "••••••" : `$${totalReceived.toFixed(2)}`}
           </p>
+          {#if !hideEarnings && (totalSol > 0 || totalUsdc > 0)}
+            <p class="text-xs text-zinc-500 mt-1">
+              {#if totalSol > 0}{parseFloat(totalSol.toFixed(3))} SOL{/if}
+              {#if totalSol > 0 && totalUsdc > 0}
+                ·
+              {/if}
+              {#if totalUsdc > 0}{parseFloat(totalUsdc.toFixed(2))} USDC{/if}
+            </p>
+          {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Tips</p>
