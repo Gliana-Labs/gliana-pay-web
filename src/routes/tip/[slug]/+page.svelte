@@ -223,7 +223,8 @@
       const { Connection, Keypair, PublicKey } = await import(
         "@solana/web3.js"
       );
-      const connection = new Connection("https://api.devnet.solana.com");
+      // Create connection to Solana
+      const connection = new Connection(SOLANA_RPC);
 
       const smallestUnits =
         selectedCurrency === "USDC"
