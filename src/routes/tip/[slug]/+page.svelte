@@ -643,21 +643,21 @@
     <!-- Beta Badge -->
     <div class="relative group z-20">
       <div
-        class="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full cursor-help hover:bg-yellow-500/20 transition-colors"
+        class="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-green-500/10 border border-green-500/30 rounded-full cursor-help hover:bg-green-500/20 transition-colors"
       >
         <span
-          class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(250,204,21,0.5)]"
+          class="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.5)]"
         ></span>
-        <span class="text-[10px] sm:text-xs font-medium text-yellow-400"
-          >Beta - Devnet</span
+        <span class="text-[10px] sm:text-xs font-medium text-green-400"
+          >Mainnet</span
         >
       </div>
       <!-- Tooltip -->
       <div
-        class="absolute right-0 top-full mt-2 w-48 sm:w-64 px-3 py-2 bg-zinc-900 border border-yellow-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-right sm:text-left"
+        class="absolute right-0 top-full mt-2 w-48 sm:w-64 px-3 py-2 bg-zinc-900 border border-green-500/40 rounded-lg text-xs text-zinc-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-right sm:text-left"
       >
-        This is a testnet version. No real money involved. Enable devnet in your
-        wallet settings before using.
+        GlianaPay runs on Solana Mainnet. Real SOL is used for tips. Make sure
+        your wallet is set to Mainnet.
       </div>
     </div>
   </div>
