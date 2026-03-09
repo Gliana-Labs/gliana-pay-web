@@ -863,11 +863,28 @@
             </button>
           </div>
           <p class="text-3xl font-bold text-gradient mt-1">
-            {hideEarnings ? "••••••" : `$${totalUsdc.toFixed(2)}`}
+            {hideEarnings ? "••••••" : `$${totalReceived.toFixed(2)}`}
           </p>
-          <p class="text-3xl font-bold text-gradient mt-1">
-            {hideEarnings ? "••••••" : `${parseFloat(totalSol.toFixed(3))} SOL`}
-          </p>
+          {#if !hideEarnings && (totalUsdc > 0 || totalSol > 0)}
+            <div class="flex items-center gap-2 mt-2 text-xs font-medium">
+              {#if totalUsdc > 0}
+                <div
+                  class="flex items-center justify-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400"
+                >
+                  <span class="opacity-70 font-normal">USDC</span>
+                  <span>{totalUsdc.toFixed(2)}</span>
+                </div>
+              {/if}
+              {#if totalSol > 0}
+                <div
+                  class="flex items-center justify-center gap-1 px-2 py-1 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-400"
+                >
+                  <span class="opacity-70 font-normal">SOL</span>
+                  <span>{parseFloat(totalSol.toFixed(3))}</span>
+                </div>
+              {/if}
+            </div>
+          {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Tips</p>
