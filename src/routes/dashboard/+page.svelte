@@ -862,16 +862,18 @@
               {/if}
             </button>
           </div>
-          <p class="text-3xl font-bold text-gradient mt-1">
-            {hideEarnings ? "••••••" : `$${totalReceived.toFixed(2)}`}
+          <p
+            class="text-3xl font-bold text-gradient mt-1 flex items-baseline gap-2"
+          >
+            {hideEarnings ? "••••••" : `$${totalUsdc.toFixed(2)}`}
+            {#if !hideEarnings}
+              <span class="text-sm font-medium text-blue-400">USDC</span>
+            {/if}
           </p>
-          {#if !hideEarnings && (totalSol > 0 || totalUsdc > 0)}
-            <p class="text-xs text-zinc-500 mt-1">
-              {#if totalSol > 0}{parseFloat(totalSol.toFixed(3))} SOL{/if}
-              {#if totalSol > 0 && totalUsdc > 0}
-                ·
-              {/if}
-              {#if totalUsdc > 0}{parseFloat(totalUsdc.toFixed(2))} USDC{/if}
+          {#if !hideEarnings}
+            <p class="text-sm text-zinc-400 font-medium mt-1">
+              {parseFloat(totalSol.toFixed(3))}
+              <span class="text-purple-400">SOL</span>
             </p>
           {/if}
         </div>
