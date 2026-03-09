@@ -38,7 +38,7 @@
     disconnectWallet as disconnectWalletUtil,
   } from "$lib/wallet";
   import type { WalletInfo } from "$lib/wallet";
-  import { WORKER_URL } from "$lib/config";
+  import { WORKER_URL, SOLANA_RPC, USDC_MINT } from "$lib/config";
 
   // Client-side data (populated in onMount)
   let streamer: Streamer | undefined = undefined;
@@ -58,9 +58,6 @@
   let availableWallets: WalletInfo[] = [];
   let selectedWallet: WalletInfo | null = null;
   let walletError = "";
-
-  // USDC devnet mint address
-  const USDC_MINT = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
 
   let isMobile = false;
   let solPrice = 0; // USD price of 1 SOL
@@ -358,7 +355,7 @@
         await import("@solana/web3.js");
 
       // Create connection to Solana
-      const connection = new Connection("https://api.devnet.solana.com");
+      const connection = new Connection(SOLANA_RPC);
 
       // Get recent blockhash
       const { blockhash } = await connection.getLatestBlockhash();
