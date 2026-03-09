@@ -54,6 +54,7 @@ export interface WSTipEvent {
   data: {
     tx_hash: string;
     amount: number;
+    currency: string;
     sender: string;
     sender_name?: string;
     message: string;
