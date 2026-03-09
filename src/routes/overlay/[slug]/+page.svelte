@@ -120,8 +120,16 @@
 
   const ALERT_DURATION = 5000;
 
-  function formatSOL(lamports: number): string {
-    const sol = lamports / 1e9;
+  function formatAmount(
+    smallestUnits: number,
+    currency: string = "SOL",
+  ): string {
+    if (currency === "USDC") {
+      const usdc = smallestUnits / 1e6;
+      if (usdc < 0.01) return parseFloat(usdc.toFixed(4)).toString();
+      return usdc.toFixed(2);
+    }
+    const sol = smallestUnits / 1e9;
     if (sol < 0.01) return parseFloat(sol.toFixed(4)).toString();
     if (sol < 1) return parseFloat(sol.toFixed(3)).toString();
     return sol.toFixed(2);
@@ -502,7 +510,8 @@
             <span
               class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400"
             >
-              {formatSOL(currentTip.amount)} SOL
+              {formatAmount(currentTip.amount, currentTip.currency)}
+              {currentTip.currency || "SOL"}
             </span>
           </div>
 
@@ -557,7 +566,8 @@
 
                 <!-- Amount -->
                 <div class="text-2xl font-bold text-white mb-1">
-                  {formatSOL(currentTip.amount)} SOL
+                  {formatAmount(currentTip.amount, currentTip.currency)}
+                  {currentTip.currency || "SOL"}
                 </div>
 
                 <!-- Name & Message -->

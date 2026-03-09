@@ -95,8 +95,8 @@
         if (socket) socket.close();
     });
 
-    function formatSol(lamports: number): string {
-        return (lamports / 1e9).toFixed(2);
+    function formatUsd(amount: number): string {
+        return amount.toFixed(2);
     }
 </script>
 
@@ -122,7 +122,7 @@
         <div class="goal-header">
             <span class="goal-title">{goalTitle}</span>
             <span class="goal-amount">
-                {formatSol(currentAmount)} / {formatSol(targetAmount)} SOL
+                ${formatUsd(currentAmount)} / ${formatUsd(targetAmount)}
             </span>
         </div>
 

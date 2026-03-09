@@ -38,7 +38,7 @@
     disconnectWallet as disconnectWalletUtil,
   } from "$lib/wallet";
   import type { WalletInfo } from "$lib/wallet";
-  import { WORKER_URL } from "$lib/config";
+  import { WORKER_URL, SOLANA_RPC, USDC_MINT } from "$lib/config";
 
   // Client-side data (populated in onMount)
   let streamer: Streamer | undefined = undefined;
@@ -49,6 +49,7 @@
   let name = "";
   let message = "";
   let amount = 0.01;
+  let selectedCurrency: "SOL" | "USDC" = "SOL";
   let isLoading = false;
   let qrCodeUrl = "";
   let status = "";
@@ -60,7 +61,12 @@
 
   let isMobile = false;
   let solPrice = 0; // USD price of 1 SOL
-  $: usdEquivalent = solPrice > 0 ? (amount * solPrice).toFixed(2) : "";
+  $: usdEquivalent =
+    selectedCurrency === "USDC"
+      ? amount.toFixed(2)
+      : solPrice > 0
+        ? (amount * solPrice).toFixed(2)
+        : "";
 
   // Social Media states
   let xUrl = "";
@@ -214,10 +220,16 @@
     if (qrInterval) clearInterval(qrInterval);
 
     try {
-      const { Connection, Keypair } = await import("@solana/web3.js");
-      const connection = new Connection("https://api.mainnet.solana.com");
+      const { Connection, Keypair, PublicKey } = await import(
+        "@solana/web3.js"
+      );
+      // Create connection to Solana
+      const connection = new Connection(SOLANA_RPC);
 
-      const lamports = Math.floor(amount * 1e9);
+      const smallestUnits =
+        selectedCurrency === "USDC"
+          ? Math.floor(amount * 1e6)
+          : Math.floor(amount * 1e9);
       // Solana Pay strictly requires an Ed25519 Public Key as the reference parameter, not a UUID string.
       const referenceKeypair = Keypair.generate();
       const reference = referenceKeypair.publicKey.toBase58();
@@ -230,6 +242,10 @@
         "message",
         message || `Tip for ${streamer.name}`,
       );
+      // For USDC, add spl-token param per Solana Pay spec
+      if (selectedCurrency === "USDC") {
+        paymentUrl.searchParams.append("spl-token", USDC_MINT);
+      }
 
       // Generate QR Code with the correctly encoded solana: URI
       const encodedUrl = encodeURIComponent(
@@ -260,7 +276,8 @@
             const tipData = {
               slug: streamer!.slug,
               tx_hash: txSignature,
-              amount: lamports,
+              amount: smallestUnits,
+              currency: selectedCurrency,
               sender: "Mobile Wallet User",
               sender_name: name || "Anonymous (Mobile)",
               message: message || "🎉",
@@ -339,7 +356,7 @@
         await import("@solana/web3.js");
 
       // Create connection to Solana
-      const connection = new Connection("https://api.mainnet.solana.com");
+      const connection = new Connection(SOLANA_RPC);
 
       // Get recent blockhash
       const { blockhash } = await connection.getLatestBlockhash();
@@ -350,16 +367,70 @@
         recentBlockhash: blockhash,
       });
 
-      // Add transfer instruction
-      transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: new PublicKey(viewerWallet),
-          toPubkey: new PublicKey(streamer.wallet),
-          lamports: Math.floor(amount * 1e9),
-        }),
-      );
+      if (selectedCurrency === "USDC") {
+        // Polyfill Buffer for browser (required by @solana/spl-token)
+        if (typeof globalThis.Buffer === "undefined") {
+          const { Buffer: BufferPolyfill } = await import("buffer");
+          globalThis.Buffer = BufferPolyfill;
+        }
 
-      // Request Phantom to sign and send
+        // SPL Token transfer for USDC
+        const {
+          getAssociatedTokenAddress,
+          createAssociatedTokenAccountInstruction,
+          createTransferInstruction,
+        } = await import("@solana/spl-token");
+
+        const mintPubkey = new PublicKey(USDC_MINT);
+        const senderPubkey = new PublicKey(viewerWallet);
+        const recipientPubkey = new PublicKey(streamer.wallet);
+
+        // Get sender's USDC token account
+        const senderATA = await getAssociatedTokenAddress(
+          mintPubkey,
+          senderPubkey,
+        );
+        // Get/create recipient's USDC token account
+        const recipientATA = await getAssociatedTokenAddress(
+          mintPubkey,
+          recipientPubkey,
+        );
+
+        // Check if recipient ATA exists, create if not
+        const recipientATAInfo = await connection.getAccountInfo(recipientATA);
+        if (!recipientATAInfo) {
+          transaction.add(
+            createAssociatedTokenAccountInstruction(
+              senderPubkey, // payer
+              recipientATA, // ata
+              recipientPubkey, // owner
+              mintPubkey, // mint
+            ),
+          );
+        }
+
+        // Add USDC transfer instruction (6 decimals)
+        const usdcAmount = Math.floor(amount * 1e6);
+        transaction.add(
+          createTransferInstruction(
+            senderATA, // source
+            recipientATA, // destination
+            senderPubkey, // owner
+            usdcAmount, // amount in smallest units
+          ),
+        );
+      } else {
+        // Native SOL transfer
+        transaction.add(
+          SystemProgram.transfer({
+            fromPubkey: new PublicKey(viewerWallet),
+            toPubkey: new PublicKey(streamer.wallet),
+            lamports: Math.floor(amount * 1e9),
+          }),
+        );
+      }
+
+      // Request wallet to sign and send
       const signedTx = await provider.signAndSendTransaction(transaction);
 
       status = "Payment sent! Waiting for confirmation...";
@@ -371,10 +442,15 @@
         "Payment confirmed! Sending alert to streamer... (please don't close this page)";
 
       // Record tip and broadcast to streamer's overlay (with retry)
+      const smallestUnits =
+        selectedCurrency === "USDC"
+          ? Math.floor(amount * 1e6)
+          : Math.floor(amount * 1e9);
       const tipData = {
         slug: streamer.slug,
         tx_hash: signedTx.signature,
-        amount: Math.floor(amount * 1e9),
+        amount: smallestUnits,
+        currency: selectedCurrency,
         sender: viewerWallet,
         sender_name: name || viewerWallet?.slice(0, 8) || "Anonymous",
         message: message || "🎉",
@@ -956,8 +1032,11 @@
                           ? 'text-yellow-400'
                           : 'text-green-400'}"
                       >
-                        {(tipper.total / 1e9).toFixed(2)}
-                        <span class="text-xs font-normal">SOL</span>
+                        ${(
+                          (tipper.total_sol / 1e9) * solPrice +
+                          tipper.total_usdc / 1e6
+                        ).toFixed(2)}
+                        <span class="text-xs font-normal">USD</span>
                       </div>
                     </div>
                   </div>
@@ -1080,8 +1159,8 @@
                     <div
                       class="absolute right-0 bottom-full mb-2 w-64 bg-zinc-900/95 backdrop-blur-md border border-white/10 text-zinc-300 text-xs px-3 py-2 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl z-50 pointer-events-none text-center"
                     >
-                      Send a SOL tip and show your support with a custom message
-                      on their live stream.
+                      Send a {selectedCurrency} tip and show your support with a
+                      custom message on their live stream.
                       <div
                         class="absolute top-full right-2 border-4 border-transparent border-t-white/10"
                       ></div>
@@ -1115,6 +1194,36 @@
               </div>
 
               <div>
+                <!-- Currency Toggle -->
+                <div class="flex items-center gap-2 mb-3">
+                  <button
+                    type="button"
+                    on:click={() => {
+                      selectedCurrency = "SOL";
+                      amount = 0.01;
+                    }}
+                    class="flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all border {selectedCurrency ===
+                    'SOL'
+                      ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
+                      : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-purple-500/30'}"
+                  >
+                    ◎ SOL
+                  </button>
+                  <button
+                    type="button"
+                    on:click={() => {
+                      selectedCurrency = "USDC";
+                      amount = 1;
+                    }}
+                    class="flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all border {selectedCurrency ===
+                    'USDC'
+                      ? 'bg-blue-500/20 border-blue-500/50 text-blue-300'
+                      : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-blue-500/30'}"
+                  >
+                    $ USDC
+                  </button>
+                </div>
+
                 <label
                   for="amount"
                   class="block text-sm font-medium text-zinc-300 mb-2 flex items-center gap-2"
@@ -1132,8 +1241,8 @@
                       d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  Amount (SOL)
-                  {#if solPrice > 0}
+                  Amount ({selectedCurrency})
+                  {#if selectedCurrency === "SOL" && solPrice > 0}
                     <span class="ml-auto text-xs text-zinc-500 font-normal"
                       >1 SOL ≈ ${solPrice.toFixed(2)}</span
                     >
@@ -1142,18 +1251,33 @@
 
                 <!-- Suggested Amounts -->
                 <div class="flex flex-wrap gap-2 mb-3">
-                  {#each [0.01, 0.05, 0.1, 0.5, 1] as suggestedAmount}
-                    <button
-                      type="button"
-                      on:click={() => (amount = suggestedAmount)}
-                      class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border {amount ===
-                      suggestedAmount
-                        ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
-                        : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-purple-500/30 hover:text-zinc-300'}"
-                    >
-                      {suggestedAmount} SOL
-                    </button>
-                  {/each}
+                  {#if selectedCurrency === "SOL"}
+                    {#each [0.01, 0.05, 0.1, 0.5, 1] as suggestedAmount}
+                      <button
+                        type="button"
+                        on:click={() => (amount = suggestedAmount)}
+                        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border {amount ===
+                        suggestedAmount
+                          ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
+                          : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-purple-500/30 hover:text-zinc-300'}"
+                      >
+                        {suggestedAmount} SOL
+                      </button>
+                    {/each}
+                  {:else}
+                    {#each [1, 2, 5, 10, 25] as suggestedAmount}
+                      <button
+                        type="button"
+                        on:click={() => (amount = suggestedAmount)}
+                        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border {amount ===
+                        suggestedAmount
+                          ? 'bg-blue-500/20 border-blue-500/50 text-blue-300'
+                          : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-blue-500/30 hover:text-zinc-300'}"
+                      >
+                        ${suggestedAmount}
+                      </button>
+                    {/each}
+                  {/if}
                 </div>
 
                 <div class="relative">
@@ -1161,18 +1285,23 @@
                     type="number"
                     id="amount"
                     bind:value={amount}
-                    min="0.001"
-                    step="0.001"
+                    min={selectedCurrency === "USDC" ? "1" : "0.01"}
+                    step={selectedCurrency === "USDC" ? "1" : "0.01"}
                     class="w-full px-4 py-3 pr-16 bg-zinc-900/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500/50"
                   />
                   <div
-                    class="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400 font-semibold"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 font-semibold {selectedCurrency ===
+                    'USDC'
+                      ? 'text-blue-400'
+                      : 'text-purple-400'}"
                   >
-                    SOL
+                    {selectedCurrency}
                   </div>
                 </div>
                 <div class="mt-2 flex items-center justify-between">
-                  <p class="text-xs text-zinc-500">Min: 0.001 SOL</p>
+                  <p class="text-xs text-zinc-500">
+                    Min: {selectedCurrency === "USDC" ? "1 USDC" : "0.01 SOL"}
+                  </p>
                   {#if usdEquivalent}
                     <p class="text-xs text-zinc-400">
                       ≈ <span class="text-green-400 font-medium"
@@ -1232,7 +1361,7 @@
             >
               <div class="flex items-center justify-center gap-3">
                 <span class="text-green-400 font-bold text-lg"
-                  >{amount} SOL</span
+                  >{amount} {selectedCurrency}</span
                 >
                 <svg
                   class="w-4 h-4 text-zinc-500"
@@ -1357,7 +1486,8 @@
                             d="M13 10V3L4 14h7v7l9-11h-7z"
                           /></svg
                         >
-                        Pay {amount} SOL Now
+                        Pay {amount}
+                        {selectedCurrency} Now
                       {/if}
                     </button>
 

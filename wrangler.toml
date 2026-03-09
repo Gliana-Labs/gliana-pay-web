@@ -1,4 +1,4 @@
-name = "gliana-pay-web"
+name = "gliana-pay-web-dev"
 compatibility_date = "2026-02-21"
 
 [site]
@@ -6,4 +6,4 @@ bucket = ".svelte-kit/cloudflare"
 
 [[services]]
 binding = "GLIANA_PAY_WORKER"
-service = "gliana-pay-worker"
+service = "gliana-pay-worker-dev"

@@ -33,11 +33,16 @@
 
   // Dashboard data
   let totalReceived = 0;
+  let totalSol = 0; // in SOL (human units)
+  let totalUsdc = 0; // in USDC (human units)
   let totalTips = 0;
   let average = 0;
   let donations: any[] = [];
   let biggestTip = 0;
+  let biggestTipOriginal = 0; // original amount in human units
+  let biggestTipCurrency = "SOL";
   let biggestTipper = "";
+  let solPrice = 0; // USD price of 1 SOL
   let page = 1;
   let hasMore = false;
   let loadingMore = false;
@@ -51,7 +56,7 @@
   let isRecordingHotkey = false;
 
   // Alert Settings
-  let minAmount = 0.001;
+  let minAmount = 0.01;
   let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
   let soundEnabled = false;
   let soundError = "";
@@ -202,7 +207,7 @@
         },
         body: JSON.stringify({
           title: newGoalTitle || "Tipping Goal",
-          target_amount: Math.floor(parseFloat(newGoalTarget) * 1e9),
+          target_amount: parseFloat(newGoalTarget),
         }),
       });
       if (res.ok) {
@@ -296,7 +301,7 @@
   function startEditGoal(goal: any) {
     editingGoalId = goal.id;
     editGoalTitle = goal.title;
-    editGoalTarget = (goal.target_amount / 1e9).toString();
+    editGoalTarget = goal.target_amount.toString();
   }
 
   function cancelEditGoal() {
@@ -332,8 +337,6 @@
         return;
       }
 
-      const targetAmountLamports = Math.floor(parseFloat(editGoalTarget) * 1e9);
-
       const res = await fetch(
         `${WORKER_URL}/api/streamer/${slug}/goals/${goalId}`,
         {
@@ -344,7 +347,7 @@
           },
           body: JSON.stringify({
             title: editGoalTitle || "Tipping Goal",
-            target_amount: targetAmountLamports,
+            target_amount: parseFloat(editGoalTarget),
           }),
         },
       );
@@ -452,22 +455,48 @@
     if (!slug) return;
 
     try {
+      // Fetch SOL price for $ conversion
+      const priceRes = await fetch(`${WORKER_URL}/api/price/sol`);
+      if (priceRes.ok) {
+        const priceData = await priceRes.json();
+        solPrice = priceData.price || 0;
+      }
+    } catch {}
+
+    try {
       page = 1;
       const response = await fetch(
         `${WORKER_URL}/api/streamer/${slug}/donations?page=1&limit=10`,
       );
       if (response.ok) {
         const data = await response.json();
-        totalReceived = data.stats.totalReceived / 1e9;
         totalTips = data.stats.totalTips;
-        average = data.stats.average / 1e9;
+        // Convert to human-readable units
+        totalSol = (data.stats.totalSolLamports || 0) / 1e9;
+        totalUsdc = (data.stats.totalUsdcUnits || 0) / 1e6;
+        // Total in USD
+        totalReceived = totalSol * solPrice + totalUsdc;
+        average = totalTips > 0 ? totalReceived / totalTips : 0;
         donations = data.donations || [];
         if (donations.length > 0) {
-          const top = donations.reduce(
-            (max: any, d: any) => (d.amount > max.amount ? d : max),
-            donations[0],
-          );
-          biggestTip = top.amount / 1e9;
+          const top = donations.reduce((max: any, d: any) => {
+            const maxUsd =
+              max.currency === "USDC"
+                ? max.amount / 1e6
+                : (max.amount / 1e9) * solPrice;
+            const dUsd =
+              d.currency === "USDC"
+                ? d.amount / 1e6
+                : (d.amount / 1e9) * solPrice;
+            return dUsd > maxUsd ? d : max;
+          }, donations[0]);
+          biggestTip =
+            top.currency === "USDC"
+              ? top.amount / 1e6
+              : (top.amount / 1e9) * solPrice;
+          biggestTipOriginal =
+            top.currency === "USDC" ? top.amount / 1e6 : top.amount / 1e9;
+          biggestTipCurrency = top.currency || "SOL";
           biggestTipper = top.sender_name || "Anonymous";
         }
         hasMore = data.pagination?.hasMore || false;
@@ -481,8 +510,8 @@
       if (response.ok) {
         const data = await response.json();
         if (data.settings) {
-          const loadedAmount = data.settings.min_amount || 1000000;
-          minAmount = Math.max(loadedAmount, 1000000) / 1e9;
+          const loadedAmount = data.settings.min_amount || 10000000;
+          minAmount = Math.max(loadedAmount, 10000000) / 1e9;
           soundUrl =
             data.settings.sound_url ||
             "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
@@ -524,8 +553,8 @@
   async function saveAlertSettings() {
     soundError = "";
 
-    if (minAmount < 0.001) {
-      minAmount = 0.001;
+    if (minAmount < 0.01) {
+      minAmount = 0.01;
     }
 
     if (
@@ -834,10 +863,28 @@
             </button>
           </div>
           <p class="text-3xl font-bold text-gradient mt-1">
-            {hideEarnings
-              ? "••••••"
-              : `${parseFloat(totalReceived.toFixed(3))} SOL`}
+            {hideEarnings ? "••••••" : `$${totalReceived.toFixed(2)}`}
           </p>
+          {#if !hideEarnings && (totalUsdc > 0 || totalSol > 0)}
+            <div class="flex items-center gap-2 mt-2 text-xs font-medium">
+              {#if totalUsdc > 0}
+                <div
+                  class="flex items-center justify-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400"
+                >
+                  <span class="opacity-70 font-normal">USDC</span>
+                  <span>{totalUsdc.toFixed(2)}</span>
+                </div>
+              {/if}
+              {#if totalSol > 0}
+                <div
+                  class="flex items-center justify-center gap-1 px-2 py-1 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-400"
+                >
+                  <span class="opacity-70 font-normal">SOL</span>
+                  <span>{parseFloat(totalSol.toFixed(3))}</span>
+                </div>
+              {/if}
+            </div>
+          {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Total Tips</p>
@@ -848,16 +895,26 @@
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Average</p>
           <p class="text-3xl font-bold mt-1">
-            {hideEarnings ? "••••" : `${parseFloat(average.toFixed(3))} SOL`}
+            {hideEarnings ? "••••" : `$${average.toFixed(2)}`}
           </p>
+          {#if !hideEarnings && totalTips > 0}
+            <p class="text-xs text-zinc-500 mt-1">per tip</p>
+          {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Biggest Tip</p>
           <p class="text-3xl font-bold text-yellow-400 mt-1">
-            {hideEarnings ? "••••" : `${parseFloat(biggestTip.toFixed(3))} SOL`}
+            {hideEarnings ? "••••" : `$${biggestTip.toFixed(2)}`}
           </p>
-          {#if biggestTipper && !hideEarnings}
-            <p class="text-xs text-zinc-500 mt-1">by {biggestTipper}</p>
+          {#if !hideEarnings && biggestTipper}
+            <p class="text-xs text-zinc-500 mt-1">
+              {parseFloat(
+                biggestTipOriginal.toFixed(
+                  biggestTipCurrency === "USDC" ? 2 : 3,
+                ),
+              )}
+              {biggestTipCurrency} · by {biggestTipper}
+            </p>
           {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -908,7 +965,9 @@
                       <p class="font-bold text-green-400">
                         {hideEarnings
                           ? "••••"
-                          : `${parseFloat((donation.amount / 1e9).toFixed(3))} SOL`}
+                          : donation.currency === "USDC"
+                            ? `${parseFloat((donation.amount / 1e6).toFixed(2))} USDC`
+                            : `${parseFloat((donation.amount / 1e9).toFixed(3))} SOL`}
                       </p>
                       <p class="text-xs text-zinc-500">
                         {new Date(donation.timestamp).toLocaleDateString()}
@@ -955,8 +1014,8 @@
                     type="number"
                     id="min-amount"
                     bind:value={minAmount}
-                    step="0.001"
-                    min="0.001"
+                    step="0.01"
+                    min="0.01"
                     class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
                   />
                 </div>
@@ -1327,9 +1386,9 @@
                           ></div>
                         </div>
                         <div class="text-xs text-zinc-500 mt-1">
-                          {(goal.current_amount / 1e9).toFixed(2)} / {(
-                            goal.target_amount / 1e9
-                          ).toFixed(2)} SOL
+                          ${goal.current_amount.toFixed(2)} / ${goal.target_amount.toFixed(
+                            2,
+                          )}
                           <span class="text-zinc-600">({pct.toFixed(0)}%)</span>
                         </div>
                       {/if}

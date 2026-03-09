@@ -15,6 +15,8 @@
         sender_name: string;
         sender: string;
         amount: number;
+        amount_usd: number;
+        currency: string;
         message: string;
         timestamp: string;
     }
@@ -57,8 +59,15 @@
     }
 
     // --- Format helpers ---
-    function formatSOL(lamports: number): string {
-        const sol = lamports / 1e9;
+    function formatAmount(
+        smallestUnits: number,
+        currency: string = "SOL",
+    ): string {
+        if (currency === "USDC") {
+            const usdc = smallestUnits / 1e6;
+            return usdc.toFixed(2);
+        }
+        const sol = smallestUnits / 1e9;
         if (sol < 0.01) return parseFloat(sol.toFixed(4)).toString();
         if (sol < 1) return parseFloat(sol.toFixed(3)).toString();
         return sol.toFixed(2);
@@ -172,6 +181,8 @@
             sender_name: tipData.sender_name || "",
             sender: tipData.sender,
             amount: tipData.amount,
+            amount_usd: tipData.amount_usd || 0,
+            currency: tipData.currency || "SOL",
             message: tipData.message,
             timestamp: tipData.timestamp,
         };
@@ -180,9 +191,9 @@
             // Prepend to list and trim to limit
             items = [newItem, ...items].slice(0, limit);
         } else {
-            // For top modes, insert in sorted position if it qualifies
+            // For top modes, sort by USD value
             const updated = [...items, newItem]
-                .sort((a, b) => b.amount - a.amount)
+                .sort((a, b) => (b.amount_usd || 0) - (a.amount_usd || 0))
                 .slice(0, limit);
             items = updated;
         }
@@ -287,7 +298,8 @@
                     <!-- Amount + Time -->
                     <div class="item-right">
                         <div class="item-amount">
-                            {formatSOL(item.amount)} SOL
+                            {formatAmount(item.amount, item.currency)}
+                            {item.currency || "SOL"}
                         </div>
                         <div class="item-time">
                             {formatTime(item.timestamp)}
