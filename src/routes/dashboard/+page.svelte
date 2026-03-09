@@ -39,6 +39,8 @@
   let average = 0;
   let donations: any[] = [];
   let biggestTip = 0;
+  let biggestTipOriginal = 0; // original amount in human units
+  let biggestTipCurrency = "SOL";
   let biggestTipper = "";
   let solPrice = 0; // USD price of 1 SOL
   let page = 1;
@@ -205,7 +207,7 @@
         },
         body: JSON.stringify({
           title: newGoalTitle || "Tipping Goal",
-          target_amount: Math.floor(parseFloat(newGoalTarget) * 1e9),
+          target_amount: parseFloat(newGoalTarget),
         }),
       });
       if (res.ok) {
@@ -299,7 +301,7 @@
   function startEditGoal(goal: any) {
     editingGoalId = goal.id;
     editGoalTitle = goal.title;
-    editGoalTarget = (goal.target_amount / 1e9).toString();
+    editGoalTarget = goal.target_amount.toString();
   }
 
   function cancelEditGoal() {
@@ -335,8 +337,6 @@
         return;
       }
 
-      const targetAmountLamports = Math.floor(parseFloat(editGoalTarget) * 1e9);
-
       const res = await fetch(
         `${WORKER_URL}/api/streamer/${slug}/goals/${goalId}`,
         {
@@ -347,7 +347,7 @@
           },
           body: JSON.stringify({
             title: editGoalTitle || "Tipping Goal",
-            target_amount: targetAmountLamports,
+            target_amount: parseFloat(editGoalTarget),
           }),
         },
       );
@@ -494,6 +494,9 @@
             top.currency === "USDC"
               ? top.amount / 1e6
               : (top.amount / 1e9) * solPrice;
+          biggestTipOriginal =
+            top.currency === "USDC" ? top.amount / 1e6 : top.amount / 1e9;
+          biggestTipCurrency = top.currency || "SOL";
           biggestTipper = top.sender_name || "Anonymous";
         }
         hasMore = data.pagination?.hasMore || false;
@@ -883,14 +886,24 @@
           <p class="text-3xl font-bold mt-1">
             {hideEarnings ? "••••" : `$${average.toFixed(2)}`}
           </p>
+          {#if !hideEarnings && totalTips > 0}
+            <p class="text-xs text-zinc-500 mt-1">per tip</p>
+          {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <p class="text-zinc-400 text-sm">Biggest Tip</p>
           <p class="text-3xl font-bold text-yellow-400 mt-1">
             {hideEarnings ? "••••" : `$${biggestTip.toFixed(2)}`}
           </p>
-          {#if biggestTipper && !hideEarnings}
-            <p class="text-xs text-zinc-500 mt-1">by {biggestTipper}</p>
+          {#if !hideEarnings && biggestTipper}
+            <p class="text-xs text-zinc-500 mt-1">
+              {parseFloat(
+                biggestTipOriginal.toFixed(
+                  biggestTipCurrency === "USDC" ? 2 : 3,
+                ),
+              )}
+              {biggestTipCurrency} · by {biggestTipper}
+            </p>
           {/if}
         </div>
         <div class="glass-card p-6 rounded-2xl border border-white/10">
@@ -1362,9 +1375,9 @@
                           ></div>
                         </div>
                         <div class="text-xs text-zinc-500 mt-1">
-                          {(goal.current_amount / 1e9).toFixed(2)} / {(
-                            goal.target_amount / 1e9
-                          ).toFixed(2)} SOL
+                          ${goal.current_amount.toFixed(2)} / ${goal.target_amount.toFixed(
+                            2,
+                          )}
                           <span class="text-zinc-600">({pct.toFixed(0)}%)</span>
                         </div>
                       {/if}
