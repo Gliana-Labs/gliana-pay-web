@@ -116,7 +116,8 @@ export interface APIResponse<T> {
 // Tipping page data
 export interface TopTipper {
   sender_name: string;
-  total: number;
+  total_sol: number; // in lamports
+  total_usdc: number; // in USDC smallest units (1e6)
 }
 
 export interface StreamerPageData {

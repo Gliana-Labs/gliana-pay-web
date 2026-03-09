@@ -38,7 +38,7 @@
   let donations: any[] = [];
   let biggestTip = 0;
   let biggestTipper = "";
-  let biggestTipCurrency = "SOL";
+  let solPrice = 0; // USD price of 1 SOL
   let page = 1;
   let hasMore = false;
   let loadingMore = false;
@@ -453,25 +453,44 @@
     if (!slug) return;
 
     try {
+      // Fetch SOL price for $ conversion
+      const priceRes = await fetch(`${WORKER_URL}/api/sol-price`);
+      if (priceRes.ok) {
+        const priceData = await priceRes.json();
+        solPrice = priceData.price || 0;
+      }
+    } catch {}
+
+    try {
       page = 1;
       const response = await fetch(
         `${WORKER_URL}/api/streamer/${slug}/donations?page=1&limit=10`,
       );
       if (response.ok) {
         const data = await response.json();
-        totalReceived = data.stats.totalReceived || 0;
         totalTips = data.stats.totalTips;
-        average = data.stats.average || 0;
+        // Convert to USD client-side
+        const solUsd = ((data.stats.totalSolLamports || 0) / 1e9) * solPrice;
+        const usdcUsd = (data.stats.totalUsdcUnits || 0) / 1e6;
+        totalReceived = solUsd + usdcUsd;
+        average = totalTips > 0 ? totalReceived / totalTips : 0;
         donations = data.donations || [];
         if (donations.length > 0) {
           const top = donations.reduce((max: any, d: any) => {
-            const maxNorm =
-              max.currency === "USDC" ? max.amount * 1000 : max.amount;
-            const dNorm = d.currency === "USDC" ? d.amount * 1000 : d.amount;
-            return dNorm > maxNorm ? d : max;
+            const maxUsd =
+              max.currency === "USDC"
+                ? max.amount / 1e6
+                : (max.amount / 1e9) * solPrice;
+            const dUsd =
+              d.currency === "USDC"
+                ? d.amount / 1e6
+                : (d.amount / 1e9) * solPrice;
+            return dUsd > maxUsd ? d : max;
           }, donations[0]);
-          biggestTip = top.amount_usd || 0;
-          biggestTipCurrency = "";
+          biggestTip =
+            top.currency === "USDC"
+              ? top.amount / 1e6
+              : (top.amount / 1e9) * solPrice;
           biggestTipper = top.sender_name || "Anonymous";
         }
         hasMore = data.pagination?.hasMore || false;

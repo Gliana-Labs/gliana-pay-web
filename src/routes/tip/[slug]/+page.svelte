@@ -1034,7 +1034,10 @@
                           ? 'text-yellow-400'
                           : 'text-green-400'}"
                       >
-                        ${tipper.total.toFixed(2)}
+                        ${(
+                          (tipper.total_sol / 1e9) * solPrice +
+                          tipper.total_usdc / 1e6
+                        ).toFixed(2)}
                         <span class="text-xs font-normal">USD</span>
                       </div>
                     </div>
