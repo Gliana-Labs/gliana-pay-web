@@ -370,6 +370,12 @@
       });
 
       if (selectedCurrency === "USDC") {
+        // Polyfill Buffer for browser (required by @solana/spl-token)
+        if (typeof globalThis.Buffer === "undefined") {
+          const { Buffer: BufferPolyfill } = await import("buffer");
+          globalThis.Buffer = BufferPolyfill;
+        }
+
         // SPL Token transfer for USDC
         const {
           getAssociatedTokenAddress,
