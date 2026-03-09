@@ -1158,8 +1158,8 @@
                     <div
                       class="absolute right-0 bottom-full mb-2 w-64 bg-zinc-900/95 backdrop-blur-md border border-white/10 text-zinc-300 text-xs px-3 py-2 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl z-50 pointer-events-none text-center"
                     >
-                      Send a SOL tip and show your support with a custom message
-                      on their live stream.
+                      Send a {selectedCurrency} tip and show your support with a
+                      custom message on their live stream.
                       <div
                         class="absolute top-full right-2 border-4 border-transparent border-t-white/10"
                       ></div>
@@ -1487,7 +1487,8 @@
                             d="M13 10V3L4 14h7v7l9-11h-7z"
                           /></svg
                         >
-                        Pay {amount} SOL Now
+                        Pay {amount}
+                        {selectedCurrency} Now
                       {/if}
                     </button>
 
