@@ -93,23 +93,22 @@ body::before {
 
 /* Main "Select Wallet" / "Connect" trigger button */
 .wallet-adapter-button-trigger {
-  background: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%) !important;
-  background-size: 200% 200% !important;
-  animation: gradient 3s ease infinite !important;
+  background: #18181b !important;
+  border: 1px solid rgba(168, 85, 247, 0.5) !important;
   border-radius: 12px !important;
   font-family: 'Sora', system-ui, sans-serif !important;
   font-size: 14px !important;
-  font-weight: 600 !important;
-  height: 44px !important;
-  padding: 0 24px !important;
+  font-weight: 500 !important;
+  height: 48px !important;
+  width: 100% !important;
+  padding: 0 16px !important;
   transition: all 0.2s ease !important;
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3) !important;
+  justify-content: center !important;
 }
 
 .wallet-adapter-button-trigger:not([disabled]):hover {
-  background: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%) !important;
-  transform: scale(1.03) !important;
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5) !important;
+  background: #27272a !important;
+  border-color: rgba(168, 85, 247, 0.8) !important;
 }
 
 /* Generic wallet adapter buttons */
