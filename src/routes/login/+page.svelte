@@ -294,7 +294,7 @@
     </div>
 
 
-    <div class="relative z-10 max-w-xl mx-auto px-4 pb-8 flex-1 flex flex-col justify-center">
+    <div class="relative z-10 max-w-xl mx-auto px-4 pt-[12vh] md:pt-[15vh] pb-8 flex-1">
 
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gradient">Streamer Login</h1>
