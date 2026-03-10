@@ -142,6 +142,13 @@ body::before {
   inset: 0 !important;
   background: rgba(0, 0, 0, 0.7) !important;
   backdrop-filter: blur(4px) !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+.wallet-adapter-modal.wallet-adapter-modal-fade-in {
+  pointer-events: auto !important;
+  opacity: 1 !important;
 }
 
 .wallet-adapter-modal-overlay {
@@ -149,6 +156,11 @@ body::before {
   z-index: 99998 !important;
   inset: 0 !important;
   background: transparent !important;
+  pointer-events: none !important;
+}
+
+.wallet-adapter-modal-fade-in .wallet-adapter-modal-overlay {
+  pointer-events: auto !important;
 }
 
 .wallet-adapter-modal-container {
@@ -160,6 +172,11 @@ body::before {
   justify-content: center !important;
   margin: 0 !important;
   min-height: 100vh !important;
+  pointer-events: none !important;
+}
+
+.wallet-adapter-modal-fade-in .wallet-adapter-modal-container {
+  pointer-events: auto !important;
 }
 
 /* The modal card itself */
