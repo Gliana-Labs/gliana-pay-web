@@ -5,7 +5,7 @@ Frontend application for GlianaPay - a Web3 tipping platform for streamers built
 ## Features
 
 - **Streamer Pages** - Custom tipping pages for each streamer
-- **Multi-wallet Support** - Phantom, Solflare
+- **Multi-wallet Support** - Phantom, Solflare, Backpack, Coinbase, Trust, Ledger & more (via Solana Wallet Adapter)
 - **QR Code Payments** - Easy mobile payments via QR scan
 - **Real-time Alerts** - Instant notifications on OBS overlay
 - **Dashboard** - Streamer stats, settings, and management
@@ -61,9 +61,8 @@ The overlay shows real-time tip notifications with animations and sound alerts.
 
 ## Wallet Integration
 
-Supports multiple Solana wallets:
-- Phantom
-- Solflare
+Supports all major Solana wallets via the [Solana Wallet Adapter](https://github.com/anza-xyz/wallet-adapter):
+- Phantom, Solflare, Backpack, Coinbase Wallet, Trust Wallet, Ledger, and more
 
 ## Tech Stack
 

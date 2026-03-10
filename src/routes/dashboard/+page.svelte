@@ -2,12 +2,8 @@
   import FloatingIcons from "$lib/components/FloatingIcons.svelte";
   import { onMount, onDestroy } from "svelte";
   import { fade, slide } from "svelte/transition";
-  import {
-    disconnectWallet,
-    signMessage,
-    getAvailableWallets,
-  } from "$lib/wallet";
-  import type { WalletInfo } from "$lib/wallet";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import { signAuthMessage } from "$lib/wallet-helpers";
   import { WORKER_URL } from "$lib/config";
   import { fetchCloudflareStatus } from "$lib/cloudflare-status";
 
@@ -180,21 +176,10 @@
     }
     goalsLoading = true;
     try {
-      const wallets = getAvailableWallets();
-      const savedSession = localStorage.getItem("gliana_session");
-      const sessionData = savedSession ? JSON.parse(savedSession) : {};
-      const savedWalletName = sessionData.walletName || "";
-      let currentProvider =
-        wallets.find((w) => w.name === savedWalletName) || wallets[0];
-      if (!currentProvider) {
-        showToast("Reconnect wallet", "error");
-        goalsLoading = false;
-        return;
-      }
-
       const message = `Update GlianaPay settings for ${slug}`;
-      const sig = await signMessage(currentProvider, message);
+      const sig = await signAuthMessage(message);
       if (!sig) {
+        showToast("Signature cancelled", "error");
         goalsLoading = false;
         return;
       }
@@ -228,19 +213,8 @@
 
   async function deleteGoal(goalId: number) {
     try {
-      const wallets = getAvailableWallets();
-      const savedSession = localStorage.getItem("gliana_session");
-      const sessionData = savedSession ? JSON.parse(savedSession) : {};
-      const savedWalletName = sessionData.walletName || "";
-      let currentProvider =
-        wallets.find((w) => w.name === savedWalletName) || wallets[0];
-      if (!currentProvider) {
-        showToast("Reconnect wallet", "error");
-        return;
-      }
-
       const message = `Update GlianaPay settings for ${slug}`;
-      const sig = await signMessage(currentProvider, message);
+      const sig = await signAuthMessage(message);
       if (!sig) return;
 
       const res = await fetch(
@@ -263,19 +237,8 @@
 
   async function resetGoal(goalId: number) {
     try {
-      const wallets = getAvailableWallets();
-      const savedSession = localStorage.getItem("gliana_session");
-      const sessionData = savedSession ? JSON.parse(savedSession) : {};
-      const savedWalletName = sessionData.walletName || "";
-      let currentProvider =
-        wallets.find((w) => w.name === savedWalletName) || wallets[0];
-      if (!currentProvider) {
-        showToast("Reconnect wallet", "error");
-        return;
-      }
-
       const message = `Update GlianaPay settings for ${slug}`;
-      const sig = await signMessage(currentProvider, message);
+      const sig = await signAuthMessage(message);
       if (!sig) return;
 
       const res = await fetch(
@@ -318,20 +281,8 @@
 
     editGoalLoading = true;
     try {
-      const wallets = getAvailableWallets();
-      const savedSession = localStorage.getItem("gliana_session");
-      const sessionData = savedSession ? JSON.parse(savedSession) : {};
-      const savedWalletName = sessionData.walletName || "";
-      let currentProvider =
-        wallets.find((w) => w.name === savedWalletName) || wallets[0];
-      if (!currentProvider) {
-        showToast("Reconnect wallet", "error");
-        editGoalLoading = false;
-        return;
-      }
-
       const message = `Update GlianaPay settings for ${slug}`;
-      const sig = await signMessage(currentProvider, message);
+      const sig = await signAuthMessage(message);
       if (!sig) {
         editGoalLoading = false;
         return;
@@ -569,24 +520,8 @@
     alertsLoading = true;
 
     try {
-      // Get the connected wallet provider
-      const wallets = getAvailableWallets();
-      const savedSession = localStorage.getItem("gliana_session");
-      const sessionData = savedSession ? JSON.parse(savedSession) : {};
-      const savedWalletName = sessionData.walletName || "";
-
-      let currentProvider =
-        wallets.find((w) => w.name === savedWalletName) || wallets[0];
-
-      if (!currentProvider) {
-        showToast("Could not find wallet provider. Please reconnect.", "error");
-        alertsLoading = false;
-        return;
-      }
-
-      // Prompt for signature
       const message = `Update GlianaPay settings for ${slug}`;
-      const signatureData = await signMessage(currentProvider, message);
+      const signatureData = await signAuthMessage(message);
 
       if (!signatureData) {
         showToast("Signature request cancelled", "error");
@@ -674,9 +609,9 @@
 
   // Logout
   async function handleLogout() {
-    // Disconnect wallet first
-    await disconnectWallet();
-    // Clear local data
+    try {
+      await $walletStore.disconnect();
+    } catch {}
     localStorage.removeItem("gliana_session");
     sessionStorage.setItem("gliana_just_logged_out", "1");
     window.location.href = "/";
@@ -1595,8 +1530,7 @@
 
 <style>
   .glass-card {
-    background: rgba(17, 17, 19, 0.8);
-    backdrop-filter: blur(12px);
+    background: rgba(17, 17, 19, 0.95);
   }
   @keyframes gradient {
     0%,

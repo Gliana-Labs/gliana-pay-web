@@ -103,7 +103,7 @@
             <p class="text-sm text-zinc-400 mt-1">
               Go to <a href="/login" class="text-purple-400 hover:underline"
                 >/login</a
-              >, connect your Phantom or Solflare wallet, and choose a unique
+              >, connect your Solana wallet, and choose a unique
               URL slug (e.g., your stream name). This creates your personal
               tipping page at glianapay.com/your-slug.
             </p>
@@ -163,19 +163,19 @@
             <h2 class="font-semibold text-base">Share Your Link</h2>
             <p class="text-sm text-zinc-400 mt-1">
               Share your tipping page link (glianapay.com/your-slug) in your
-              stream chat, bio, or panels. Your viewers will need <a
+              stream chat, bio, or panels. Your viewers will need any Solana wallet
+              (like <a
                 href="https://phantom.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-purple-400 hover:underline">Phantom</a
-              >
-              or
+              >,
               <a
                 href="https://solflare.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-purple-400 hover:underline">Solflare</a
-              > to send tips. On mobile, they should open the link inside the wallet's
+              >, Backpack, etc.) to send tips. On mobile, they should open the link inside the wallet's
               in-app browser.
             </p>
           </div>

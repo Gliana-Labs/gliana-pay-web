@@ -130,7 +130,7 @@
                     </div>
                     <div class="px-6 py-4">
                         <div class="grid sm:grid-cols-2 gap-2">
-                            {#each ["Solana Devnet tipping (SOL)", "Real-time OBS alert overlay", "Phantom & Solflare wallet support", "Custom streamer tip pages (/your-slug)", "Dashboard with settings & top tippers", "Top tippers leaderboard", "Minimum tip amount threshold", "Custom alert sound URL", "Social links on tip page (Twitch, Kick, YT, X, Reddit)"] as item}
+                            {#each ["Solana Devnet tipping (SOL)", "Real-time OBS alert overlay", "Multi-wallet support (Phantom, Solflare, Backpack, & more)", "Custom streamer tip pages (/your-slug)", "Dashboard with settings & top tippers", "Top tippers leaderboard", "Minimum tip amount threshold", "Custom alert sound URL", "Social links on tip page (Twitch, Kick, YT, X, Reddit)"] as item}
                                 <div
                                     class="flex items-start gap-2 text-sm text-zinc-300"
                                 >

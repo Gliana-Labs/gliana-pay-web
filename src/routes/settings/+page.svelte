@@ -2,12 +2,8 @@
     import FloatingIcons from "$lib/components/FloatingIcons.svelte";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
-    import {
-        disconnectWallet,
-        signMessage,
-        getAvailableWallets,
-    } from "$lib/wallet";
-    import type { WalletInfo } from "$lib/wallet";
+    import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+    import { signAuthMessage } from "$lib/wallet-helpers";
     import { WORKER_URL } from "$lib/config";
     import {
         RegExpMatcher,
@@ -212,28 +208,9 @@
         socialsLoading = true;
 
         try {
-            // Get the connected wallet provider
-            const wallets = getAvailableWallets();
-            // Try to find the matching provider based on what was saved in session
-            const savedSession = localStorage.getItem("gliana_session");
-            const sessionData = savedSession ? JSON.parse(savedSession) : {};
-            const savedWalletName = sessionData.walletName || "";
-
-            let currentProvider =
-                wallets.find((w) => w.name === savedWalletName) || wallets[0];
-
-            if (!currentProvider) {
-                showToast(
-                    "Could not find wallet provider. Please reconnect.",
-                    "error",
-                );
-                socialsLoading = false;
-                return;
-            }
-
             // Prompt for signature
             const message = `Update GlianaPay settings for ${slug}`;
-            const signatureData = await signMessage(currentProvider, message);
+            const signatureData = await signAuthMessage(message);
 
             if (!signatureData) {
                 showToast("Signature request cancelled", "error");
@@ -515,7 +492,9 @@
 
     // Logout
     async function handleLogout() {
-        await disconnectWallet();
+        try {
+            await $walletStore.disconnect();
+        } catch {}
         localStorage.removeItem("gliana_session");
         sessionStorage.setItem("gliana_just_logged_out", "1");
         window.location.href = "/";
@@ -1280,7 +1259,6 @@
 
 <style>
     .glass-card {
-        background: rgba(17, 17, 19, 0.8);
-        backdrop-filter: blur(12px);
+        background: rgba(17, 17, 19, 0.95);
     }
 </style>
