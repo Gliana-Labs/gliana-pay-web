@@ -1015,6 +1015,7 @@
                 <p class="text-sm text-zinc-400 mb-2">Connect your wallet to tip</p>
                 <WalletMultiButton />
               </div>
+
               <div
                 class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left sm:hidden"
               >

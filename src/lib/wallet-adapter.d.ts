@@ -6,6 +6,7 @@ declare module '@aztemi/svelte-on-solana-wallet-adapter-core' {
 
   interface WalletStore {
     wallet: any;
+    wallets: Array<{ adapter: { name: string; icon: string; url: string }; readyState: string }>;
     publicKey: PublicKey | null;
     connected: boolean;
     connecting: boolean;

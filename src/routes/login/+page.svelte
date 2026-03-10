@@ -293,19 +293,8 @@
       >
     </div>
 
+
     <div class="relative z-10 max-w-xl mx-auto px-4 pt-12 md:pt-24 pb-8 flex-1">
-      <!-- Beta Badge -->
-      <div class="flex justify-center mb-4">
-        <div
-          class="flex items-center gap-2 px-3 py-1 bg-green-500/20 border border-green-500/40 rounded-full"
-        >
-          <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-          <span class="text-xs font-medium text-green-400">Mainnet</span>
-        </div>
-      </div>
-      <p class="text-xs text-green-400/70 text-center mb-4">
-        Make sure your wallet is set to Mainnet
-      </p>
 
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gradient">Streamer Login</h1>
