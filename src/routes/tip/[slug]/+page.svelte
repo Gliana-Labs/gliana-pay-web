@@ -32,12 +32,8 @@
   }
 
   import type { Streamer, AlertSettings, TopTipper } from "$lib/types";
-  import {
-    getAvailableWallets,
-    connectWallet as connectWalletUtil,
-    disconnectWallet as disconnectWalletUtil,
-  } from "$lib/wallet";
-  import type { WalletInfo } from "$lib/wallet";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import { WalletMultiButton } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { WORKER_URL, SOLANA_RPC, USDC_MINT } from "$lib/config";
 
   // Client-side data (populated in onMount)
@@ -53,11 +49,11 @@
   let isLoading = false;
   let qrCodeUrl = "";
   let status = "";
-  let viewerWallet = "";
-  let viewerConnected = false;
-  let availableWallets: WalletInfo[] = [];
-  let selectedWallet: WalletInfo | null = null;
   let walletError = "";
+
+  // Reactive wallet state from walletStore
+  $: viewerWallet = $walletStore?.publicKey?.toBase58() || "";
+  $: viewerConnected = !!$walletStore?.connected;
 
   let isMobile = false;
   let solPrice = 0; // USD price of 1 SOL
@@ -142,61 +138,17 @@
     fetchCfStatus();
     const priceInterval = setInterval(fetchSolPrice, 60000); // refresh every 60s
 
-    // Small delay to ensure wallet extensions are loaded
-    setTimeout(checkWallets, 100);
-    window.addEventListener("focus", checkWallets);
-
-    isMobile =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent,
-      );
-
     return () => {
-      window.removeEventListener("focus", checkWallets);
       if (qrInterval) clearInterval(qrInterval);
       clearInterval(priceInterval);
     };
   });
 
-  // Check available wallets
-  function checkWallets() {
-    if (typeof window !== "undefined") {
-      availableWallets = getAvailableWallets();
-    }
-  }
-
-  // Connect to selected wallet
-  async function handleConnectWallet(wallet: WalletInfo) {
-    selectedWallet = wallet;
-    walletError = "";
-
-    const address = await connectWalletUtil(wallet);
-    if (address) {
-      viewerWallet = address;
-      viewerConnected = true;
-      if (!name) name = address.slice(0, 8);
-    } else {
-      walletError = `Failed to connect to ${wallet.name}`;
-      selectedWallet = null;
-    }
-  }
-
   // Disconnect
   async function handleDisconnect() {
-    if (selectedWallet) {
-      await disconnectWalletUtil(selectedWallet);
-    }
-    selectedWallet = null;
-    viewerConnected = false;
-    viewerWallet = "";
-  }
-
-  // Wallet connection
-  function getPhantomWallet() {
-    if (typeof window !== "undefined") {
-      return (window as any).phantom?.solana;
-    }
-    return null;
+    try {
+      await $walletStore.disconnect();
+    } catch {}
   }
 
   let qrInterval: any = null;
@@ -329,7 +281,7 @@
   }
 
   async function payWithWallet() {
-    if (!streamer || !viewerConnected || !viewerWallet || !selectedWallet)
+    if (!streamer || !viewerConnected || !viewerWallet)
       return;
 
     if (name && containsProfanity(name)) {
@@ -345,11 +297,6 @@
     status = "Preparing transaction...";
 
     try {
-      const provider = selectedWallet.provider;
-      if (!provider) {
-        status = "Wallet provider not found";
-        return;
-      }
 
       // Dynamic import to avoid SSR issues
       const { Connection, PublicKey, Transaction, SystemProgram } =
@@ -430,13 +377,13 @@
         );
       }
 
-      // Request wallet to sign and send
-      const signedTx = await provider.signAndSendTransaction(transaction);
+      // Sign and send transaction via the wallet adapter
+      const txSignature = await $walletStore.sendTransaction(transaction, connection);
 
       status = "Payment sent! Waiting for confirmation...";
 
       // Wait for confirmation
-      await connection.confirmTransaction(signedTx.signature);
+      await connection.confirmTransaction(txSignature);
 
       status =
         "Payment confirmed! Sending alert to streamer... (please don't close this page)";
@@ -448,7 +395,7 @@
           : Math.floor(amount * 1e9);
       const tipData = {
         slug: streamer.slug,
-        tx_hash: signedTx.signature,
+        tx_hash: txSignature,
         amount: smallestUnits,
         currency: selectedCurrency,
         sender: viewerWallet,
@@ -1064,59 +1011,21 @@
           <!-- Viewer Wallet Connect -->
           <div class="glass-card rounded-2xl p-5 border border-white/10">
             {#if !viewerConnected}
-              {#if availableWallets.length > 0}
-                <div class="space-y-3">
-                  {#each availableWallets as wallet}
-                    <button
-                      on:click={() => handleConnectWallet(wallet)}
-                      disabled={isLoading}
-                      class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400"
-                    >
-                      Connect {wallet.name}
-                    </button>
-                  {/each}
-                </div>
-              {:else}
-                <div
-                  class="text-left p-4 bg-zinc-900/50 rounded-xl border border-zinc-800"
-                >
-                  <p class="text-sm text-zinc-300 font-medium">
-                    No wallet found
-                  </p>
-                  <p class="text-xs text-zinc-500 mt-1">
-                    Please install a Solana wallet to continue.
-                  </p>
-                  <div class="mt-3 flex flex-wrap gap-2">
-                    <a
-                      href="https://phantom.app"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-xs text-purple-400 hover:text-purple-300"
-                      >Phantom</a
-                    >
-                    <span class="text-zinc-600">•</span>
-                    <a
-                      href="https://solflare.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-xs text-purple-400 hover:text-purple-300"
-                      >Solflare</a
-                    >
-                  </div>
-                </div>
-
-                <div
-                  class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left sm:hidden"
-                >
-                  <p class="text-xs font-medium text-purple-300 mb-1">
-                    Mobile?
-                  </p>
-                  <p class="text-xs text-zinc-400">
-                    Open this page in your wallet's in-app browser for the best
-                    experience.
-                  </p>
-                </div>
-              {/if}
+              <div class="space-y-3 flex flex-col items-center">
+                <p class="text-sm text-zinc-400 mb-2">Connect your wallet to tip</p>
+                <WalletMultiButton />
+              </div>
+              <div
+                class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left sm:hidden"
+              >
+                <p class="text-xs font-medium text-purple-300 mb-1">
+                  Mobile?
+                </p>
+                <p class="text-xs text-zinc-400">
+                  Open this page in your wallet's in-app browser for the best
+                  experience.
+                </p>
+              </div>
               {#if walletError}
                 <p class="text-red-400 text-xs mt-2 text-center">
                   {walletError}
@@ -1395,7 +1304,7 @@
                 </div>
 
                 <p class="text-zinc-500 text-xs mb-3">
-                  Open Phantom or Solflare on your phone and scan
+                  Open your Solana wallet app on your phone and scan
                 </p>
 
                 <!-- Caution -->
@@ -1644,8 +1553,7 @@
 
 <style>
   .glass-card {
-    background: rgba(17, 17, 19, 0.8);
-    backdrop-filter: blur(12px);
+    background: rgba(17, 17, 19, 0.95);
   }
   @keyframes gradient {
     0%,

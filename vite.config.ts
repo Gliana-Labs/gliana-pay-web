@@ -11,5 +11,11 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
-  }
+  },
+  optimizeDeps: {
+    include: ['@solana/web3.js', 'buffer'],
+  },
+  define: {
+    'process.env.BROWSER': true,
+  },
 });

@@ -145,7 +145,7 @@
           <h2 class="font-semibold text-base">Supported Wallets</h2>
         </div>
         <div class="px-6 py-4 text-sm text-zinc-400 leading-relaxed">
-          <p class="mb-3">GlianaPay currently supports:</p>
+          <p class="mb-3">GlianaPay supports all major Solana wallets via the Solana Wallet Adapter:</p>
           <div class="flex flex-wrap gap-3">
             <a
               href="https://phantom.app"
@@ -166,10 +166,19 @@
               >
               <span class="text-zinc-500 text-xs">solflare.com ↗</span>
             </a>
+            <a
+              href="https://www.backpack.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl border border-zinc-700 transition-colors"
+            >
+              <span class="text-red-300 font-semibold text-sm">Backpack</span>
+              <span class="text-zinc-500 text-xs">backpack.app ↗</span>
+            </a>
           </div>
           <p class="mt-3 text-zinc-500 text-xs">
-            On mobile, open the tip or login page inside the wallet's built-in
-            browser. Additional wallets are planned for future releases.
+            Plus Coinbase Wallet, Trust Wallet, Ledger, and any other wallet supported by the Solana Wallet Adapter.
+            On mobile, open the tip or login page inside the wallet's built-in browser.
           </p>
         </div>
       </div>

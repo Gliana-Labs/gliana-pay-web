@@ -16,7 +16,7 @@
     {
       question: "Which wallets are supported?",
       answer:
-        "Currently, GlianaPay supports Phantom and Solflare — the two most popular Solana wallets. On mobile, make sure to open your tip or login link inside the wallet's built-in browser for the best experience. More wallet support is planned.",
+        "GlianaPay supports all major Solana wallets including Phantom, Solflare, Backpack, Coinbase Wallet, Trust Wallet, Ledger, and more — powered by the Solana Wallet Adapter. On mobile, make sure to open your tip or login link inside the wallet's built-in browser for the best experience.",
     },
     {
       question: "Is this on mainnet or devnet?",

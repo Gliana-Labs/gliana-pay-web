@@ -1,25 +1,18 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import {
-    getAvailableWallets,
-    connectWallet,
-    disconnectWallet,
-    signMessage,
-  } from "$lib/wallet";
-  import type { WalletInfo } from "$lib/wallet";
+  import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
+  import { WalletMultiButton } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
+  import { signAuthMessage } from "$lib/wallet-helpers";
   import { WORKER_URL } from "$lib/config";
 
   // Simple state
   let mounted = false;
-  let connected = false;
-  let walletAddress = "";
-  let selectedWallet: WalletInfo | null = null;
   let loading = false;
   let error = "";
   let name = "";
   let slug = "";
   let hasExistingAccount = false;
-  let isVerified = false; // Message signing verified
+  let isVerified = false;
 
   // Turnstile
   let turnstileToken = "";
@@ -27,50 +20,22 @@
   let turnstileWidgetId: string | null = null;
   const TURNSTILE_SITE_KEY = "0x4AAAAAACd6patp0WteLo73";
 
+  // ============ REACTIVE WALLET STATE ============
+
+  // Track wallet address reactively from walletStore
+  $: walletAddress = $walletStore?.publicKey?.toBase58() || "";
+  $: connected = !!$walletStore?.connected;
+
+  // When wallet connects, check for existing user
+  $: if (connected && walletAddress && mounted) {
+    checkExistingUser();
+  }
+
   // ============ WALLET FUNCTIONS ============
-
-  // Get Phantom directly
-  function getPhantom() {
-    return (window as any).solana;
-  }
-
-  // Check if wallet already connected on page load
-  async function checkExistingConnection() {
-    // Check Phantom
-    const phantom = getPhantom();
-    if (phantom?.isConnected && phantom.publicKey) {
-      walletAddress = phantom.publicKey.toString();
-      connected = true;
-      await checkExistingUser();
-    }
-  }
-
-  // Connect wallet - simple and direct
-  async function handleConnect(wallet: WalletInfo) {
-    loading = true;
-    error = "";
-    selectedWallet = wallet;
-
-    try {
-      const address = await connectWallet(wallet);
-      if (address) {
-        walletAddress = address;
-        connected = true;
-        await checkExistingUser();
-        // Don't save session yet - must verify with message signing first
-      } else {
-        error = "Connection failed. Please try again.";
-      }
-    } catch (e: any) {
-      error = e?.message || "Failed to connect";
-    } finally {
-      loading = false;
-    }
-  }
 
   // Verify wallet ownership with message signing
   async function verifyOwnership() {
-    if (!walletAddress || !selectedWallet) {
+    if (!walletAddress) {
       error = "Wallet not connected. Please reconnect.";
       return;
     }
@@ -79,12 +44,10 @@
     error = "";
 
     try {
-      // Create a unique message with timestamp
       const timestamp = Date.now();
       const message = `Login to GlianaPay at ${timestamp}`;
 
-      // Ask user to sign the message
-      const result = await signMessage(selectedWallet, message);
+      const result = await signAuthMessage(message);
 
       if (!result) {
         error = "Signature failed. Please try again.";
@@ -111,13 +74,11 @@
 
       if (data.verified) {
         isVerified = true;
-        // Update name and slug from verified response
         if (data.streamer) {
           name = data.streamer.name;
           slug = data.streamer.slug;
         }
         saveSession();
-        // Redirect to dashboard
         window.location.replace("/dashboard");
       } else {
         error = data.error || "Verification failed. Please try again.";
@@ -131,16 +92,9 @@
 
   // Disconnect wallet
   async function handleDisconnect() {
-    const phantom = getPhantom();
-    if (phantom) {
-      try {
-        await phantom.disconnect();
-      } catch {}
-    }
-    // Also clear local state
-    connected = false;
-    walletAddress = "";
-    selectedWallet = null;
+    try {
+      await $walletStore.disconnect();
+    } catch {}
     isVerified = false;
     name = "";
     slug = "";
@@ -151,7 +105,6 @@
 
   // ============ USER FUNCTIONS ============
 
-  // Check if user already exists in DB
   async function checkExistingUser() {
     if (!walletAddress) return;
 
@@ -172,7 +125,7 @@
     }
   }
 
-  // Register new user - also verify ownership
+  // Register new user
   async function register() {
     if (!name || !slug) {
       error = "Please fill in all fields";
@@ -193,7 +146,6 @@
     error = "";
 
     try {
-      // First create the streamer
       const response = await fetch(`${WORKER_URL}/api/streamer/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -220,14 +172,13 @@
 
   // Session management
   function saveSession() {
-    if (!selectedWallet) return;
     localStorage.setItem(
       "gliana_session",
       JSON.stringify({
         walletAddress,
         name,
         slug,
-        walletName: selectedWallet.name,
+        walletName: $walletStore?.wallet?.adapter?.name || "Wallet",
       }),
     );
   }
@@ -279,18 +230,10 @@
 
   // ============ LIFECYCLE ============
 
-  let availableWallets: WalletInfo[] = [];
-
   onMount(() => {
     mounted = true;
     sessionStorage.removeItem("gliana_just_logged_out");
     loadSession();
-
-    // Check for already connected wallet
-    checkExistingConnection();
-
-    // Get available wallets
-    availableWallets = getAvailableWallets();
 
     // Load Turnstile when form becomes visible
     const checkTurnstile = setInterval(() => {
@@ -373,56 +316,21 @@
 
       <div class="glass-card rounded-2xl p-6 border border-white/10">
         {#if !connected}
-          <!-- Connect Wallet -->
-          <div class="space-y-3">
-            {#each availableWallets as wallet}
-              <button
-                on:click={() => handleConnect(wallet)}
-                disabled={loading}
-                class="w-full py-3 px-4 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-xl font-medium transition-all border border-purple-500/50 hover:border-purple-400"
-              >
-                {loading ? "Connecting..." : `Connect ${wallet.name}`}
-              </button>
-            {/each}
+          <!-- Connect Wallet via Wallet Adapter -->
+          <div class="space-y-3 flex flex-col items-center">
+            <p class="text-sm text-zinc-400 mb-2">Select your wallet to continue</p>
+            <WalletMultiButton />
           </div>
 
-          {#if availableWallets.length === 0}
-            <div
-              class="text-left p-4 bg-zinc-900/50 rounded-xl border border-zinc-800"
-            >
-              <p class="text-sm text-zinc-300 font-medium">No wallet found</p>
-              <p class="text-xs text-zinc-500 mt-1">
-                Please install a Solana wallet to continue.
-              </p>
-              <div class="mt-3 flex flex-wrap gap-2">
-                <a
-                  href="https://phantom.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-xs text-purple-400 hover:text-purple-300"
-                  >Phantom</a
-                >
-                <span class="text-zinc-600">•</span>
-                <a
-                  href="https://solflare.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-xs text-purple-400 hover:text-purple-300"
-                  >Solflare</a
-                >
-              </div>
-            </div>
-
-            <div
-              class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left sm:hidden"
-            >
-              <p class="text-xs font-medium text-purple-300 mb-1">Mobile?</p>
-              <p class="text-xs text-zinc-400">
-                Open this page in your wallet's in-app browser for the best
-                experience.
-              </p>
-            </div>
-          {/if}
+          <div
+            class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left sm:hidden"
+          >
+            <p class="text-xs font-medium text-purple-300 mb-1">Mobile?</p>
+            <p class="text-xs text-zinc-400">
+              Open this page in your wallet's in-app browser for the best
+              experience.
+            </p>
+          </div>
         {:else}
           <!-- Connected -->
           <div
@@ -532,8 +440,7 @@
 
 <style>
   .glass-card {
-    background: rgba(17, 17, 19, 0.8);
-    backdrop-filter: blur(12px);
+    background: rgba(17, 17, 19, 0.95);
   }
   @keyframes gradient {
     0%,
