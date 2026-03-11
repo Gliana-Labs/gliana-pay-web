@@ -162,8 +162,8 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Share Your Link</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Share your tipping page link (glianapay.com/tip/your-slug) in your
-              <span class="text-yellow-400 font-medium">stream chat, bio, or panels</span>. Your viewers will need a Solana
+              Share your tipping page link (<span class="text-yellow-400 font-medium">glianapay.com/tip/your-slug</span>) in your
+              stream chat, bio, or panels. Your viewers will need a Solana
               wallet to send tips. On mobile, they should open the link
               inside their wallet's built-in browser.
             </p>
