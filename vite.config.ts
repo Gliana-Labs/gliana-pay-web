@@ -18,4 +18,7 @@ export default defineConfig({
   define: {
     'process.env.BROWSER': true,
   },
+  ssr: {
+    noExternal: ['@solana/wallet-adapter-wallets'],
+  },
 });
