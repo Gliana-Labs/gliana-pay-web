@@ -1,5 +1,6 @@
 name = "gliana-pay-web"
 compatibility_date = "2026-02-21"
+compatibility_flags = ["nodejs_compat"]
 
 [site]
 bucket = ".svelte-kit/cloudflare"

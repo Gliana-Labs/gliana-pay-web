@@ -17,5 +17,6 @@ export default defineConfig({
   },
   define: {
     'process.env.BROWSER': true,
+    'global': 'globalThis',
   },
 });
