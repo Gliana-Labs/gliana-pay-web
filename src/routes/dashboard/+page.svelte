@@ -1115,92 +1115,6 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <!-- Event List Widget -->
-            <div class="glass-card rounded-2xl border border-white/10 p-6">
-              <h2 class="font-bold text-lg mb-1">Event List Widget</h2>
-              <p class="text-sm text-zinc-400 mb-4">
-                Show recent tips or top tippers as a live list on your stream.
-              </p>
-              <div class="grid grid-cols-3 gap-3 mb-4">
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Display</label
-                  >
-                  <select
-                    bind:value={eventListMode}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value="recent">Recent Tips</option>
-                    <option value="top_today">Top Today</option>
-                    <option value="top_week">Top This Week</option>
-                    <option value="top_month">Top This Month</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Show</label>
-                  <select
-                    bind:value={eventListLimit}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value={1}>1 item</option>
-                    <option value={3}>3 items</option>
-                    <option value={5}>5 items</option>
-                    <option value={10}>10 items</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Theme</label>
-                  <select
-                    bind:value={eventListTheme}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                    <option value="minimal">Minimal</option>
-                  </select>
-                </div>
-              </div>
-              <div class="flex items-center gap-2 mb-3">
-                <code
-                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                  >{eventListUrl}</code
-                >
-                <button
-                  on:click={copyEventListUrl}
-                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
-                  >{eventListCopied ? "✓ Copied!" : "Copy"}</button
-                >
-              </div>
-              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">1.</span><span
-                    >In OBS, add a new <strong>Browser Source</strong></span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">2.</span><span
-                    >Paste the URL above</span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">3.</span><span
-                    >Set Width: <strong>400</strong>, Height:
-                    <strong>300</strong></span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">4.</span><span
-                    >Position it anywhere on your scene</span
-                  >
-                </li>
-              </ol>
-              <a
-                href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
-                target="_blank"
-                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
-                ><span>Preview Event List</span></a
-              >
-            </div>
-
             <!-- Goal Bar Widget -->
             <div class="glass-card rounded-2xl border border-white/10 p-6">
               <h2 class="font-bold text-lg mb-1">Tipping Goals</h2>
@@ -1401,6 +1315,92 @@
                 target="_blank"
                 class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline mt-2"
                 ><span>Preview Goal Bar</span></a
+              >
+            </div>
+
+            <!-- Event List Widget -->
+            <div class="glass-card rounded-2xl border border-white/10 p-6">
+              <h2 class="font-bold text-lg mb-1">Event List</h2>
+              <p class="text-sm text-zinc-400 mb-4">
+                Show recent tips or top tippers as a live list on your stream.
+              </p>
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Display</label
+                  >
+                  <select
+                    bind:value={eventListMode}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="recent">Recent Tips</option>
+                    <option value="top_today">Top Today</option>
+                    <option value="top_week">Top This Week</option>
+                    <option value="top_month">Top This Month</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Show</label>
+                  <select
+                    bind:value={eventListLimit}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value={1}>1 item</option>
+                    <option value={3}>3 items</option>
+                    <option value={5}>5 items</option>
+                    <option value={10}>10 items</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Theme</label>
+                  <select
+                    bind:value={eventListTheme}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="minimal">Minimal</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mb-3">
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                  >{eventListUrl}</code
+                >
+                <button
+                  on:click={copyEventListUrl}
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                  >{eventListCopied ? "✓ Copied!" : "Copy"}</button
+                >
+              </div>
+              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">1.</span><span
+                    >In OBS, add a new <strong>Browser Source</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">2.</span><span
+                    >Paste the URL above</span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">3.</span><span
+                    >Set Width: <strong>400</strong>, Height:
+                    <strong>300</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">4.</span><span
+                    >Position it anywhere on your scene</span
+                  >
+                </li>
+              </ol>
+              <a
+                href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
+                target="_blank"
+                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+                ><span>Preview Event List</span></a
               >
             </div>
           </div>
