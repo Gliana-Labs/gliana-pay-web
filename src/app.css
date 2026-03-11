@@ -281,8 +281,14 @@ body::before {
 }
 
 /* Hide the broken "Get Started" button when no wallets installed */
-.wallet-adapter-modal-middle {
-  display: none !important;
+.wallet-adapter-modal-middle-button {
+  background: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%) !important;
+  background-size: 200% 200% !important;
+  animation: gradient 3s ease infinite !important;
+  border-radius: 12px !important;
+  font-family: 'Sora', system-ui, sans-serif !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
 }
 
 /* Glow button */

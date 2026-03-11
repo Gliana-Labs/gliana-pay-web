@@ -1,31 +1,27 @@
 <script lang="ts">
   import '../app.css';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { WalletProvider, ConnectionProvider } from '@aztemi/svelte-on-solana-wallet-adapter-ui';
   import { SOLANA_RPC } from '$lib/config';
+  import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
+  import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
+  import { CoinbaseWalletAdapter } from '@solana/wallet-adapter-wallets';
+  import { TrustWalletAdapter } from '@solana/wallet-adapter-wallets';
+  import { LedgerWalletAdapter } from '@solana/wallet-adapter-wallets';
 
   const localStorageKey = 'walletAdapter';
 
   let observer: MutationObserver;
-  let wallets: any[] = [];
 
-  onMount(async () => {
-    const {
-      PhantomWalletAdapter,
-      SolflareWalletAdapter,
-      CoinbaseWalletAdapter,
-      TrustWalletAdapter,
-      LedgerWalletAdapter,
-    } = await import('@solana/wallet-adapter-wallets');
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new CoinbaseWalletAdapter(),
+    new TrustWalletAdapter(),
+    new LedgerWalletAdapter(),
+  ];
 
-    wallets = [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-      new CoinbaseWalletAdapter(),
-      new TrustWalletAdapter(),
-      new LedgerWalletAdapter(),
-    ];
-
+  onMount(() => {
     // Auto-expand wallet download list when no wallets are installed
     observer = new MutationObserver(() => {
       const modal = document.querySelector('.wallet-adapter-modal');
@@ -48,7 +44,6 @@
     observer.observe(document.body, { childList: true, subtree: true });
   });
 
-  import { onDestroy } from 'svelte';
   onDestroy(() => observer?.disconnect());
 </script>
 
