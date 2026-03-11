@@ -163,20 +163,9 @@
             <h2 class="font-semibold text-base">Share Your Link</h2>
             <p class="text-sm text-zinc-400 mt-1">
               Share your tipping page link (glianapay.com/your-slug) in your
-              stream chat, bio, or panels. Your viewers will need any Solana wallet
-              (like <a
-                href="https://phantom.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-purple-400 hover:underline">Phantom</a
-              >,
-              <a
-                href="https://solflare.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-purple-400 hover:underline">Solflare</a
-              >, Backpack, etc.) to send tips. On mobile, they should open the link inside the wallet's
-              in-app browser.
+              stream chat, bio, or panels. Your viewers will need a Solana
+              wallet to send tips. On mobile, they should open the link
+              inside their wallet's built-in browser.
             </p>
           </div>
         </div>
