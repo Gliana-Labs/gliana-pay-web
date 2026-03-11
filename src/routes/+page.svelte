@@ -120,12 +120,6 @@
         >
       </nav>
 
-      <!-- Right: Login -->
-      <a
-        href="/login"
-        class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-        >Streamer Login</a
-      >
     </div>
 
     <!-- Logo & Title -->
