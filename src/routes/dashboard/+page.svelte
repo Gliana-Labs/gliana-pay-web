@@ -749,8 +749,7 @@
       </div>
     </div>
 
-    <div class="max-w-[1600px] mx-auto px-4 py-8">
-      <!-- Stats -->
+    <div class="max-w-[1600px] mx-auto px-4 py-8 relative z-10">
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <div class="glass-card p-6 rounded-2xl border border-white/10">
           <div class="flex justify-between items-start">
