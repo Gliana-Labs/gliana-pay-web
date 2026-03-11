@@ -101,11 +101,11 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Create Your Tipping Page</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Go to <a href="/login" class="text-purple-400 hover:underline"
+              Go to <a href="/login" class="text-cyan-400 font-medium hover:underline"
                 >/login</a
-              >, connect your Solana wallet, and choose a unique
-              URL slug (e.g., your stream name). This creates your personal
-              tipping page at glianapay.com/your-slug.
+              >, connect your Solana wallet, and choose a <span class="text-purple-400 font-medium">unique
+              URL slug</span> (e.g., your stream name). This creates your personal
+              tipping page at <span class="text-white font-medium">glianapay.com/your-slug</span>.
             </p>
           </div>
         </div>
@@ -122,9 +122,9 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Configure Alert Settings</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              In your dashboard, set the minimum tip amount to trigger alerts
+              In your dashboard, set the <span class="text-pink-400 font-medium">minimum tip amount</span> to trigger alerts
               (default: 0.01 SOL), customize your alert message, and choose a
-              sound effect. You can also upload a custom image to display with
+              <span class="text-purple-400 font-medium">sound effect</span>. You can also upload a <span class="text-cyan-400 font-medium">custom image</span> to display with
               each tip.
             </p>
           </div>
@@ -142,10 +142,10 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Set Up OBS Overlay</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Copy your overlay URL from the dashboard and add it as a Browser
-              Source in OBS. Position it in your scene where you want tips to
+              Copy your <span class="text-cyan-400 font-medium">overlay URL</span> from the dashboard and add it as a <span class="text-pink-400 font-medium">Browser
+              Source</span> in OBS. Position it in your scene where you want tips to
               appear. The overlay shows tipper name, amount, and message in
-              real-time.
+              <span class="text-purple-400 font-medium">real-time</span>.
             </p>
           </div>
         </div>
@@ -162,10 +162,10 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Share Your Link</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Share your tipping page link (glianapay.com/your-slug) in your
-              stream chat, bio, or panels. Your viewers will need a Solana
-              wallet to send tips. On mobile, they should open the link
-              inside their wallet's built-in browser.
+              Share your tipping page link (<span class="text-white font-medium">glianapay.com/your-slug</span>) in your
+              <span class="text-yellow-400 font-medium">stream chat, bio, or panels</span>. Your viewers will need a <span class="text-purple-400 font-medium">Solana
+              wallet</span> to send tips. On mobile, they should open the link
+              inside their wallet's <span class="text-cyan-400 font-medium">built-in browser</span>.
             </p>
           </div>
         </div>
@@ -182,10 +182,10 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Receive Real-Time Alerts</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              When a viewer sends a tip, your OBS overlay instantly shows their
+              When a viewer sends a tip, your OBS overlay <span class="text-cyan-400 font-medium">instantly</span> shows their
               name, the SOL amount, and their message. GlianaPay runs on <span
                 class="text-green-400 font-medium">Solana Mainnet</span
-              > — tips use real SOL!
+              > — <span class="text-purple-400 font-medium">tips use real SOL!</span>
             </p>
           </div>
         </div>
