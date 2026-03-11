@@ -69,6 +69,12 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet" />
+  <script type="module">
+    // Polyfill Buffer before wallet code loads
+    import { Buffer } from 'https://esm.sh/buffer@6.0.3';
+    window.Buffer = Buffer;
+    window.global = window.globalThis;
+  </script>
   %sveltekit.head%
 </head>
 
