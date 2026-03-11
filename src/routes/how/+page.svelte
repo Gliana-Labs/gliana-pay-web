@@ -105,7 +105,7 @@
                 >/login</a
               >, connect your Solana wallet, and choose a <span class="text-purple-400 font-medium">unique
               URL slug</span> (e.g., your stream name). This creates your personal
-              tipping page at glianapay.com/your-slug.
+              tipping page at glianapay.com/tip/your-slug.
             </p>
           </div>
         </div>
@@ -162,7 +162,7 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Share Your Link</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              Share your tipping page link (glianapay.com/your-slug) in your
+              Share your tipping page link (glianapay.com/tip/your-slug) in your
               <span class="text-yellow-400 font-medium">stream chat, bio, or panels</span>. Your viewers will need a Solana
               wallet to send tips. On mobile, they should open the link
               inside their wallet's built-in browser.
