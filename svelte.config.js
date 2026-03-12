@@ -7,10 +7,7 @@ const config = {
   preprocess: vitePreprocess(),
   plugins: [enhancedImages()],
   kit: {
-    adapter: adapter(),
-    output: {
-      preloadStrategy: 'modulepreload'
-    }
+    adapter: adapter()
   }
 };
 
