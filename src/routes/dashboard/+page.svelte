@@ -1,3 +1,7 @@
+<svelte:head>
+  <meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <script lang="ts">
   import FloatingIcons from "$lib/components/FloatingIcons.svelte";
   import { onMount, onDestroy } from "svelte";
