@@ -15,39 +15,23 @@
   let wallets: any[] = [];
 
   onMount(async () => {
-    const [
-      { PhantomWalletAdapter },
-      { SolflareWalletAdapter },
-      { CoinbaseWalletAdapter },
-      { TrustWalletAdapter },
-      { LedgerWalletAdapter },
-      { SolanaMobileWalletAdapter, createDefaultAddressSelector, createDefaultAuthorizationResultCache, createDefaultWalletNotFoundHandler },
-      walletUiImport,
-    ] = await Promise.all([
-      import("@solana/wallet-adapter-phantom"),
-      import("@solana/wallet-adapter-solflare"),
-      import("@solana/wallet-adapter-coinbase"),
-      import("@solana/wallet-adapter-trust"),
-      import("@solana/wallet-adapter-ledger"),
-      import("@solana-mobile/wallet-adapter-mobile"),
-      import("@aztemi/svelte-on-solana-wallet-adapter-ui"),
+    const [walletsImport, walletUiImport] = await Promise.all([
+      import('@solana/wallet-adapter-wallets'),
+      import('@aztemi/svelte-on-solana-wallet-adapter-ui')
     ]);
 
     WalletProvider = walletUiImport.WalletProvider;
     ConnectionProvider = walletUiImport.ConnectionProvider;
 
+    const {
+      PhantomWalletAdapter,
+      SolflareWalletAdapter,
+      CoinbaseWalletAdapter,
+      TrustWalletAdapter,
+      LedgerWalletAdapter,
+    } = walletsImport;
+
     wallets = [
-      new SolanaMobileWalletAdapter({
-        addressSelector: createDefaultAddressSelector(),
-        appIdentity: {
-          name: 'GlianaPay',
-          uri: 'https://glianapay.com',
-          icon: 'favicon.ico',
-        },
-        authorizationResultCache: createDefaultAuthorizationResultCache(),
-        cluster: 'mainnet-beta',
-        onWalletNotFound: createDefaultWalletNotFoundHandler(),
-      }),
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
       new CoinbaseWalletAdapter(),
