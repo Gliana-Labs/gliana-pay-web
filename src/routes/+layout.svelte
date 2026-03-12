@@ -1,14 +1,14 @@
 <script lang="ts">
-  import '../app.css';
-  import { onMount, onDestroy } from 'svelte';
-  import { page } from '$app/stores';
-  import { SOLANA_RPC } from '$lib/config';
+  import "../app.css";
+  import { onMount, onDestroy } from "svelte";
+  import { page } from "$app/stores";
+  import { SOLANA_RPC } from "$lib/config";
 
   let WalletProvider: any = null;
   let ConnectionProvider: any = null;
 
-  const localStorageKey = 'walletAdapter';
-  const BASE_URL = 'https://dev.glianapay.com';
+  const localStorageKey = "walletAdapter";
+  const BASE_URL = "https://dev.glianapay.com";
   $: canonicalUrl = `${BASE_URL}${$page.url.pathname}`;
 
   let observer: MutationObserver;
@@ -21,20 +21,33 @@
       { CoinbaseWalletAdapter },
       { TrustWalletAdapter },
       { LedgerWalletAdapter },
-      walletUiImport
+      { SolanaMobileWalletAdapter, createDefaultAddressSelector, createDefaultAuthorizationResultCache, createDefaultWalletNotFoundHandler },
+      walletUiImport,
     ] = await Promise.all([
-      import('@solana/wallet-adapter-phantom'),
-      import('@solana/wallet-adapter-solflare'),
-      import('@solana/wallet-adapter-coinbase'),
-      import('@solana/wallet-adapter-trust'),
-      import('@solana/wallet-adapter-ledger'),
-      import('@aztemi/svelte-on-solana-wallet-adapter-ui')
+      import("@solana/wallet-adapter-phantom"),
+      import("@solana/wallet-adapter-solflare"),
+      import("@solana/wallet-adapter-coinbase"),
+      import("@solana/wallet-adapter-trust"),
+      import("@solana/wallet-adapter-ledger"),
+      import("@solana-mobile/wallet-adapter-mobile"),
+      import("@aztemi/svelte-on-solana-wallet-adapter-ui"),
     ]);
 
     WalletProvider = walletUiImport.WalletProvider;
     ConnectionProvider = walletUiImport.ConnectionProvider;
 
     wallets = [
+      new SolanaMobileWalletAdapter({
+        addressSelector: createDefaultAddressSelector(),
+        appIdentity: {
+          name: 'GlianaPay',
+          uri: 'https://glianapay.com',
+          icon: 'favicon.ico',
+        },
+        authorizationResultCache: createDefaultAuthorizationResultCache(),
+        cluster: 'mainnet-beta',
+        onWalletNotFound: createDefaultWalletNotFoundHandler(),
+      }),
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
       new CoinbaseWalletAdapter(),
@@ -44,18 +57,22 @@
 
     // Auto-expand wallet download list when no wallets are installed
     observer = new MutationObserver(() => {
-      const modal = document.querySelector('.wallet-adapter-modal');
+      const modal = document.querySelector(".wallet-adapter-modal");
       if (!modal) return;
 
-      const noWalletSection = modal.querySelector('.wallet-adapter-modal-middle');
+      const noWalletSection = modal.querySelector(
+        ".wallet-adapter-modal-middle",
+      );
       if (!noWalletSection) return;
 
-      const toggleBtn = modal.querySelector('.wallet-adapter-modal-list-more') as HTMLElement | null;
+      const toggleBtn = modal.querySelector(
+        ".wallet-adapter-modal-list-more",
+      ) as HTMLElement | null;
       if (toggleBtn) {
-        if (!modal.querySelector('.wallet-adapter-modal-list')) {
+        if (!modal.querySelector(".wallet-adapter-modal-list")) {
           toggleBtn.click();
         }
-        toggleBtn.style.display = 'none';
+        toggleBtn.style.display = "none";
       }
     });
     observer.observe(document.body, { childList: true, subtree: true });
@@ -69,7 +86,7 @@
   <ConnectionProvider endpoint={SOLANA_RPC} />
 {/if}
 <svelte:head>
-  <link rel="canonical" href={canonicalUrl} />
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <slot />
