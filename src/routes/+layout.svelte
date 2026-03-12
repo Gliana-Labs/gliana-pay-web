@@ -3,10 +3,10 @@
   import { onMount, onDestroy } from "svelte";
   import { page } from "$app/stores";
   import { SOLANA_RPC } from "$lib/config";
-
-  let WalletProvider: any = null;
-  let ConnectionProvider: any = null;
-
+  import {
+    WalletProvider,
+    ConnectionProvider,
+  } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   const localStorageKey = "walletAdapter";
   const BASE_URL = "https://dev.glianapay.com";
   $: canonicalUrl = `${BASE_URL}${$page.url.pathname}`;
@@ -15,21 +15,13 @@
   let wallets: any[] = [];
 
   onMount(async () => {
-    const [walletsImport, walletUiImport] = await Promise.all([
-      import('@solana/wallet-adapter-wallets'),
-      import('@aztemi/svelte-on-solana-wallet-adapter-ui')
-    ]);
-
-    WalletProvider = walletUiImport.WalletProvider;
-    ConnectionProvider = walletUiImport.ConnectionProvider;
-
     const {
       PhantomWalletAdapter,
       SolflareWalletAdapter,
       CoinbaseWalletAdapter,
       TrustWalletAdapter,
       LedgerWalletAdapter,
-    } = walletsImport;
+    } = await import("@solana/wallet-adapter-wallets");
 
     wallets = [
       new PhantomWalletAdapter(),
@@ -65,10 +57,9 @@
   onDestroy(() => observer?.disconnect());
 </script>
 
-{#if WalletProvider && ConnectionProvider}
-  <WalletProvider {localStorageKey} {wallets} autoConnect />
-  <ConnectionProvider endpoint={SOLANA_RPC} />
-{/if}
+<WalletProvider {localStorageKey} {wallets} autoConnect />
+<ConnectionProvider endpoint={SOLANA_RPC} />
+
 <svelte:head>
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
