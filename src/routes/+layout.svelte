@@ -1,10 +1,13 @@
 <script lang="ts">
   import '../app.css';
   import { onMount, onDestroy } from 'svelte';
+  import { page } from '$app/stores';
   import { WalletProvider, ConnectionProvider } from '@aztemi/svelte-on-solana-wallet-adapter-ui';
   import { SOLANA_RPC } from '$lib/config';
 
   const localStorageKey = 'walletAdapter';
+  const BASE_URL = 'https://dev.glianapay.com';
+  $: canonicalUrl = `${BASE_URL}${$page.url.pathname}`;
 
   let observer: MutationObserver;
   let wallets: any[] = [];
@@ -50,4 +53,8 @@
 
 <WalletProvider {localStorageKey} {wallets} autoConnect />
 <ConnectionProvider endpoint={SOLANA_RPC} />
+<svelte:head>
+  <meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <slot />
