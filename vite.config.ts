@@ -41,4 +41,22 @@ export default defineConfig({
     'process.env.BROWSER': true,
     'global': 'globalThis',
   },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('@solana/wallet-adapter-wallets')) {
+            return 'solana-wallets';
+          }
+          if (id.includes('@solana/web3.js')) {
+            return 'solana-web3';
+          }
+          if (id.includes('@aztemi/svelte-on-solana-wallet-adapter-ui')) {
+            return 'solana-wallet-ui';
+          }
+        }
+      }
+    }
+  }
 });
