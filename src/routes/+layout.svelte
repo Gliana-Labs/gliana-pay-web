@@ -1,38 +1,27 @@
 <script lang="ts">
-  import '../app.css';
-  import { onMount, onDestroy } from 'svelte';
-  import { page } from '$app/stores';
-  import { SOLANA_RPC } from '$lib/config';
-
-  let WalletProvider: any = null;
-  let ConnectionProvider: any = null;
-
-  const localStorageKey = 'walletAdapter';
-  const BASE_URL = 'https://glianapay.com';
+  import "../app.css";
+  import { onMount, onDestroy } from "svelte";
+  import { page } from "$app/stores";
+  import { SOLANA_RPC } from "$lib/config";
+  import {
+    WalletProvider,
+    ConnectionProvider,
+  } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
+  const localStorageKey = "walletAdapter";
+  const BASE_URL = "https://glianapay.com";
   $: canonicalUrl = `${BASE_URL}${$page.url.pathname}`;
 
   let observer: MutationObserver;
   let wallets: any[] = [];
 
   onMount(async () => {
-    const [
-      { PhantomWalletAdapter },
-      { SolflareWalletAdapter },
-      { CoinbaseWalletAdapter },
-      { TrustWalletAdapter },
-      { LedgerWalletAdapter },
-      walletUiImport
-    ] = await Promise.all([
-      import('@solana/wallet-adapter-phantom'),
-      import('@solana/wallet-adapter-solflare'),
-      import('@solana/wallet-adapter-coinbase'),
-      import('@solana/wallet-adapter-trust'),
-      import('@solana/wallet-adapter-ledger'),
-      import('@aztemi/svelte-on-solana-wallet-adapter-ui')
-    ]);
-
-    WalletProvider = walletUiImport.WalletProvider;
-    ConnectionProvider = walletUiImport.ConnectionProvider;
+    const {
+      PhantomWalletAdapter,
+      SolflareWalletAdapter,
+      CoinbaseWalletAdapter,
+      TrustWalletAdapter,
+      LedgerWalletAdapter,
+    } = await import("@solana/wallet-adapter-wallets");
 
     wallets = [
       new PhantomWalletAdapter(),
@@ -44,18 +33,22 @@
 
     // Auto-expand wallet download list when no wallets are installed
     observer = new MutationObserver(() => {
-      const modal = document.querySelector('.wallet-adapter-modal');
+      const modal = document.querySelector(".wallet-adapter-modal");
       if (!modal) return;
 
-      const noWalletSection = modal.querySelector('.wallet-adapter-modal-middle');
+      const noWalletSection = modal.querySelector(
+        ".wallet-adapter-modal-middle",
+      );
       if (!noWalletSection) return;
 
-      const toggleBtn = modal.querySelector('.wallet-adapter-modal-list-more') as HTMLElement | null;
+      const toggleBtn = modal.querySelector(
+        ".wallet-adapter-modal-list-more",
+      ) as HTMLElement | null;
       if (toggleBtn) {
-        if (!modal.querySelector('.wallet-adapter-modal-list')) {
+        if (!modal.querySelector(".wallet-adapter-modal-list")) {
           toggleBtn.click();
         }
-        toggleBtn.style.display = 'none';
+        toggleBtn.style.display = "none";
       }
     });
     observer.observe(document.body, { childList: true, subtree: true });
@@ -64,10 +57,9 @@
   onDestroy(() => observer?.disconnect());
 </script>
 
-{#if WalletProvider && ConnectionProvider}
-  <WalletProvider {localStorageKey} {wallets} autoConnect />
-  <ConnectionProvider endpoint={SOLANA_RPC} />
-{/if}
+<WalletProvider {localStorageKey} {wallets} autoConnect />
+<ConnectionProvider endpoint={SOLANA_RPC} />
+
 <svelte:head>
   <link rel="canonical" href={canonicalUrl} />
 </svelte:head>
