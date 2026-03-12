@@ -1,6 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 function removeRenderBlockingFonts() {
   return {
@@ -16,7 +17,15 @@ function removeRenderBlockingFonts() {
 }
 
 export default defineConfig({
-  plugins: [removeRenderBlockingFonts(), tailwindcss(), sveltekit()],
+  plugins: [
+    removeRenderBlockingFonts(),
+    tailwindcss(),
+    sveltekit(),
+    visualizer({
+      emitFile: true,
+      filename: 'stats.html',
+    })
+  ],
   server: {
     proxy: {
       '/api': {
