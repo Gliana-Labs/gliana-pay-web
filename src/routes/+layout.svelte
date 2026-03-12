@@ -15,21 +15,24 @@
   let wallets: any[] = [];
 
   onMount(async () => {
-    const [walletsImport, walletUiImport] = await Promise.all([
-      import('@solana/wallet-adapter-wallets'),
+    const [
+      { PhantomWalletAdapter },
+      { SolflareWalletAdapter },
+      { CoinbaseWalletAdapter },
+      { TrustWalletAdapter },
+      { LedgerWalletAdapter },
+      walletUiImport
+    ] = await Promise.all([
+      import('@solana/wallet-adapter-phantom'),
+      import('@solana/wallet-adapter-solflare'),
+      import('@solana/wallet-adapter-coinbase'),
+      import('@solana/wallet-adapter-trust'),
+      import('@solana/wallet-adapter-ledger'),
       import('@aztemi/svelte-on-solana-wallet-adapter-ui')
     ]);
 
     WalletProvider = walletUiImport.WalletProvider;
     ConnectionProvider = walletUiImport.ConnectionProvider;
-
-    const {
-      PhantomWalletAdapter,
-      SolflareWalletAdapter,
-      CoinbaseWalletAdapter,
-      TrustWalletAdapter,
-      LedgerWalletAdapter,
-    } = await import('@solana/wallet-adapter-wallets');
 
     wallets = [
       new PhantomWalletAdapter(),

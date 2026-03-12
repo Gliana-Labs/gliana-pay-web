@@ -46,9 +46,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes('@solana/wallet-adapter-wallets')) {
-            return 'solana-wallets';
-          }
           if (id.includes('@solana/web3.js')) {
             return 'solana-web3';
           }
