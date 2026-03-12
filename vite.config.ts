@@ -58,12 +58,6 @@ export default defineConfig({
           if (id.includes('@walletconnect') || id.includes('@reown/appkit')) {
             return 'walletconnect';
           }
-          if (id.includes('@solana-mobile') || id.includes('mobile-wallet-adapter')) {
-            return 'solana-mobile';
-          }
-          if (id.includes('node_modules/buffer') || id.includes('node_modules/bn.js') || id.includes('bs58')) {
-            return 'solana-crypto';
-          }
         }
       }
     }
