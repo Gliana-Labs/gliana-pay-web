@@ -2,8 +2,21 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 
+function removeRenderBlockingFonts() {
+  return {
+    name: 'remove-render-blocking-fonts',
+    enforce: 'pre' as const,
+    transform(code: string, id: string) {
+      if (id.includes('@aztemi/svelte-on-solana-wallet-adapter-ui/styles.css')) {
+        return code.replace(/@import url\('https:\/\/fonts\.googleapis\.com\/css2\?family=DM\+Sans:[^']+'\);/g, '');
+      }
+      return null;
+    }
+  };
+}
+
 export default defineConfig({
-  plugins: [tailwindcss(), sveltekit()],
+  plugins: [removeRenderBlockingFonts(), tailwindcss(), sveltekit()],
   server: {
     proxy: {
       '/api': {

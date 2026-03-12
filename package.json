@@ -40,6 +40,7 @@
     "@solana/wallet-adapter-wallets": "^0.19.37",
     "@solana/wallet-standard": "^1.1.4",
     "@solana/web3.js": "^1.95.4",
+    "buffer": "^6.0.3",
     "obscenity": "^0.4.6",
     "qrcode": "^1.5.4"
   },
