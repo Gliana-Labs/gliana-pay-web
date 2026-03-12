@@ -1,5 +1,6 @@
 <svelte:head>
   <meta name="robots" content="noindex, nofollow" />
+  <title>Dashboard - GlianaPay</title>
 </svelte:head>
 
 <script lang="ts">
@@ -694,10 +695,6 @@
     }
   });
 </script>
-
-<svelte:head>
-  <title>Dashboard - GlianaPay</title>
-</svelte:head>
 
 {#if !loading}
   <div
