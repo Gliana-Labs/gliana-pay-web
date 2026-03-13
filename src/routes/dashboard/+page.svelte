@@ -1,8 +1,3 @@
-<svelte:head>
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Dashboard - GlianaPay</title>
-</svelte:head>
-
 <script lang="ts">
   import FloatingIcons from "$lib/components/FloatingIcons.svelte";
   import { onMount, onDestroy } from "svelte";
@@ -69,7 +64,7 @@
   let eventListTheme = "dark";
   let eventListCopied = false;
 
-  $: eventListUrl = `https://glianapay.com/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
+  $: eventListUrl = `https://dev.glianapay.com/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
 
   // Tipping Goals
   let goals: any[] = [];
@@ -87,7 +82,7 @@
   let goalBarColor = "a855f7";
   let goalBarCopied = false;
 
-  $: goalBarUrl = `https://glianapay.com/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
+  $: goalBarUrl = `https://dev.glianapay.com/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
 
   // Cloudflare Status
   let cfStatus:
@@ -326,7 +321,7 @@
   // Copy state
   let copied = false;
   async function copyPageUrl() {
-    const url = `https://glianapay.com/tip/${slug}`;
+    const url = `https://dev.glianapay.com/tip/${slug}`;
     await navigator.clipboard.writeText(url);
     copied = true;
     setTimeout(() => (copied = false), 2000);
@@ -696,6 +691,11 @@
   });
 </script>
 
+<svelte:head>
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dashboard - GlianaPay</title>
+</svelte:head>
+
 {#if !loading}
   <div
     class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden"
@@ -1055,14 +1055,14 @@
                 <div class="flex items-center gap-2">
                   <code
                     class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                    >https://glianapay.com/overlay/{slug}{soundEnabled
+                    >https://dev.glianapay.com/overlay/{slug}{soundEnabled
                       ? "?sound=1"
                       : ""}</code
                   >
                   <button
                     on:click={() =>
                       navigator.clipboard.writeText(
-                        `https://glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
+                        `https://dev.glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
                       )}
                     class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
                     >Copy</button
