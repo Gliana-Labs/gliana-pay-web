@@ -918,11 +918,11 @@
             >
               <div class="flex items-center gap-2 mb-6 px-1">
                 <span class="text-xl">👑</span>
-                <h3 class="font-bold text-lg text-white">
+                <h2 class="font-bold text-lg text-white">
                   Top Supporters <span class="text-xs font-normal text-zinc-500"
                     >(7 Days)</span
                   >
-                </h3>
+                </h2>
               </div>
 
               <div class="flex flex-col gap-3">
@@ -975,7 +975,7 @@
               class="glass-card rounded-2xl p-6 border border-white/10 text-center flex flex-col items-center justify-center min-h-[200px] opacity-70 border-dashed"
             >
               <span class="text-4xl mb-3">💫</span>
-              <h3 class="font-bold text-white mb-1">No tips yet</h3>
+              <h2 class="font-bold text-white mb-1">No tips yet</h2>
               <p class="text-sm text-zinc-400">
                 Be the first to support {streamer?.name}!
               </p>

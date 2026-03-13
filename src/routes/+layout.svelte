@@ -64,4 +64,6 @@
   <link rel="canonical" href={canonicalUrl} />
 </svelte:head>
 
-<slot />
+<main>
+  <slot />
+</main>
