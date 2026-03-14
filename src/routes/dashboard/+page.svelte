@@ -664,8 +664,10 @@
   // CSV Export
   let showExportModal = false;
   let exportLoading = false;
-  const today = new Date().toISOString().split('T')[0];
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
   let exportFrom = thirtyDaysAgo;
   let exportTo = today;
 
@@ -680,8 +682,8 @@
       }
 
       const params = new URLSearchParams();
-      if (exportFrom) params.set('from', exportFrom);
-      if (exportTo) params.set('to', exportTo);
+      if (exportFrom) params.set("from", exportFrom);
+      if (exportTo) params.set("to", exportTo);
 
       const res = await fetch(
         `${WORKER_URL}/api/streamer/${slug}/donations/export?${params.toString()}`,
@@ -689,26 +691,26 @@
           headers: {
             Authorization: `Bearer ${walletAddress}:${sig.signature}`,
           },
-        }
+        },
       );
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({})) as any;
-        showToast(err.error || 'Export failed', 'error');
+        const err = (await res.json().catch(() => ({}))) as any;
+        showToast(err.error || "Export failed", "error");
         return;
       }
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `glianapay-tips-${slug}-${today}.csv`;
       a.click();
       URL.revokeObjectURL(url);
       showExportModal = false;
-      showToast('CSV downloaded!', 'success');
+      showToast("CSV downloaded!", "success");
     } catch (e) {
-      showToast('Export failed', 'error');
+      showToast("Export failed", "error");
     } finally {
       exportLoading = false;
     }
@@ -934,14 +936,26 @@
           <div
             class="glass-card rounded-2xl border border-white/10 overflow-hidden"
           >
-            <div class="p-4 border-b border-white/10 flex items-center justify-between">
+            <div
+              class="p-4 border-b border-white/10 flex items-center justify-between"
+            >
               <h2 class="font-bold text-lg">Recent Tips</h2>
               <button
                 on:click={() => (showExportModal = true)}
                 class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 hover:text-purple-300 border border-purple-500/20 transition-all cursor-pointer"
               >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
                 </svg>
                 Export CSV
               </button>
@@ -1083,97 +1097,90 @@
               </div>
             </div>
 
-            <!-- OBS Overlay -->
+            <!-- Event List Widget -->
             <div class="glass-card rounded-2xl border border-white/10 p-6">
-              <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
-              <p class="text-sm text-zinc-400 mb-3">
-                How to add tip alerts to your stream:
+              <h2 class="font-bold text-lg mb-1">Event List</h2>
+              <p class="text-sm text-zinc-400 mb-4">
+                Show recent tips or top tippers as a live list on your stream.
               </p>
-              <ol class="text-sm text-zinc-300 space-y-1 mb-4">
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Display</label
+                  >
+                  <select
+                    bind:value={eventListMode}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="recent">Recent Tips</option>
+                    <option value="top_today">Top Today</option>
+                    <option value="top_week">Top This Week</option>
+                    <option value="top_month">Top This Month</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Show</label>
+                  <select
+                    bind:value={eventListLimit}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value={1}>1 item</option>
+                    <option value={3}>3 items</option>
+                    <option value={5}>5 items</option>
+                    <option value={10}>10 items</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400 block mb-1">Theme</label>
+                  <select
+                    bind:value={eventListTheme}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="minimal">Minimal</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mb-3">
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                  >{eventListUrl}</code
+                >
+                <button
+                  on:click={copyEventListUrl}
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                  >{eventListCopied ? "✓ Copied!" : "Copy"}</button
+                >
+              </div>
+              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">1.</span><span
-                    >In OBS, add a <strong>Browser Source</strong></span
+                    >In OBS, add a new <strong>Browser Source</strong></span
                   >
                 </li>
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">2.</span><span
-                    >Toggle sound below, copy URL, paste in Browser Source</span
+                    >Paste the URL above</span
                   >
                 </li>
-              </ol>
-              <div class="mb-3">
-                <label
-                  class="flex items-center gap-2 text-sm text-zinc-300 mb-2"
-                >
-                  <input
-                    type="checkbox"
-                    bind:checked={soundEnabled}
-                    class="w-4 h-4 accent-purple-500"
-                  />
-                  Enable sound alerts
-                </label>
-              </div>
-              <div class="space-y-2 mb-3">
-                <div class="flex items-center gap-2">
-                  <code
-                    class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                    >https://glianapay.com/overlay/{slug}{soundEnabled
-                      ? "?sound=1"
-                      : ""}</code
-                  >
-                  <button
-                    on:click={() =>
-                      navigator.clipboard.writeText(
-                        `https://glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
-                      )}
-                    class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
-                    >Copy</button
-                  >
-                </div>
-              </div>
-              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">3.</span><span
-                    >Set Width: <strong>600</strong>, Height:
-                    <strong>400</strong></span
+                    >Set Width: <strong>400</strong>, Height:
+                    <strong>300</strong></span
                   >
                 </li>
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">4.</span><span
-                    >Check "Shutdown source when not visible"</span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">5.</span><span
-                    >Position the overlay in your scene</span
+                    >Position it anywhere on your scene</span
                   >
                 </li>
               </ol>
-              <div class="flex flex-wrap items-center gap-3 mt-3">
-                <a
-                  href="/overlay/{slug}?sound=1&preview=1"
-                  target="_blank"
-                  class="inline-flex items-center text-sm text-cyan-400 hover:underline"
-                  ><span>Preview Overlay</span></a
-                >
-                <button
-                  on:click={testAlertWS}
-                  disabled={testInProgress}
-                  class="inline-flex items-center text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                  ><span>{testInProgress ? "Sending..." : "Test Alert"}</span
-                  ></button
-                >
-                <button
-                  on:click={skipCurrentAlert}
-                  class="inline-flex items-center text-sm text-red-400 hover:underline"
-                  ><span>Skip Alert</span></button
-                >
-              </div>
-              <p class="text-xs text-zinc-500 mt-3">
-                <span class="text-yellow-500">Tip:</span> If settings don't update,
-                right-click the Browser Source in OBS and select "Interact" then
-                refresh the page.
-              </p>
+              <a
+                href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
+                target="_blank"
+                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+                ><span>Preview Event List</span></a
+              >
             </div>
           </div>
 
@@ -1381,90 +1388,97 @@
               >
             </div>
 
-            <!-- Event List Widget -->
+            <!-- OBS Overlay -->
             <div class="glass-card rounded-2xl border border-white/10 p-6">
-              <h2 class="font-bold text-lg mb-1">Event List</h2>
-              <p class="text-sm text-zinc-400 mb-4">
-                Show recent tips or top tippers as a live list on your stream.
+              <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
+              <p class="text-sm text-zinc-400 mb-3">
+                How to add tip alerts to your stream:
               </p>
-              <div class="grid grid-cols-3 gap-3 mb-4">
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Display</label
-                  >
-                  <select
-                    bind:value={eventListMode}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value="recent">Recent Tips</option>
-                    <option value="top_today">Top Today</option>
-                    <option value="top_week">Top This Week</option>
-                    <option value="top_month">Top This Month</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Show</label>
-                  <select
-                    bind:value={eventListLimit}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value={1}>1 item</option>
-                    <option value={3}>3 items</option>
-                    <option value={5}>5 items</option>
-                    <option value={10}>10 items</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-xs text-zinc-400 block mb-1">Theme</label>
-                  <select
-                    bind:value={eventListTheme}
-                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
-                  >
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                    <option value="minimal">Minimal</option>
-                  </select>
-                </div>
-              </div>
-              <div class="flex items-center gap-2 mb-3">
-                <code
-                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                  >{eventListUrl}</code
-                >
-                <button
-                  on:click={copyEventListUrl}
-                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
-                  >{eventListCopied ? "✓ Copied!" : "Copy"}</button
-                >
-              </div>
-              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+              <ol class="text-sm text-zinc-300 space-y-1 mb-4">
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">1.</span><span
-                    >In OBS, add a new <strong>Browser Source</strong></span
+                    >In OBS, add a <strong>Browser Source</strong></span
                   >
                 </li>
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">2.</span><span
-                    >Paste the URL above</span
+                    >Toggle sound below, copy URL, paste in Browser Source</span
                   >
                 </li>
+              </ol>
+              <div class="mb-3">
+                <label
+                  class="flex items-center gap-2 text-sm text-zinc-300 mb-2"
+                >
+                  <input
+                    type="checkbox"
+                    bind:checked={soundEnabled}
+                    class="w-4 h-4 accent-purple-500"
+                  />
+                  Enable sound alerts
+                </label>
+              </div>
+              <div class="space-y-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <code
+                    class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                    >https://glianapay.com/overlay/{slug}{soundEnabled
+                      ? "?sound=1"
+                      : ""}</code
+                  >
+                  <button
+                    on:click={() =>
+                      navigator.clipboard.writeText(
+                        `https://glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
+                      )}
+                    class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                    >Copy</button
+                  >
+                </div>
+              </div>
+              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">3.</span><span
-                    >Set Width: <strong>400</strong>, Height:
-                    <strong>300</strong></span
+                    >Set Width: <strong>600</strong>, Height:
+                    <strong>400</strong></span
                   >
                 </li>
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">4.</span><span
-                    >Position it anywhere on your scene</span
+                    >Check "Shutdown source when not visible"</span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">5.</span><span
+                    >Position the overlay in your scene</span
                   >
                 </li>
               </ol>
-              <a
-                href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
-                target="_blank"
-                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
-                ><span>Preview Event List</span></a
-              >
+              <div class="flex flex-wrap items-center gap-3 mt-3">
+                <a
+                  href="/overlay/{slug}?sound=1&preview=1"
+                  target="_blank"
+                  class="inline-flex items-center text-sm text-cyan-400 hover:underline"
+                  ><span>Preview Overlay</span></a
+                >
+                <button
+                  on:click={testAlertWS}
+                  disabled={testInProgress}
+                  class="inline-flex items-center text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                  ><span>{testInProgress ? "Sending..." : "Test Alert"}</span
+                  ></button
+                >
+                <button
+                  on:click={skipCurrentAlert}
+                  class="inline-flex items-center text-sm text-red-400 hover:underline"
+                  ><span>Skip Alert</span></button
+                >
+              </div>
+              <p class="text-xs text-zinc-500 mt-3">
+                <span class="text-yellow-500">Tip:</span> If settings don't update,
+                right-click the Browser Source in OBS and select "Interact" then
+                refresh the page.
+              </p>
             </div>
           </div>
         </div>
@@ -1608,19 +1622,32 @@
             class="text-zinc-500 hover:text-white transition-colors cursor-pointer"
             aria-label="Close"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         <p class="text-sm text-zinc-400 mb-5">
-          Download your tip history as a CSV file — compatible with Excel, Google Sheets, and all tax/accounting software.
+          Download your tip history as a CSV file — compatible with Excel,
+          Google Sheets, and all tax/accounting software.
         </p>
 
         <div class="space-y-4 mb-6">
           <div>
-            <label for="export-from" class="block text-xs text-zinc-400 mb-1.5">From</label>
+            <label for="export-from" class="block text-xs text-zinc-400 mb-1.5"
+              >From</label
+            >
             <input
               id="export-from"
               type="date"
@@ -1630,20 +1657,25 @@
             />
           </div>
           <div>
-            <label for="export-to" class="block text-xs text-zinc-400 mb-1.5">To</label>
+            <label for="export-to" class="block text-xs text-zinc-400 mb-1.5"
+              >To</label
+            >
             <input
               id="export-to"
               type="date"
               bind:value={exportTo}
-              min={exportFrom || ''}
+              min={exportFrom || ""}
               max={today}
               class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-colors"
             />
           </div>
         </div>
 
-        <div class="text-xs text-zinc-500 mb-5 p-3 bg-purple-500/5 border border-purple-500/20 rounded-xl">
-          📋 Columns exported: Date, Time, Sender Name, Amount, Currency, Amount USD, Message
+        <div
+          class="text-xs text-zinc-500 mb-5 p-3 bg-purple-500/5 border border-purple-500/20 rounded-xl"
+        >
+          📋 Columns exported: Date, Time, Sender Name, Amount, Currency, Amount
+          USD, Message
         </div>
 
         <div class="flex gap-3">
@@ -1660,13 +1692,34 @@
           >
             {#if exportLoading}
               <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
               Exporting...
             {:else}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
               </svg>
               Download CSV
             {/if}
