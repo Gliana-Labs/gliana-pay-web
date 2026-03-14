@@ -1061,7 +1061,7 @@
                   id="name"
                   bind:value={name}
                   placeholder="Anonymous"
-                  maxlength="50"
+                  maxlength="30"
                   class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50"
                 />
               </div>
@@ -1076,7 +1076,7 @@
                   id="message"
                   bind:value={message}
                   placeholder="Say something nice..."
-                  maxlength="200"
+                  maxlength="255"
                   rows="2"
                   class="w-full px-4 py-3 bg-zinc-900/80 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50 resize-none"
                 ></textarea>
