@@ -1643,7 +1643,7 @@
         </div>
 
         <div class="text-xs text-zinc-500 mb-5 p-3 bg-purple-500/5 border border-purple-500/20 rounded-xl">
-          📋 Columns exported: Date, Time, Sender Name, Wallet, Amount, Currency, Amount USD, Message, TX Hash
+          📋 Columns exported: Date, Time, Sender Name, Amount, Currency, Amount USD, Message
         </div>
 
         <div class="flex gap-3">
