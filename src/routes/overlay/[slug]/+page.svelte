@@ -118,7 +118,8 @@
     }
   }
 
-  const ALERT_DURATION = 5000;
+  const BASE_ALERT_DURATION = 5000;
+  const MAX_ALERT_DURATION = 15000;
 
   function formatAmount(
     smallestUnits: number,
@@ -330,6 +331,14 @@
       playSound();
     }
 
+    // Calculate dynamic duration based on message length
+    // 5 seconds base + ~90ms per character, capped at 15 seconds
+    let displayDuration = BASE_ALERT_DURATION;
+    if (tipData.message) {
+      const extraTime = tipData.message.length * 90;
+      displayDuration = Math.min(BASE_ALERT_DURATION + extraTime, MAX_ALERT_DURATION);
+    }
+
     // After alert duration, show next in queue
     alertTimeout = setTimeout(() => {
       showAlert = false;
@@ -338,7 +347,7 @@
         isShowingAlert = false;
         processQueue();
       }, 500);
-    }, ALERT_DURATION);
+    }, displayDuration);
   }
 
   function playSound() {
