@@ -9,7 +9,9 @@ Frontend application for GlianaPay - a Web3 tipping platform for streamers built
 - **QR Code Payments** - Easy mobile payments via QR scan
 - **Real-time Alerts** - Instant notifications on OBS overlay
 - **Dashboard** - Streamer stats, settings, and management
-- **Devnet Mode** - Test with fake SOL before going live
+- **SOL & USDC** - Accept both Solana and USDC payments
+- **OBS Widgets** - Goal Bar and Event List overlays
+- **Export Data** - Download tipping data as CSV for tax reporting
 
 ## Getting Started
 

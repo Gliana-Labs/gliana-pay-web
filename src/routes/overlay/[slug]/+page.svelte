@@ -590,6 +590,11 @@
               <div class="flex-shrink-0 text-3xl animate-bounce">🪙</div>
             </div>
 
+            <!-- Powered by -->
+            <div class="absolute bottom-1 right-3 text-[10px] text-white/30 font-medium">
+              powered by glianapay
+            </div>
+
             <!-- Sparkle decorations -->
             <div class="absolute top-2 right-8">
               <span
