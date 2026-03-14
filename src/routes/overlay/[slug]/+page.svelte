@@ -549,7 +549,7 @@
 
             <!-- Main Card -->
             <div
-              class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl p-5 shadow-2xl"
+              class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl px-5 pt-5 pb-7 shadow-2xl"
             >
               <!-- Animated gradient border -->
               <div
