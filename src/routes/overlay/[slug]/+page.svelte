@@ -118,7 +118,8 @@
     }
   }
 
-  const ALERT_DURATION = 5000;
+  const BASE_ALERT_DURATION = 5000;
+  const MAX_ALERT_DURATION = 15000;
 
   function formatAmount(
     smallestUnits: number,
@@ -330,6 +331,14 @@
       playSound();
     }
 
+    // Calculate dynamic duration based on message length
+    // 5 seconds base + ~90ms per character, capped at 15 seconds
+    let displayDuration = BASE_ALERT_DURATION;
+    if (tipData.message) {
+      const extraTime = tipData.message.length * 90;
+      displayDuration = Math.min(BASE_ALERT_DURATION + extraTime, MAX_ALERT_DURATION);
+    }
+
     // After alert duration, show next in queue
     alertTimeout = setTimeout(() => {
       showAlert = false;
@@ -338,7 +347,7 @@
         isShowingAlert = false;
         processQueue();
       }, 500);
-    }, ALERT_DURATION);
+    }, displayDuration);
   }
 
   function playSound() {
@@ -489,6 +498,7 @@
     class:opacity-0={!showAlert}
   >
     {#if currentTip}
+      {#key currentTip}
       {#if alertImageUrl}
         <!-- Custom image alert: StreamElements-style vertical layout -->
         <div class="custom-alert relative text-center">
@@ -517,11 +527,16 @@
 
           <!-- Message -->
           {#if currentTip.message}
-            <div
-              class="mt-2 text-sm text-zinc-200 bg-black/40 backdrop-blur rounded-lg px-4 py-2 inline-block max-w-[400px]"
-            >
+              <div class="mt-3 w-full flex justify-center">
+                <div class="relative overflow-hidden rounded-xl bg-black/40 backdrop-blur border border-white/10 px-4 py-3 max-w-[280px] w-full">
+                  <!-- Inner container limit to ~3 lines (e.g. 4.5rem) and scroll if overflow -->
+                  <div class="max-h-[72px] overflow-hidden relative">
+                    <div class="text-sm font-medium text-zinc-200 leading-snug break-words {currentTip.message.length > 80 ? 'animate-scroll-y' : ''}">
               {currentTip.message}
             </div>
+                  </div>
+                </div>
+              </div>
           {/if}
         </div>
       {:else}
@@ -534,7 +549,7 @@
 
           <!-- Main Card -->
           <div
-            class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl p-5 shadow-2xl"
+              class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl px-5 pt-5 pb-7 shadow-2xl"
           >
             <!-- Animated gradient border -->
             <div
@@ -572,23 +587,32 @@
 
                 <!-- Name & Message -->
                 {#if currentTip.sender_name}
-                  <div class="text-base font-semibold text-purple-300 truncate">
+                    <div class="text-base font-semibold text-purple-300 truncate mb-1">
                     {currentTip.sender_name}
                   </div>
                 {/if}
 
                 {#if currentTip.message}
-                  <div
-                    class="text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1 mt-1 truncate"
-                  >
+                    <div class="mt-2 w-full max-w-[240px]">
+                      <div class="relative overflow-hidden rounded-xl bg-white/5 border border-white/10 px-3 py-2">
+                         <div class="max-h-[60px] overflow-hidden relative">
+                          <div class="text-sm font-medium text-zinc-200 leading-snug break-words {currentTip.message.length > 70 ? 'animate-scroll-y' : ''}">
                     {currentTip.message}
                   </div>
+                         </div>
+                      </div>
+                    </div>
                 {/if}
               </div>
 
               <!-- Coin icon -->
               <div class="flex-shrink-0 text-3xl animate-bounce">🪙</div>
             </div>
+
+              <!-- Powered by -->
+              <div class="absolute bottom-1 right-3 text-[10px] text-white/30 font-medium">
+                powered by glianapay
+              </div>
 
             <!-- Sparkle decorations -->
             <div class="absolute top-2 right-8">
@@ -610,6 +634,7 @@
           ></div>
         </div>
       {/if}
+      {/key}
     {/if}
   </div>
 </div>
@@ -624,5 +649,15 @@
 
   :global(html) {
     background: transparent !important;
+  }
+
+  /* Use a global class so Svelte doesn't prune it if applied dynamically */
+  :global(.animate-scroll-y) {
+    animation: scroll-y 10s linear infinite alternate;
+  }
+
+  @keyframes scroll-y {
+    0%, 15% { transform: translateY(0); }
+    85%, 100% { transform: translateY(min(0px, calc(72px - 100%))); }
   }
 </style>
