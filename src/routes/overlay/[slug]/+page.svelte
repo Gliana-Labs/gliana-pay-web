@@ -595,7 +595,7 @@
                 {#if currentTip.message}
                     <div class="mt-2 w-full max-w-[240px]">
                       <div class="relative overflow-hidden rounded-xl bg-white/5 border border-white/10 px-3 py-2">
-                         <div class="max-h-[60px] overflow-hidden relative">
+                         <div class="max-h-[72px] overflow-hidden relative">
                           <div class="text-sm font-medium text-zinc-200 leading-snug break-words {currentTip.message.length > 70 ? 'animate-scroll-y' : ''}">
                     {currentTip.message}
                   </div>
