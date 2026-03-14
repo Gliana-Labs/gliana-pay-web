@@ -661,6 +661,59 @@
     }
   }
 
+  // CSV Export
+  let showExportModal = false;
+  let exportLoading = false;
+  const today = new Date().toISOString().split('T')[0];
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  let exportFrom = thirtyDaysAgo;
+  let exportTo = today;
+
+  async function exportTips() {
+    exportLoading = true;
+    try {
+      const message = `Update GlianaPay settings for ${slug}`;
+      const sig = await signAuthMessage(message);
+      if (!sig) {
+        showToast("Signature cancelled", "error");
+        return;
+      }
+
+      const params = new URLSearchParams();
+      if (exportFrom) params.set('from', exportFrom);
+      if (exportTo) params.set('to', exportTo);
+
+      const res = await fetch(
+        `${WORKER_URL}/api/streamer/${slug}/donations/export?${params.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${walletAddress}:${sig.signature}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({})) as any;
+        showToast(err.error || 'Export failed', 'error');
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `glianapay-tips-${slug}-${today}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showExportModal = false;
+      showToast('CSV downloaded!', 'success');
+    } catch (e) {
+      showToast('Export failed', 'error');
+    } finally {
+      exportLoading = false;
+    }
+  }
+
   onMount(() => {
     loadSession();
 
@@ -881,8 +934,17 @@
           <div
             class="glass-card rounded-2xl border border-white/10 overflow-hidden"
           >
-            <div class="p-4 border-b border-white/10">
+            <div class="p-4 border-b border-white/10 flex items-center justify-between">
               <h2 class="font-bold text-lg">Recent Tips</h2>
+              <button
+                on:click={() => (showExportModal = true)}
+                class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 hover:text-purple-300 border border-purple-500/20 transition-all cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Export CSV
+              </button>
             </div>
             {#if donations.length > 0}
               <div class="divide-y divide-white/5">
@@ -1524,6 +1586,93 @@
         : 'bg-red-600'} text-white text-sm font-medium"
     >
       {toast}
+    </div>
+  {/if}
+  <!-- Export CSV Modal -->
+  {#if showExportModal}
+    <div
+      class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      on:click|self={() => (showExportModal = false)}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Export tips as CSV"
+    >
+      <div
+        class="glass-card rounded-2xl border border-white/10 p-6 w-full max-w-sm shadow-2xl"
+        transition:slide={{ duration: 200 }}
+      >
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="font-bold text-lg">Export Tips</h2>
+          <button
+            on:click={() => (showExportModal = false)}
+            class="text-zinc-500 hover:text-white transition-colors cursor-pointer"
+            aria-label="Close"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <p class="text-sm text-zinc-400 mb-5">
+          Download your tip history as a CSV file — compatible with Excel, Google Sheets, and all tax/accounting software.
+        </p>
+
+        <div class="space-y-4 mb-6">
+          <div>
+            <label for="export-from" class="block text-xs text-zinc-400 mb-1.5">From</label>
+            <input
+              id="export-from"
+              type="date"
+              bind:value={exportFrom}
+              max={exportTo || today}
+              class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-colors"
+            />
+          </div>
+          <div>
+            <label for="export-to" class="block text-xs text-zinc-400 mb-1.5">To</label>
+            <input
+              id="export-to"
+              type="date"
+              bind:value={exportTo}
+              min={exportFrom || ''}
+              max={today}
+              class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div class="text-xs text-zinc-500 mb-5 p-3 bg-purple-500/5 border border-purple-500/20 rounded-xl">
+          📋 Columns exported: Date, Time, Sender Name, Wallet, Amount, Currency, Amount USD, Message, TX Hash
+        </div>
+
+        <div class="flex gap-3">
+          <button
+            on:click={() => (showExportModal = false)}
+            class="flex-1 py-2.5 rounded-xl border border-white/10 text-sm text-zinc-400 hover:text-white hover:border-white/20 transition-all cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            on:click={exportTips}
+            disabled={exportLoading}
+            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-medium transition-all cursor-pointer"
+          >
+            {#if exportLoading}
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Exporting...
+            {:else}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download CSV
+            {/if}
+          </button>
+        </div>
+      </div>
     </div>
   {/if}
 {/if}
