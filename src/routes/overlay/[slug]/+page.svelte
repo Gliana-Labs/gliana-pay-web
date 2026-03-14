@@ -517,11 +517,15 @@
 
           <!-- Message -->
           {#if currentTip.message}
-            {@const isLongMsg = currentTip.message.length > 50}
-            <div class="mt-2 {isLongMsg ? 'h-8 overflow-hidden' : 'whitespace-nowrap'}">
-              <span class="inline-block {isLongMsg ? 'animate-marquee-vertical' : 'animate-marquee'} text-sm text-zinc-200 bg-black/40 backdrop-blur rounded-lg px-4 py-2">
-                {currentTip.message}
-              </span>
+            <div class="mt-3 w-full flex justify-center">
+              <div class="relative overflow-hidden rounded-xl bg-black/40 backdrop-blur border border-white/10 px-4 py-3 max-w-[280px] w-full">
+                <!-- Inner container limit to ~3 lines (e.g. 4.5rem) and scroll if overflow -->
+                <div class="max-h-[72px] overflow-hidden relative">
+                  <div class="text-sm font-medium text-zinc-200 leading-snug {currentTip.message.length > 80 ? 'animate-[scroll-y_8s_linear_infinite]' : ''}">
+                    {currentTip.message}
+                  </div>
+                </div>
+              </div>
             </div>
           {/if}
         </div>
@@ -573,17 +577,20 @@
 
                 <!-- Name & Message -->
                 {#if currentTip.sender_name}
-                  <div class="text-base font-semibold text-purple-300 truncate">
+                  <div class="text-base font-semibold text-purple-300 truncate mb-1">
                     {currentTip.sender_name}
                   </div>
                 {/if}
 
                 {#if currentTip.message}
-                  {@const isLongMsg = currentTip.message.length > 50}
-                  <div class="mt-1 {isLongMsg ? 'h-6 overflow-hidden' : 'whitespace-nowrap'}">
-                    <span class="inline-block {isLongMsg ? 'animate-marquee-vertical' : 'animate-marquee'} text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1">
-                      {currentTip.message}
-                    </span>
+                  <div class="mt-2 w-full max-w-[240px]">
+                    <div class="relative overflow-hidden rounded-xl bg-white/5 border border-white/10 px-3 py-2">
+                       <div class="max-h-[60px] overflow-hidden relative">
+                        <div class="text-sm font-medium text-zinc-200 leading-snug {currentTip.message.length > 70 ? 'animate-[scroll-y_8s_linear_infinite]' : ''}">
+                          {currentTip.message}
+                        </div>
+                       </div>
+                    </div>
                   </div>
                 {/if}
               </div>
@@ -633,23 +640,18 @@
     background: transparent !important;
   }
 
-  @keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+  @keyframes scroll-y {
+    0%, 15% { transform: translateY(0); }
+    85%, 100% { transform: translateY(calc(100% - 100%)); /* Fallback, see tailwind config below */ }
   }
 
-  @keyframes marquee-vertical {
-    0% { transform: translateY(100%); }
-    100% { transform: translateY(-100%); }
+  /* Svelte-scoping workaround for custom keyframes */
+  :global(.animate-\\[scroll-y_8s_linear_infinite\\]) {
+    animation: custom-scroll-y 10s ease-in-out infinite alternate;
   }
 
-  .animate-marquee {
-    animation: marquee 8s linear infinite;
-    animation-delay: 1.5s;
-  }
-
-  .animate-marquee-vertical {
-    animation: marquee-vertical 8s linear infinite;
-    animation-delay: 1.5s;
+  @keyframes custom-scroll-y {
+    0%, 10% { transform: translateY(0); }
+    90%, 100% { transform: translateY(calc(-100% + 60px)); } /* Scroll up the full height minus container height */
   }
 </style>
