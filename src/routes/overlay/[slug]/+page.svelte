@@ -517,10 +517,10 @@
 
           <!-- Message -->
           {#if currentTip.message}
-            <div
-              class="mt-2 text-sm text-zinc-200 bg-black/40 backdrop-blur rounded-lg px-4 py-2 inline-block max-w-[400px]"
-            >
-              {currentTip.message}
+            <div class="mt-2 overflow-hidden whitespace-nowrap">
+              <span class="inline-block animate-marquee text-sm text-zinc-200 bg-black/40 backdrop-blur rounded-lg px-4 py-2">
+                {currentTip.message}
+              </span>
             </div>
           {/if}
         </div>
@@ -578,10 +578,10 @@
                 {/if}
 
                 {#if currentTip.message}
-                  <div
-                    class="text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1 mt-1 truncate"
-                  >
-                    {currentTip.message}
+                  <div class="mt-1 overflow-hidden whitespace-nowrap">
+                    <span class="inline-block animate-marquee text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1">
+                      {currentTip.message}
+                    </span>
                   </div>
                 {/if}
               </div>
@@ -629,5 +629,14 @@
 
   :global(html) {
     background: transparent !important;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .animate-marquee {
+    animation: marquee 8s linear infinite;
   }
 </style>
