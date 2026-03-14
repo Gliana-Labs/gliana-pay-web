@@ -521,7 +521,7 @@
               <div class="relative overflow-hidden rounded-xl bg-black/40 backdrop-blur border border-white/10 px-4 py-3 max-w-[280px] w-full">
                 <!-- Inner container limit to ~3 lines (e.g. 4.5rem) and scroll if overflow -->
                 <div class="max-h-[72px] overflow-hidden relative">
-                  <div class="text-sm font-medium text-zinc-200 leading-snug {currentTip.message.length > 80 ? 'animate-[scroll-y_8s_linear_infinite]' : ''}">
+                  <div class="text-sm font-medium text-zinc-200 leading-snug break-words {currentTip.message.length > 80 ? 'animate-scroll-y' : ''}">
                     {currentTip.message}
                   </div>
                 </div>
@@ -586,7 +586,7 @@
                   <div class="mt-2 w-full max-w-[240px]">
                     <div class="relative overflow-hidden rounded-xl bg-white/5 border border-white/10 px-3 py-2">
                        <div class="max-h-[60px] overflow-hidden relative">
-                        <div class="text-sm font-medium text-zinc-200 leading-snug {currentTip.message.length > 70 ? 'animate-[scroll-y_8s_linear_infinite]' : ''}">
+                        <div class="text-sm font-medium text-zinc-200 leading-snug break-words {currentTip.message.length > 70 ? 'animate-scroll-y' : ''}">
                           {currentTip.message}
                         </div>
                        </div>
@@ -640,18 +640,13 @@
     background: transparent !important;
   }
 
+  /* Use a global class so Svelte doesn't prune it if applied dynamically */
+  :global(.animate-scroll-y) {
+    animation: scroll-y 10s linear infinite alternate;
+  }
+
   @keyframes scroll-y {
     0%, 15% { transform: translateY(0); }
-    85%, 100% { transform: translateY(calc(100% - 100%)); /* Fallback, see tailwind config below */ }
-  }
-
-  /* Svelte-scoping workaround for custom keyframes */
-  :global(.animate-\\[scroll-y_8s_linear_infinite\\]) {
-    animation: custom-scroll-y 10s ease-in-out infinite alternate;
-  }
-
-  @keyframes custom-scroll-y {
-    0%, 10% { transform: translateY(0); }
-    90%, 100% { transform: translateY(calc(-100% + 60px)); } /* Scroll up the full height minus container height */
+    85%, 100% { transform: translateY(min(0px, calc(72px - 100%))); }
   }
 </style>
