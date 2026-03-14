@@ -517,8 +517,9 @@
 
           <!-- Message -->
           {#if currentTip.message}
-            <div class="mt-2 overflow-hidden whitespace-nowrap">
-              <span class="inline-block animate-marquee text-sm text-zinc-200 bg-black/40 backdrop-blur rounded-lg px-4 py-2">
+            {@const isLongMsg = currentTip.message.length > 50}
+            <div class="mt-2 {isLongMsg ? 'h-8 overflow-hidden' : 'whitespace-nowrap'}">
+              <span class="inline-block {isLongMsg ? 'animate-marquee-vertical' : 'animate-marquee'} text-sm text-zinc-200 bg-black/40 backdrop-blur rounded-lg px-4 py-2">
                 {currentTip.message}
               </span>
             </div>
@@ -578,8 +579,9 @@
                 {/if}
 
                 {#if currentTip.message}
-                  <div class="mt-1 overflow-hidden whitespace-nowrap">
-                    <span class="inline-block animate-marquee text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1">
+                  {@const isLongMsg = currentTip.message.length > 50}
+                  <div class="mt-1 {isLongMsg ? 'h-6 overflow-hidden' : 'whitespace-nowrap'}">
+                    <span class="inline-block {isLongMsg ? 'animate-marquee-vertical' : 'animate-marquee'} text-sm text-zinc-300 bg-white/5 rounded-lg px-2 py-1">
                       {currentTip.message}
                     </span>
                   </div>
@@ -636,7 +638,18 @@
     100% { transform: translateX(-100%); }
   }
 
+  @keyframes marquee-vertical {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+  }
+
   .animate-marquee {
     animation: marquee 8s linear infinite;
+    animation-delay: 1.5s;
+  }
+
+  .animate-marquee-vertical {
+    animation: marquee-vertical 8s linear infinite;
+    animation-delay: 1.5s;
   }
 </style>
