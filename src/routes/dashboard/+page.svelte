@@ -54,7 +54,7 @@
   // Alert Settings
   let minAmount = 0.01;
   let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
-  let soundEnabled = false;
+  let soundEnabled = true;
   let soundError = "";
   let name = "";
 
@@ -142,6 +142,21 @@
     } catch {
       cfStatus = "error";
     }
+  }
+
+  // Social handles
+  let xUrl = "";
+  let redditUrl = "";
+
+  // Copy helpers
+  let overlayCopied = false;
+  async function copyOverlayUrl() {
+    const url = `https://dev.glianapay.com/overlay/${slug}${
+      soundEnabled ? "" : "?sound=0"
+    }`;
+    await navigator.clipboard.writeText(url);
+    overlayCopied = true;
+    setTimeout(() => (overlayCopied = false), 2000);
   }
 
   async function copyEventListUrl() {
@@ -1423,8 +1438,8 @@
                 <code
                   class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
                     >https://dev.glianapay.com/overlay/{slug}{soundEnabled
-                      ? "?sound=1"
-                      : ""}</code
+                      ? ""
+                      : "?sound=0"}</code
                 >
                 <button
                     on:click={() =>
