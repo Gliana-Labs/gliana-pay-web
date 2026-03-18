@@ -39,21 +39,6 @@
         "Alert settings are in the <strong>Settings</strong> page. You can configure the minimum tip amount to trigger alerts, set a custom alert sound URL, upload a custom alert image, and assign a skip alert hotkey. Changes are saved together with your profile settings.",
     },
     {
-      question: "What is the QR Code Overlay?",
-      answer:
-        "The QR Code Overlay lets you display a scannable QR code on your stream. Viewers can scan it with their phone to open your tip page directly. You can choose between Dark, Light, and Neon themes from your dashboard. Add it as a separate Browser Source in OBS (recommended: 300×350).",
-    },
-    {
-      question: "How do I skip an alert?",
-      answer:
-        "You can skip the currently playing alert in three ways: (1) Press your configured skip hotkey (default: <strong>S</strong>) while the dashboard or settings page is focused, (2) Click the <strong>Skip Alert</strong> button on the dashboard or settings page, or (3) The overlay also listens for the hotkey when focused.",
-    },
-    {
-      question: "What are Event List and Goal Bar overlays?",
-      answer:
-        "Besides tip alerts, GlianaPay offers two more OBS overlays: the <strong>Event List</strong> shows recent tips or top tippers on your stream, and the <strong>Goal Bar</strong> displays a tipping goal with a progress bar. Both are customizable from the dashboard with different themes and settings.",
-    },
-    {
       question:
         "Can I use GlianaPay with Twitch, YouTube, Kick, or other platforms?",
       answer:
