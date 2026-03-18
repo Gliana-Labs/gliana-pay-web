@@ -514,6 +514,7 @@
                 src="/api/media/{alertImageUrl}"
                 alt=""
                 class="mx-auto max-w-[200px] max-h-[200px] object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"
+                onerror={() => { alertImageUrl = ''; }}
               />
             </div>
 
