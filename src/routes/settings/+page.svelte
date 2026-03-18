@@ -522,6 +522,33 @@
         window.location.href = "/";
     }
 
+    // Test & Skip alert
+    let testInProgress = false;
+
+    function testAlert() {
+        if (testInProgress) return;
+        testInProgress = true;
+        const safetyTimeout = setTimeout(() => {
+            testInProgress = false;
+        }, 10000);
+        fetch(`${WORKER_URL}/api/test-alert/${slug}`, { method: "POST" })
+            .then(() => {
+                showToast("Test alert sent!", "success");
+            })
+            .catch(() => {
+                showToast("Failed to send test alert", "error");
+            })
+            .finally(() => {
+                clearTimeout(safetyTimeout);
+                testInProgress = false;
+            });
+    }
+
+    function skipAlert() {
+        fetch(`${WORKER_URL}/api/skip-alert/${slug}`, { method: "POST" })
+            .then(() => showToast("Skipping current alert...", "success"))
+            .catch(() => {});
+    }
     // Handle keyboard for hotkey recording + skip alert
     function handleKeydown(event: KeyboardEvent) {
         // If recording hotkey, capture the key combination
@@ -558,11 +585,7 @@
                 return;
             }
             event.preventDefault();
-            // Send skip via REST since settings page doesn't have WebSocket
-            fetch(`${WORKER_URL}/api/skip-alert/${slug}`, {
-                method: "POST",
-            }).catch(() => {});
-            showToast("Skipping current alert...", "success");
+            skipAlert();
         }
     }
 
@@ -1101,11 +1124,29 @@
                             >
                         </div>
                         <p class="text-xs text-zinc-500 mt-1">
-                            Works when dashboard or overlay is focused
+                            Works when dashboard, settings, or overlay is focused
                         </p>
                     </div>
+                    <div class="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-white/5">
+                        <a
+                            href="/overlay/{slug}?sound=1&preview=1"
+                            target="_blank"
+                            class="inline-flex items-center text-xs text-cyan-400 hover:underline"
+                            >Preview Overlay</a
+                        >
+                        <button
+                            on:click={testAlert}
+                            disabled={testInProgress}
+                            class="inline-flex items-center text-xs text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            >{testInProgress ? "Sending..." : "Test Alert"}</button
+                        >
+                        <button
+                            on:click={skipAlert}
+                            class="inline-flex items-center text-xs text-red-400 hover:underline cursor-pointer"
+                            >Skip Alert</button
+                        >
+                    </div>
                 </div>
-
                 <div class="mt-6 space-y-4 pt-4 border-t border-white/10">
                     <h3 class="text-sm font-semibold text-zinc-300">
                         Social Links
