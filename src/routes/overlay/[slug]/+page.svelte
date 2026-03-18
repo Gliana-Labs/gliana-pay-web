@@ -86,11 +86,13 @@
   // Fetch streamer settings on mount
   async function loadSettings() {
     try {
-      const response = await fetch(`/api/streamer/${data.slug}/settings`);
+      // Append a timestamp to completely bypass OBS browser source caching on GET requests
+      const response = await fetch(`/api/streamer/${data.slug}/settings?_t=${Date.now()}`);
       if (response.ok) {
         const result = await response.json();
         if (result.settings?.sound_url) {
-          soundUrl = result.settings.sound_url;
+          const bust = Date.now();
+          soundUrl = `${result.settings.sound_url}?v=${bust}`;
         }
         // Load custom alert image
         if (
