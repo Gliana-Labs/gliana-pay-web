@@ -89,18 +89,13 @@
     class:size-sm={size === "sm"}
     class:size-lg={size === "lg"}
 >
-    <!-- Animated glow behind card -->
-    <div class="glow-wrap">
-        <div class="glow"></div>
-    </div>
-
     <!-- Main card -->
     <div class="card">
         <!-- Scan to tip label -->
         {#if showLabel}
             <div class="label">
                 <span class="label-icon">📱</span>
-                <span class="label-text">Scan to Tip</span>
+                <span class="label-text">Scan to tip SOL / USDC</span>
             </div>
         {/if}
 
@@ -137,71 +132,6 @@
         padding: 16px;
     }
 
-    /* ───── Glow ───── */
-    .glow-wrap {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        overflow: visible;
-    }
-    .glow {
-        position: absolute;
-        inset: -6px;
-        border-radius: 20px;
-        background: linear-gradient(
-            135deg,
-            rgba(34, 211, 238, 0.4),
-            rgba(168, 85, 247, 0.4),
-            rgba(236, 72, 153, 0.3)
-        );
-        filter: blur(16px);
-        opacity: 0.7;
-        animation: glow-pulse 3s ease-in-out infinite;
-    }
-    .theme-neon .glow {
-        opacity: 1;
-        filter: blur(20px);
-        background: linear-gradient(
-            135deg,
-            rgba(0, 255, 136, 0.5),
-            rgba(0, 200, 255, 0.5),
-            rgba(128, 0, 255, 0.4)
-        );
-    }
-    .theme-light .glow {
-        opacity: 0.3;
-        background: linear-gradient(
-            135deg,
-            rgba(99, 102, 241, 0.4),
-            rgba(168, 85, 247, 0.4)
-        );
-    }
-
-    @keyframes glow-pulse {
-        0%,
-        100% {
-            opacity: 0.6;
-            transform: scale(1);
-        }
-        50% {
-            opacity: 0.9;
-            transform: scale(1.03);
-        }
-    }
-    .theme-neon .glow {
-        animation-name: glow-pulse-neon;
-    }
-    @keyframes glow-pulse-neon {
-        0%,
-        100% {
-            opacity: 0.8;
-            transform: scale(1);
-        }
-        50% {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-    }
 
     /* ───── Card ───── */
     .card {
