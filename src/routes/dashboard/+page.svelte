@@ -82,6 +82,10 @@
 
   $: goalBarUrl = `https://dev.glianapay.com/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
 
+  // QR Overlay
+  let qrTheme = "dark";
+  $: qrOverlayUrl = `https://dev.glianapay.com/overlay/${slug}/qr${qrTheme !== "dark" ? `?theme=${qrTheme}` : ""}`;
+
   // Cloudflare Status
   let cfStatus:
     | "operational"
@@ -1050,9 +1054,35 @@
             <div class="glass-card rounded-2xl border border-white/10 p-6">
               <h2 class="font-bold text-lg mb-2">QR Code Overlay</h2>
               <p class="text-sm text-zinc-400 mb-3">
-                Display a scannable QR code on your stream so viewers can tip you directly.
+                Display a scannable QR code on your stream so viewers can tip you with SOL or USDC.
               </p>
-              <ol class="text-sm text-zinc-300 space-y-1 mb-4">
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                  <label for="qr-theme" class="text-xs text-zinc-400 block mb-1">Theme</label>
+                  <select
+                    id="qr-theme"
+                    bind:value={qrTheme}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="neon">Neon</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mb-3">
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                  >{qrOverlayUrl}</code
+                >
+                <button
+                  on:click={() =>
+                    navigator.clipboard.writeText(qrOverlayUrl)}
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                  >Copy</button
+                >
+              </div>
+              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">1.</span><span
                     >In OBS, add a <strong>Browser Source</strong></span
@@ -1060,7 +1090,7 @@
                 </li>
                 <li class="flex gap-2">
                   <span class="text-purple-400 font-bold">2.</span><span
-                    >Copy the URL below, paste it in Browser Source</span
+                    >Paste the URL above</span
                   >
                 </li>
                 <li class="flex gap-2">
@@ -1075,45 +1105,12 @@
                   >
                 </li>
               </ol>
-              <div class="space-y-2 mb-3">
-                <div class="flex items-center gap-2">
-                  <code
-                    class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                    >https://dev.glianapay.com/overlay/{slug}/qr</code
-                  >
-                  <button
-                    on:click={() =>
-                      navigator.clipboard.writeText(
-                        `https://dev.glianapay.com/overlay/${slug}/qr`,
-                      )}
-                    class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
-                    >Copy</button
-                  >
-                </div>
-              </div>
-              <div class="flex flex-wrap items-center gap-3 mt-2 text-sm">
-                <a
-                  href="/overlay/{slug}/qr"
-                  target="_blank"
-                  class="text-cyan-400 hover:underline"
-                  >Preview (Dark)</a
-                >
-                <a
-                  href="/overlay/{slug}/qr?theme=light"
-                  target="_blank"
-                  class="text-cyan-400 hover:underline"
-                  >Light</a
-                >
-                <a
-                  href="/overlay/{slug}/qr?theme=neon"
-                  target="_blank"
-                  class="text-cyan-400 hover:underline"
-                  >Neon</a
-                >
-              </div>
-              <p class="text-xs text-zinc-600 mt-3">
-                Add <code class="text-zinc-500">?theme=light</code> or <code class="text-zinc-500">?theme=neon</code> to the URL for different styles. Use <code class="text-zinc-500">?size=sm</code> or <code class="text-zinc-500">?size=lg</code> to change the QR size.
-              </p>
+              <a
+                href="/overlay/{slug}/qr{qrTheme !== 'dark' ? `?theme=${qrTheme}` : ''}"
+                target="_blank"
+                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+                ><span>Preview QR Overlay</span></a
+              >
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -1409,7 +1406,8 @@
               <p class="text-xs text-zinc-500 mt-3">
                 <span class="text-yellow-500">Tip:</span> If settings don't update,
                 right-click the Browser Source in OBS and select "Interact" then
-                refresh the page.
+                refresh the page. If it's still stuck, try removing and re-adding
+                the Browser Source.
               </p>
             </div>
 

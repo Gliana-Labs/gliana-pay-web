@@ -522,24 +522,48 @@
         window.location.href = "/";
     }
 
-    // Handle keyboard for hotkey recording
+    // Handle keyboard for hotkey recording + skip alert
     function handleKeydown(event: KeyboardEvent) {
-        if (!isRecordingHotkey) return;
+        // If recording hotkey, capture the key combination
+        if (isRecordingHotkey) {
+            event.preventDefault();
+            event.stopPropagation();
 
-        event.preventDefault();
-        event.stopPropagation();
+            // Don't allow empty or modifier-only keys
+            if (["Control", "Shift", "Alt", "Meta"].includes(event.key)) return;
 
-        // Don't allow empty or modifier-only keys
-        if (["Control", "Shift", "Alt", "Meta"].includes(event.key)) return;
+            const parts: string[] = [];
+            if (event.ctrlKey) parts.push("ctrl");
+            if (event.shiftKey) parts.push("shift");
+            if (event.altKey) parts.push("alt");
+            if (event.metaKey) parts.push("meta");
+            parts.push(event.key.toLowerCase());
+            skipHotkey = parts.join("+");
+            isRecordingHotkey = false;
+            return;
+        }
 
+        // Check if pressed combination matches skip hotkey
         const parts: string[] = [];
         if (event.ctrlKey) parts.push("ctrl");
         if (event.shiftKey) parts.push("shift");
         if (event.altKey) parts.push("alt");
-        if (event.metaKey) parts.push("meta");
         parts.push(event.key.toLowerCase());
-        skipHotkey = parts.join("+");
-        isRecordingHotkey = false;
+        const currentCombo = parts.join("+");
+
+        if (currentCombo === skipHotkey.toLowerCase()) {
+            // Don't trigger if user is typing in an input
+            const target = event.target as HTMLElement;
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT") {
+                return;
+            }
+            event.preventDefault();
+            // Send skip via REST since settings page doesn't have WebSocket
+            fetch(`${WORKER_URL}/api/skip-alert/${slug}`, {
+                method: "POST",
+            }).catch(() => {});
+            showToast("Skipping current alert...", "success");
+        }
     }
 
     onMount(() => {
