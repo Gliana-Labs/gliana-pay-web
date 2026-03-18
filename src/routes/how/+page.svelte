@@ -83,7 +83,7 @@
         </span>
       </h1>
       <p class="text-zinc-400 text-base max-w-xl mx-auto">
-        Learn how to set up your tipping page and start receiving SOL tips from
+        Learn how to set up your tipping page and start receiving SOL and USDC tips from
         viewers with real-time OBS alerts.
       </p>
     </div>
@@ -122,10 +122,9 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Configure Alert Settings</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              In your dashboard, set the <span class="text-pink-400 font-medium">minimum tip amount</span> to trigger alerts
-              (default: 0.01 SOL), customize your alert message, and choose a
-              sound effect. You can also upload a custom image to display with
-              each tip.
+              Go to your <a href="/settings" class="text-cyan-400 font-medium hover:underline">Settings</a> page to set the <span class="text-pink-400 font-medium">minimum tip amount</span> to trigger alerts
+              (default: 0.01 SOL), customize your <span class="text-pink-400 font-medium">alert sound URL</span>, upload a custom alert image,
+              and set a <span class="text-pink-400 font-medium">skip alert hotkey</span> (default: S) to dismiss alerts from your dashboard or settings page.
             </p>
           </div>
         </div>
@@ -155,9 +154,28 @@
       <div class="glass-card p-4 rounded-xl border border-white/10">
         <div class="flex items-start gap-3">
           <div
-            class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+            class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
           >
             4
+          </div>
+          <div class="flex-1">
+            <h2 class="font-semibold text-base">Add QR Code Overlay (Optional)</h2>
+            <p class="text-sm text-zinc-400 mt-1">
+              From your dashboard, copy the <span class="text-teal-400 font-medium">QR Code Overlay URL</span> and add it as
+              another Browser Source in OBS. Choose between Dark, Light, or Neon themes. Viewers can scan the QR code
+              directly from your stream to open your tip page and send SOL or USDC.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="glass-card p-4 rounded-xl border border-white/10">
+        <div class="flex items-start gap-3">
+          <div
+            class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+          >
+            5
           </div>
           <div class="flex-1">
             <h2 class="font-semibold text-base">Share Your Link</h2>
@@ -177,7 +195,7 @@
           <div
             class="w-8 h-8 bg-gradient-to-r from-green-500 to-cyan-500 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
           >
-            5
+            6
           </div>
           <div class="flex-1">
             <h2 class="font-semibold text-base">Receive Real-Time Alerts</h2>
@@ -185,7 +203,7 @@
               When a viewer sends a tip, your OBS overlay instantly shows their
               name, the SOL amount, and their message. GlianaPay runs on <span
                 class="text-green-400 font-medium">Solana Mainnet</span
-              > — tips use real SOL!
+              > — tips use real SOL and USDC!
             </p>
           </div>
         </div>

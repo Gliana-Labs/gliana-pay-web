@@ -6,7 +6,7 @@
     {
       question: "What is GlianaPay?",
       answer:
-        "GlianaPay is a Web3 tipping platform built on Solana that lets streamers accept SOL tips directly to their wallet with real-time OBS stream alerts — no middleman, no payout delays, no chargebacks.",
+        "GlianaPay is a Web3 tipping platform built on Solana that lets streamers accept SOL and USDC tips directly to their wallet with real-time OBS stream alerts — no middleman, no payout delays, no chargebacks.",
     },
     {
       question: "Why GlianaPay?",
@@ -21,12 +21,37 @@
     {
       question: "Is this on mainnet or devnet?",
       answer:
-        "GlianaPay now runs on Solana Mainnet! All tips use real SOL with real monetary value. Make sure your wallet is set to Mainnet mode before connecting.",
+        "GlianaPay now runs on Solana Mainnet! All tips use real SOL and USDC with real monetary value. Make sure your wallet is set to Mainnet mode before connecting.",
+    },
+    {
+      question: "Can viewers tip with USDC?",
+      answer:
+        "Yes! Viewers can tip with both SOL and USDC. When sending a tip, they can choose their preferred currency. USDC tips appear in the same alert overlay — the currency is displayed alongside the amount so you always know what you received.",
     },
     {
       question: "How do OBS alerts work?",
       answer:
-        "Your dashboard provides a unique Browser Source URL. Paste it into OBS as a Browser Source. Whenever a tip comes in, the overlay automatically animates on-screen showing the tipper's name, amount, and message in real-time — no refresh needed.",
+        "Your dashboard provides a unique Browser Source URL. Paste it into OBS as a Browser Source (recommended: 600×400). Whenever a tip comes in, the overlay automatically animates on-screen showing the tipper's name, amount (SOL or USDC), and message in real-time — no refresh needed.",
+    },
+    {
+      question: "Where do I configure alert settings?",
+      answer:
+        "Alert settings are in the <strong>Settings</strong> page. You can configure the minimum tip amount to trigger alerts, set a custom alert sound URL, upload a custom alert image, and assign a skip alert hotkey. Changes are saved together with your profile settings.",
+    },
+    {
+      question: "What is the QR Code Overlay?",
+      answer:
+        "The QR Code Overlay lets you display a scannable QR code on your stream. Viewers can scan it with their phone to open your tip page directly. You can choose between Dark, Light, and Neon themes from your dashboard. Add it as a separate Browser Source in OBS (recommended: 300×350).",
+    },
+    {
+      question: "How do I skip an alert?",
+      answer:
+        "You can skip the currently playing alert in three ways: (1) Press your configured skip hotkey (default: <strong>S</strong>) while the dashboard or settings page is focused, (2) Click the <strong>Skip Alert</strong> button on the dashboard or settings page, or (3) The overlay also listens for the hotkey when focused.",
+    },
+    {
+      question: "What are Event List and Goal Bar overlays?",
+      answer:
+        "Besides tip alerts, GlianaPay offers two more OBS overlays: the <strong>Event List</strong> shows recent tips or top tippers on your stream, and the <strong>Goal Bar</strong> displays a tipping goal with a progress bar. Both are customizable from the dashboard with different themes and settings.",
     },
     {
       question:
