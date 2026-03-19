@@ -38,7 +38,7 @@
     }
 
     function generateQR() {
-        if (!canvas) return;
+        if (!canvas || !tipUrl) return;
 
         const qrSize = size === "sm" ? 140 : size === "lg" ? 220 : 180;
         const isDark = theme !== "light";
@@ -59,7 +59,7 @@
         loadUrlParams();
         loadStreamerInfo();
 
-        // Wait for canvas to mount
+        // Wait for canvas and URL to be ready
         setTimeout(() => {
             generateQR();
         }, 100);

@@ -12,4 +12,4 @@ export const SOLANA_RPC = 'https://mainnet.helius-rpc.com/?api-key=b3a3b7bf-3794
 export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 // Public base URL (change for dev/prod)
-export const PUBLIC_URL = 'https://dev.glianapay.com';
+export const PUBLIC_URL = 'https://glianapay.com';
