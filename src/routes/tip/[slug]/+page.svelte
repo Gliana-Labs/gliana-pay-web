@@ -1429,22 +1429,14 @@
                 {/if}
               </div>
             </div>
-          </div>
 
           <!-- Keep page open notice -->
-          <div
-            class="flex items-start gap-2 px-4 py-2.5 bg-yellow-500/10 border border-yellow-500/20 rounded-xl w-full mt-3"
-          >
-            <span
-              class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse flex-shrink-0 mt-1"
-            ></span>
-            <p
-              class="text-yellow-300/80 text-[11px] leading-relaxed text-left"
-            >
-              Keep this page open after paying — the stream alert fires
-              automatically once the transaction is confirmed.
-            </p>
+          <p class="flex items-center justify-center gap-2 text-center text-yellow-300/70 text-xs mt-4 mb-2 px-4">
+            <span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse flex-shrink-0"></span>
+            Keep this page open after paying — the stream alert fires automatically once confirmed.
+          </p>
           </div>
+
         {/if}
 
         <!-- Close the grid -->
