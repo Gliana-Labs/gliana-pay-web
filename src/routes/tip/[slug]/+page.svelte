@@ -282,8 +282,7 @@
   }
 
   async function payWithWallet() {
-    if (!streamer || !viewerConnected || !viewerWallet)
-      return;
+    if (!streamer || !viewerConnected || !viewerWallet) return;
 
     if (name && containsProfanity(name)) {
       status = "Sender name contains restricted words.";
@@ -298,7 +297,6 @@
     status = "Preparing transaction...";
 
     try {
-
       // Dynamic import to avoid SSR issues
       const { Connection, PublicKey, Transaction, SystemProgram } =
         await import("@solana/web3.js");
@@ -379,7 +377,10 @@
       }
 
       // Sign and send transaction via the wallet adapter
-      const txSignature = await $walletStore.sendTransaction(transaction, connection);
+      const txSignature = await $walletStore.sendTransaction(
+        transaction,
+        connection,
+      );
 
       status = "Payment sent! Waiting for confirmation...";
 
@@ -992,17 +993,24 @@
           <div class="glass-card rounded-2xl p-5 border border-white/10">
             {#if !viewerConnected}
               <div class="space-y-3 flex flex-col items-center">
-                <p class="text-sm text-zinc-400 mb-2">Connect your wallet to tip</p>
+                <p class="text-sm text-zinc-400 mb-2">
+                  Connect your wallet to tip or scan the QR below
+                </p>
                 <WalletMultiButton />
               </div>
 
-              <div class="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-left sm:hidden">
+              <div
+                class="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-left sm:hidden"
+              >
                 <p class="text-xs font-medium text-amber-300 mb-2">
                   Having issues?
                 </p>
                 <ol class="text-xs text-zinc-400 space-y-1 mb-2">
                   <li>1. Connect wallet → refresh the page</li>
-                  <li>2. Still stuck? Copy link below and open in your wallet's in-app browser instead.</li>
+                  <li>
+                    2. Still stuck? Copy link below and open in your wallet's
+                    in-app browser instead.
+                  </li>
                 </ol>
                 <button
                   on:click={() => {
@@ -1012,8 +1020,18 @@
                   }}
                   class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/30 rounded-lg text-xs text-amber-300 transition-colors cursor-pointer"
                 >
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  <svg
+                    class="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
                   </svg>
                   {copiedFallback ? "Copied!" : "Copy Link"}
                 </button>
@@ -1300,19 +1318,6 @@
                 </p>
 
                 <!-- Caution -->
-                <div
-                  class="flex items-start gap-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg w-full"
-                >
-                  <span
-                    class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse flex-shrink-0 mt-1"
-                  ></span>
-                  <p
-                    class="text-yellow-300/80 text-[11px] leading-relaxed text-left"
-                  >
-                    Keep this page open after scanning — the alert fires
-                    automatically once confirmed.
-                  </p>
-                </div>
               </div>
 
               <!-- Divider (mobile horizontal) -->
@@ -1424,7 +1429,14 @@
                 {/if}
               </div>
             </div>
+
+          <!-- Keep page open notice -->
+          <p class="flex items-center justify-center gap-2 text-center text-yellow-300/70 text-xs mt-4 mb-2 px-4">
+            <span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse flex-shrink-0"></span>
+            Keep this page open after paying — the stream alert fires automatically once confirmed.
+          </p>
           </div>
+
         {/if}
 
         <!-- Close the grid -->
