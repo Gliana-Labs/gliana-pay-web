@@ -9,6 +9,7 @@
   let mounted = false;
   let loading = false;
   let error = "";
+  let copiedFallback = false;
   let name = "";
   let slug = "";
   let hasExistingAccount = false;
@@ -311,14 +312,24 @@
             <WalletMultiButton />
           </div>
 
-          <div
-            class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left sm:hidden"
-          >
-            <p class="text-xs font-medium text-purple-300 mb-1">Mobile?</p>
-            <p class="text-xs text-zinc-400">
-              Open this page in your wallet's in-app browser for the best
-              experience.
+          <div class="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-left sm:hidden">
+            <p class="text-xs font-medium text-amber-300 mb-2">
+              Having issues?
             </p>
+            <ol class="text-xs text-zinc-400 space-y-1 mb-2">
+              <li>1. Connect wallet → refresh the page</li>
+              <li>2. Still stuck? Copy link below and open in your wallet's in-app browser instead.</li>
+            </ol>
+            <button
+              on:click={() => {
+                navigator.clipboard.writeText(window.location.href);
+                copiedFallback = true;
+                setTimeout(() => (copiedFallback = false), 2000);
+              }}
+              class="w-full py-1.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-lg text-xs text-amber-300 transition-colors"
+            >
+              {copiedFallback ? "✓ Copied!" : "Copy Link"}
+            </button>
           </div>
         {:else}
           <!-- Connected -->
