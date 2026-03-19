@@ -1002,7 +1002,7 @@
                 </p>
                 <ol class="text-xs text-zinc-400 space-y-1 mb-2">
                   <li>1. Connect wallet → refresh the page</li>
-                  <li>2. Still stuck? Copy link below and open in phone browser instead.</li>
+                  <li>2. Still stuck? Copy link below and open in your wallet's in-app browser instead.</li>
                 </ol>
                 <button
                   on:click={() => {
