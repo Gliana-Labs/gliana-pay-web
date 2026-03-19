@@ -50,6 +50,7 @@
   let qrCodeUrl = "";
   let status = "";
   let walletError = "";
+  let copiedFallback = false;
 
   // Reactive wallet state from walletStore
   $: viewerWallet = $walletStore?.publicKey?.toBase58() || "";
@@ -995,16 +996,27 @@
                 <WalletMultiButton />
               </div>
 
-              <div
-                class="mt-3 p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-left sm:hidden"
-              >
-                <p class="text-xs font-medium text-purple-300 mb-1">
-                  Mobile?
+              <div class="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-left sm:hidden">
+                <p class="text-xs font-medium text-amber-300 mb-2">
+                  Having issues?
                 </p>
-                <p class="text-xs text-zinc-400">
-                  Open this page in your wallet's in-app browser for the best
-                  experience.
-                </p>
+                <ol class="text-xs text-zinc-400 space-y-1 mb-2">
+                  <li>1. Connect wallet → refresh the page</li>
+                  <li>2. Still stuck? Copy link below and open in phone browser instead.</li>
+                </ol>
+                <button
+                  on:click={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    copiedFallback = true;
+                    setTimeout(() => (copiedFallback = false), 2000);
+                  }}
+                  class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/30 rounded-lg text-xs text-amber-300 transition-colors cursor-pointer"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                  {copiedFallback ? "Copied!" : "Copy Link"}
+                </button>
               </div>
               {#if walletError}
                 <p class="text-red-400 text-xs mt-2 text-center">

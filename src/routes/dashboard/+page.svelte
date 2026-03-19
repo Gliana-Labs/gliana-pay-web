@@ -1114,6 +1114,99 @@
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <!-- OBS Overlay -->
+            <div class="glass-card rounded-2xl border border-white/10 p-6">
+              <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
+              <p class="text-sm text-zinc-400 mb-3">
+                How to add tip alerts to your stream:
+              </p>
+              <ol class="text-sm text-zinc-300 space-y-1 mb-4">
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">1.</span><span
+                    >In OBS, add a <strong>Browser Source</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">2.</span><span
+                    >Toggle sound below, copy URL, paste in Browser Source</span
+                  >
+                </li>
+              </ol>
+              <div class="mb-3">
+                <label
+                  class="flex items-center gap-2 text-sm text-zinc-300 mb-2"
+                >
+                  <input
+                    type="checkbox"
+                    bind:checked={soundEnabled}
+                    class="w-4 h-4 accent-purple-500"
+                  />
+                  Enable sound alerts
+                </label>
+              </div>
+              <div class="space-y-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <code
+                    class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                    >${PUBLIC_URL}/overlay/{slug}{soundEnabled
+                      ? ""
+                      : "?sound=0"}</code
+                  >
+                  <button
+                    on:click={() =>
+                      navigator.clipboard.writeText(
+                        `${PUBLIC_URL}/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
+                      )}
+                    class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                    >Copy</button
+                  >
+                </div>
+              </div>
+              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">3.</span><span
+                    >Set Width: <strong>600</strong>, Height:
+                    <strong>400</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">4.</span><span
+                    >Check "Shutdown source when not visible"</span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">5.</span><span
+                    >Position the overlay in your scene</span
+                  >
+                </li>
+              </ol>
+              <div class="flex flex-wrap items-center gap-3 mt-3">
+                <a
+                  href="/overlay/{slug}?sound=1&preview=1"
+                  target="_blank"
+                  class="inline-flex items-center text-sm text-cyan-400 hover:underline"
+                  ><span>Preview Overlay</span></a
+                >
+                <button
+                  on:click={testAlertWS}
+                  disabled={testInProgress}
+                  class="inline-flex items-center text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                  ><span>{testInProgress ? "Sending..." : "Test Alert"}</span
+                  ></button
+                >
+                <button
+                  on:click={skipCurrentAlert}
+                  class="inline-flex items-center text-sm text-red-400 hover:underline"
+                  ><span>Skip Alert</span></button
+                >
+              </div>
+              <p class="text-xs text-zinc-500 mt-3">
+                <span class="text-yellow-500">Tip:</span> If settings don't update,
+                right-click the Browser Source in OBS and select "Interact" then
+                refresh the page. If it's still stuck, try removing and re-adding
+                the Browser Source.
+              </p>
+            </div>
             <!-- Goal Bar Widget -->
             <div class="glass-card rounded-2xl border border-white/10 p-6">
               <h2 class="font-bold text-lg mb-1">Tipping Goals</h2>
@@ -1316,103 +1409,7 @@
                 ><span>Preview Goal Bar</span></a
               >
             </div>
-
-            <!-- OBS Overlay -->
-            <div class="glass-card rounded-2xl border border-white/10 p-6">
-              <h2 class="font-bold text-lg mb-4">OBS Overlay</h2>
-              <p class="text-sm text-zinc-400 mb-3">
-                How to add tip alerts to your stream:
-              </p>
-              <ol class="text-sm text-zinc-300 space-y-1 mb-4">
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">1.</span><span
-                    >In OBS, add a <strong>Browser Source</strong></span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">2.</span><span
-                    >Toggle sound below, copy URL, paste in Browser Source</span
-                  >
-                </li>
-              </ol>
-              <div class="mb-3">
-                <label
-                  class="flex items-center gap-2 text-sm text-zinc-300 mb-2"
-                >
-                  <input
-                    type="checkbox"
-                    bind:checked={soundEnabled}
-                    class="w-4 h-4 accent-purple-500"
-                  />
-                  Enable sound alerts
-                </label>
                 </div>
-              <div class="space-y-2 mb-3">
-                <div class="flex items-center gap-2">
-                <code
-                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                    >${PUBLIC_URL}/overlay/{slug}{soundEnabled
-                      ? ""
-                      : "?sound=0"}</code
-                >
-                <button
-                    on:click={() =>
-                      navigator.clipboard.writeText(
-                        `${PUBLIC_URL}/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
-                      )}
-                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
-                    >Copy</button
-                >
-                </div>
-              </div>
-              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">3.</span><span
-                    >Set Width: <strong>600</strong>, Height:
-                    <strong>400</strong></span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">4.</span><span
-                    >Check "Shutdown source when not visible"</span
-                  >
-                </li>
-                <li class="flex gap-2">
-                  <span class="text-purple-400 font-bold">5.</span><span
-                    >Position the overlay in your scene</span
-                  >
-                </li>
-              </ol>
-              <div class="flex flex-wrap items-center gap-3 mt-3">
-              <a
-                  href="/overlay/{slug}?sound=1&preview=1"
-                target="_blank"
-                  class="inline-flex items-center text-sm text-cyan-400 hover:underline"
-                  ><span>Preview Overlay</span></a
-                >
-                <button
-                  on:click={testAlertWS}
-                  disabled={testInProgress}
-                  class="inline-flex items-center text-sm text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                  ><span>{testInProgress ? "Sending..." : "Test Alert"}</span
-                  ></button
-                >
-                <button
-                  on:click={skipCurrentAlert}
-                  class="inline-flex items-center text-sm text-red-400 hover:underline"
-                  ><span>Skip Alert</span></button
-                >
-              </div>
-              <p class="text-xs text-zinc-500 mt-3">
-                <span class="text-yellow-500">Tip:</span> If settings don't update,
-                right-click the Browser Source in OBS and select "Interact" then
-                refresh the page. If it's still stuck, try removing and re-adding
-                the Browser Source.
-              </p>
-            </div>
-
-
-          </div>
         </div>
       </div>
     </div>
