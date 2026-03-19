@@ -972,14 +972,17 @@
                     </div>
                 </div>
 
-                <!-- Alert Image Upload -->
-                <div class="mt-6 space-y-3 pt-4 border-t border-white/10">
+                <!-- Alert Settings -->
+                <div class="mt-6 space-y-4 pt-4 border-t border-white/10">
                     <h3 class="text-sm font-semibold text-zinc-300">
-                        Alert Image
+                        Alert Settings
                     </h3>
-                    <p class="text-xs text-zinc-500">
-                        Custom image or GIF displayed in your OBS tip alert
-                        overlay. Replaces the default avatar.
+
+                    <!-- Alert Image Upload -->
+                    <div class="space-y-2">
+                        <p class="text-xs text-zinc-400">
+                            Custom image or GIF for your OBS tip alert overlay.
+                            Replaces the default avatar.
                     </p>
                     <div class="relative inline-block">
                         <button
@@ -1043,11 +1046,6 @@
                     </p>
                 </div>
 
-                <!-- Alert Settings -->
-                <div class="mt-6 space-y-4 pt-4 border-t border-white/10">
-                    <h3 class="text-sm font-semibold text-zinc-300">
-                        Alert Settings
-                    </h3>
                     <div>
                         <label
                             for="min-amount"
@@ -1328,7 +1326,9 @@
                                         Twitch
                                     </div>
                                     <div class="text-xs text-zinc-500">
-                                        Coming Soon
+                                        {connectedPlatforms.twitch
+                                            ? "Connected"
+                                            : "Coming Soon"}
                                     </div>
                                 </div>
                             </div>
