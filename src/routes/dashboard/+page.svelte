@@ -154,7 +154,7 @@
   let overlayCopied = false;
   async function copyOverlayUrl() {
     const url = `${PUBLIC_URL}/overlay/${slug}${
-      soundEnabled ? "" : "?sound=0"
+      soundEnabled ? "?sound=1" : "?sound=0"
     }`;
     await navigator.clipboard.writeText(url);
     overlayCopied = true;
@@ -1149,13 +1149,13 @@
                   <code
                     class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
                     >${PUBLIC_URL}/overlay/{slug}{soundEnabled
-                      ? ""
+                      ? "?sound=1"
                       : "?sound=0"}</code
                   >
                   <button
                     on:click={() =>
                       navigator.clipboard.writeText(
-                        `${PUBLIC_URL}/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
+                        `${PUBLIC_URL}/overlay/${slug}${soundEnabled ? "?sound=1" : "?sound=0"}`,
                       )}
                     class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
                     >Copy</button
