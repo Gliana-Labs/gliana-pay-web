@@ -2,14 +2,13 @@
   import "../app.css";
   import { onMount, onDestroy } from "svelte";
   import { page } from "$app/stores";
-  import { SOLANA_RPC } from "$lib/config";
+  import { SOLANA_RPC, PUBLIC_URL } from "$lib/config";
   import {
     WalletProvider,
     ConnectionProvider,
   } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   const localStorageKey = "walletAdapter";
-  const BASE_URL = "https://glianapay.com";
-  $: canonicalUrl = `${BASE_URL}${$page.url.pathname}`;
+  $: canonicalUrl = `${PUBLIC_URL}${$page.url.pathname}`;
 
   let observer: MutationObserver;
   let wallets: any[] = [];

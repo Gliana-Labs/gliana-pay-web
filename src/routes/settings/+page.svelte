@@ -43,6 +43,13 @@
     // Settings
     let socialsLoading = false;
 
+    // Alert Settings
+    let minAmount = 0.01;
+    let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
+    let soundError = "";
+    let skipHotkey = "s";
+    let isRecordingHotkey = false;
+
     // Profile Settings
     let name = "";
     let xUrl = "";
@@ -164,11 +171,18 @@
                     tipBgColor = data.streamer.tip_bg_color || "";
                     tipBgUrl = data.streamer.tip_bg_url || "";
                     imageVersion = data.streamer.image_version || 1;
+                    skipHotkey = data.streamer.skip_hotkey || "s";
 
                     // Store original URLs for deletion tracking
                     originalProfileUrl = data.streamer.profile_image_url || "";
                     originalBannerUrl = data.streamer.banner_url || "";
                     originalTipBgUrl = data.streamer.tip_bg_url || "";
+                }
+                // Load alert settings
+                if (data.settings) {
+                    const loadedAmount = data.settings.min_amount || 10000000;
+                    minAmount = Math.max(loadedAmount, 10000000) / 1e9;
+                    soundUrl = data.settings.sound_url || "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
                 }
                 // Load alert image from settings
                 if (
@@ -312,6 +326,9 @@
                         banner_url: bannerUrl,
                         tip_bg_url: tipBgUrl,
                         image_url: alertImageUrl,
+                        min_amount: Math.floor(minAmount * 1e9),
+                        sound_url: soundUrl,
+                        skip_hotkey: skipHotkey,
                         deleted_images: deletedImages.filter(
                             (url) =>
                                 url !== profileImageUrl &&
@@ -505,6 +522,73 @@
         window.location.href = "/";
     }
 
+    // Test & Skip alert
+    let testInProgress = false;
+
+    function testAlert() {
+        if (testInProgress) return;
+        testInProgress = true;
+        const safetyTimeout = setTimeout(() => {
+            testInProgress = false;
+        }, 10000);
+        fetch(`${WORKER_URL}/api/test-alert/${slug}`, { method: "POST" })
+            .then(() => {
+                showToast("Test alert sent!", "success");
+            })
+            .catch(() => {
+                showToast("Failed to send test alert", "error");
+            })
+            .finally(() => {
+                clearTimeout(safetyTimeout);
+                testInProgress = false;
+            });
+    }
+
+    function skipAlert() {
+        fetch(`${WORKER_URL}/api/skip-alert/${slug}`, { method: "POST" })
+            .then(() => showToast("Skipping current alert...", "success"))
+            .catch(() => {});
+    }
+    // Handle keyboard for hotkey recording + skip alert
+    function handleKeydown(event: KeyboardEvent) {
+        // If recording hotkey, capture the key combination
+        if (isRecordingHotkey) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Don't allow empty or modifier-only keys
+            if (["Control", "Shift", "Alt", "Meta"].includes(event.key)) return;
+
+            const parts: string[] = [];
+            if (event.ctrlKey) parts.push("ctrl");
+            if (event.shiftKey) parts.push("shift");
+            if (event.altKey) parts.push("alt");
+            if (event.metaKey) parts.push("meta");
+            parts.push(event.key.toLowerCase());
+            skipHotkey = parts.join("+");
+            isRecordingHotkey = false;
+            return;
+        }
+
+        // Check if pressed combination matches skip hotkey
+        const parts: string[] = [];
+        if (event.ctrlKey) parts.push("ctrl");
+        if (event.shiftKey) parts.push("shift");
+        if (event.altKey) parts.push("alt");
+        parts.push(event.key.toLowerCase());
+        const currentCombo = parts.join("+");
+
+        if (currentCombo === skipHotkey.toLowerCase()) {
+            // Don't trigger if user is typing in an input
+            const target = event.target as HTMLElement;
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT") {
+                return;
+            }
+            event.preventDefault();
+            skipAlert();
+        }
+    }
+
     onMount(() => {
         loadSession();
 
@@ -515,6 +599,7 @@
 
         // Listen for OAuth callback messages
         window.addEventListener("message", handleOAuthMessage);
+        window.addEventListener("keydown", handleKeydown);
 
         loadSettings();
         checkConnectedPlatforms();
@@ -522,6 +607,7 @@
 
         return () => {
             window.removeEventListener("message", handleOAuthMessage);
+            window.removeEventListener("keydown", handleKeydown);
         };
     });
 
@@ -957,6 +1043,110 @@
                     </p>
                 </div>
 
+                <!-- Alert Settings -->
+                <div class="mt-6 space-y-4 pt-4 border-t border-white/10">
+                    <h3 class="text-sm font-semibold text-zinc-300">
+                        Alert Settings
+                    </h3>
+                    <div>
+                        <label
+                            for="min-amount"
+                            class="block text-xs text-zinc-400 mb-1"
+                            >Minimum Tip to Show Alert (SOL)</label
+                        >
+                        <input
+                            type="number"
+                            id="min-amount"
+                            bind:value={minAmount}
+                            step="0.01"
+                            min="0.01"
+                            class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            for="alert-sound"
+                            class="block text-xs text-zinc-400 mb-1"
+                            >Alert Sound URL</label
+                        >
+                        <div class="space-y-2">
+                            <input
+                                type="url"
+                                id="alert-sound"
+                                bind:value={soundUrl}
+                                placeholder="https://example.com/sound.mp3"
+                                class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm"
+                            />
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-zinc-500"
+                                    >Recommended: short MP3 URLs</span
+                                >
+                                <button
+                                    on:click={() =>
+                                        (soundUrl =
+                                            "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3")}
+                                    class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
+                                    >Default</button
+                                >
+                            </div>
+                        </div>
+                        {#if soundError}
+                            <p class="text-red-400 text-xs mt-1"
+                                >{soundError}</p
+                            >
+                        {/if}
+                    </div>
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1"
+                            >Skip Alert Hotkey</label
+                        >
+                        <div class="flex items-center gap-2">
+                            <button
+                                on:click={() => (isRecordingHotkey = true)}
+                                on:keydown|preventDefault
+                                class="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono text-center text-sm cursor-pointer"
+                            >
+                                {#if isRecordingHotkey}
+                                    <span class="text-yellow-400"
+                                        >Press key or combo...</span
+                                    >
+                                {:else}
+                                    {skipHotkey || "Click to set"}
+                                {/if}
+                            </button>
+                            <button
+                                on:click={() =>
+                                    (isRecordingHotkey = !isRecordingHotkey)}
+                                class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
+                                >{isRecordingHotkey
+                                    ? "Cancel"
+                                    : "Change"}</button
+                            >
+                        </div>
+                        <p class="text-xs text-zinc-500 mt-1">
+                            Works when dashboard, settings, or overlay is focused
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-white/5">
+                        <a
+                            href="/overlay/{slug}?sound=1&preview=1"
+                            target="_blank"
+                            class="inline-flex items-center text-xs text-cyan-400 hover:underline"
+                            >Preview Overlay</a
+                        >
+                        <button
+                            on:click={testAlert}
+                            disabled={testInProgress}
+                            class="inline-flex items-center text-xs text-yellow-400 hover:underline disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            >{testInProgress ? "Sending..." : "Test Alert"}</button
+                        >
+                        <button
+                            on:click={skipAlert}
+                            class="inline-flex items-center text-xs text-red-400 hover:underline cursor-pointer"
+                            >Skip Alert</button
+                        >
+                    </div>
+                </div>
                 <div class="mt-6 space-y-4 pt-4 border-t border-white/10">
                     <h3 class="text-sm font-semibold text-zinc-300">
                         Social Links

@@ -1,7 +1,9 @@
+import { PUBLIC_URL } from "$lib/config";
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://glianapay.com/</loc>
+    <loc>${PUBLIC_URL}/</loc>
     <lastmod>2026-02-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -13,7 +15,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://glianapay.com/login</loc>
+    <loc>${PUBLIC_URL}/login</loc>
     <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -25,7 +27,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://glianapay.com/faq</loc>
+    <loc>${PUBLIC_URL}/faq</loc>
     <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -37,7 +39,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://glianapay.com/how</loc>
+    <loc>${PUBLIC_URL}/how</loc>
     <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -49,7 +51,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://glianapay.com/docs</loc>
+    <loc>${PUBLIC_URL}/docs</loc>
     <lastmod>2026-02-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -61,7 +63,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://glianapay.com/roadmap</loc>
+    <loc>${PUBLIC_URL}/roadmap</loc>
     <lastmod>2026-02-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

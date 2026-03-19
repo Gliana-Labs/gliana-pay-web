@@ -4,7 +4,7 @@
   import { fade, slide } from "svelte/transition";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import { signAuthMessage } from "$lib/wallet-helpers";
-  import { WORKER_URL } from "$lib/config";
+  import { WORKER_URL, PUBLIC_URL } from "$lib/config";
   import { fetchCloudflareStatus } from "$lib/cloudflare-status";
 
   // Check auth
@@ -42,7 +42,6 @@
   let page = 1;
   let hasMore = false;
   let loadingMore = false;
-  let alertsLoading = false;
 
   // Hide earnings toggle (default to hidden)
   let hideEarnings = true;
@@ -51,11 +50,10 @@
   let skipHotkey = "s";
   let isRecordingHotkey = false;
 
-  // Alert Settings
+  // Alert Settings (loaded for OBS URL display)
   let minAmount = 0.01;
   let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
-  let soundEnabled = false;
-  let soundError = "";
+  let soundEnabled = true;
   let name = "";
 
   // Event List Widget settings
@@ -64,7 +62,7 @@
   let eventListTheme = "dark";
   let eventListCopied = false;
 
-  $: eventListUrl = `https://glianapay.com/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
+  $: eventListUrl = `${PUBLIC_URL}/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
 
   // Tipping Goals
   let goals: any[] = [];
@@ -82,7 +80,11 @@
   let goalBarColor = "a855f7";
   let goalBarCopied = false;
 
-  $: goalBarUrl = `https://glianapay.com/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
+  $: goalBarUrl = `${PUBLIC_URL}/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
+
+  // QR Overlay
+  let qrTheme = "dark";
+  $: qrOverlayUrl = `${PUBLIC_URL}/overlay/${slug}/qr${qrTheme !== "dark" ? `?theme=${qrTheme}` : ""}`;
 
   // Cloudflare Status
   let cfStatus:
@@ -142,6 +144,21 @@
     } catch {
       cfStatus = "error";
     }
+  }
+
+  // Social handles
+  let xUrl = "";
+  let redditUrl = "";
+
+  // Copy helpers
+  let overlayCopied = false;
+  async function copyOverlayUrl() {
+    const url = `${PUBLIC_URL}/overlay/${slug}${
+      soundEnabled ? "" : "?sound=0"
+    }`;
+    await navigator.clipboard.writeText(url);
+    overlayCopied = true;
+    setTimeout(() => (overlayCopied = false), 2000);
   }
 
   async function copyEventListUrl() {
@@ -321,7 +338,7 @@
   // Copy state
   let copied = false;
   async function copyPageUrl() {
-    const url = `https://glianapay.com/tip/${slug}`;
+    const url = `${PUBLIC_URL}/tip/${slug}`;
     await navigator.clipboard.writeText(url);
     copied = true;
     setTimeout(() => (copied = false), 2000);
@@ -500,73 +517,7 @@
     }
   }
 
-  // Save alert settings
-  async function saveAlertSettings() {
-    soundError = "";
 
-    if (minAmount < 0.01) {
-      minAmount = 0.01;
-    }
-
-    if (
-      soundUrl &&
-      !soundUrl.match(/\.(mp3|wav|ogg)(\?|$)/i) &&
-      !soundUrl.includes("/media/sounds/")
-    ) {
-      soundError = "URL should end with .mp3 or contain /media/sounds/";
-      return;
-    }
-
-    alertsLoading = true;
-
-    try {
-      const message = `Update GlianaPay settings for ${slug}`;
-      const signatureData = await signAuthMessage(message);
-
-      if (!signatureData) {
-        showToast("Signature request cancelled", "error");
-        alertsLoading = false;
-        return;
-      }
-
-      const response = await fetch(
-        `${WORKER_URL}/api/streamer/${slug}/settings`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${walletAddress}:${signatureData.signature}`,
-          },
-          body: JSON.stringify({
-            min_amount: Math.floor(minAmount * 1e9),
-            sound_url: soundUrl,
-            skip_hotkey: skipHotkey,
-          }),
-        },
-      );
-
-      if (response.ok) {
-        showToast("Alert settings saved!", "success");
-
-        // Notify overlay about settings change via WebSocket
-        if (wsSocket && wsSocket.readyState === WebSocket.OPEN) {
-          console.log("[Dashboard] Sending settings_changed to overlay");
-          wsSocket.send(JSON.stringify({ type: "settings_changed" }));
-        } else {
-          console.log(
-            "[Dashboard] WebSocket not connected, overlay won't be notified",
-          );
-        }
-      } else {
-        const data = await response.json().catch(() => ({}));
-        showToast((data as any).error || "Failed to save", "error");
-      }
-    } catch (e) {
-      showToast("Failed to connect to server", "error");
-    } finally {
-      alertsLoading = false;
-    }
-  }
 
   // Test alert
   let testInProgress = false;
@@ -1011,91 +962,7 @@
 
         <div class="lg:col-span-2">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Alert Settings -->
-            <div class="glass-card rounded-2xl border border-white/10 p-6">
-              <h2 class="font-bold text-lg mb-4">Alert Settings</h2>
-              <div class="space-y-4">
-                <div>
-                  <label
-                    for="min-amount"
-                    class="block text-sm text-zinc-400 mb-2"
-                    >Minimum Tip to Show Alert (SOL)</label
-                  >
-                  <input
-                    type="number"
-                    id="min-amount"
-                    bind:value={minAmount}
-                    step="0.01"
-                    min="0.01"
-                    class="w-full px-4 py-2 bg-zinc-900 border border-white/10 rounded-xl text-white"
-                  />
-                </div>
-                <div>
-                  <label for="sound" class="block text-sm text-zinc-400 mb-2"
-                    >Alert Sound URL</label
-                  >
-                  <div class="space-y-2">
-                    <input
-                      type="url"
-                      id="sound"
-                      bind:value={soundUrl}
-                      placeholder="https://example.com/sound.mp3"
-                      class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white text-sm"
-                    />
-                    <div class="flex justify-between items-center">
-                      <span class="text-xs text-zinc-500"
-                        >Recommended: short MP3 URLs</span
-                      >
-                      <button
-                        on:click={() =>
-                          (soundUrl =
-                            "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3")}
-                        class="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300 cursor-pointer"
-                        >Default</button
-                      >
-                    </div>
-                  </div>
-                </div>
-                {#if soundError}
-                  <p class="text-red-400 text-sm">{soundError}</p>
-                {/if}
-                <div>
-                  <label class="block text-sm text-zinc-400 mb-2"
-                    >Skip Alert Hotkey</label
-                  >
-                  <div class="flex items-center gap-2">
-                    <button
-                      on:click={() => (isRecordingHotkey = true)}
-                      on:keydown|preventDefault
-                      class="flex-1 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-lg text-white font-mono text-center cursor-pointer"
-                    >
-                      {#if isRecordingHotkey}
-                        <span class="text-yellow-400"
-                          >Press key or combo...</span
-                        >
-                      {:else}
-                        {skipHotkey || "Click to set"}
-                      {/if}
-                    </button>
-                    <button
-                      on:click={() => (isRecordingHotkey = !isRecordingHotkey)}
-                      class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-xs text-zinc-300"
-                      >{isRecordingHotkey ? "Cancel" : "Change"}</button
-                    >
-                  </div>
-                  <p class="text-xs text-zinc-500 mt-1">
-                    Works when dashboard or overlay is focused
-                  </p>
-                </div>
-                <button
-                  on:click={saveAlertSettings}
-                  disabled={alertsLoading}
-                  class="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl font-semibold transition-all cursor-pointer"
-                >
-                  {#if alertsLoading}Saving...{:else}Save Alert Settings{/if}
-                </button>
-              </div>
-            </div>
+
 
             <!-- Event List Widget -->
             <div class="glass-card rounded-2xl border border-white/10 p-6">
@@ -1182,8 +1049,70 @@
                 ><span>Preview Event List</span></a
               >
             </div>
-          </div>
 
+            <!-- QR Code Overlay -->
+            <div class="glass-card rounded-2xl border border-white/10 p-6">
+              <h2 class="font-bold text-lg mb-2">QR Code Overlay</h2>
+              <p class="text-sm text-zinc-400 mb-3">
+                Display a scannable QR code on your stream so viewers can tip you with SOL or USDC.
+              </p>
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                  <label for="qr-theme" class="text-xs text-zinc-400 block mb-1">Theme</label>
+                  <select
+                    id="qr-theme"
+                    bind:value={qrTheme}
+                    class="w-full text-xs bg-black/40 border border-white/10 text-white rounded-lg px-2 py-2 focus:outline-none focus:border-purple-500/50"
+                  >
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="neon">Neon</option>
+                  </select>
+          </div>
+              </div>
+              <div class="flex items-center gap-2 mb-3">
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                  >{qrOverlayUrl}</code
+                >
+                <button
+                  on:click={() =>
+                    navigator.clipboard.writeText(qrOverlayUrl)}
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                  >Copy</button
+                >
+              </div>
+              <ol class="text-sm text-zinc-300 space-y-1 mb-3">
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">1.</span><span
+                    >In OBS, add a <strong>Browser Source</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">2.</span><span
+                    >Paste the URL above</span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">3.</span><span
+                    >Set Width: <strong>300</strong>, Height:
+                    <strong>350</strong></span
+                  >
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-purple-400 font-bold">4.</span><span
+                    >Position it anywhere on your scene</span
+                  >
+                </li>
+              </ol>
+              <a
+                href="/overlay/{slug}/qr{qrTheme !== 'dark' ? `?theme=${qrTheme}` : ''}"
+                target="_blank"
+                class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
+                ><span>Preview QR Overlay</span></a
+              >
+            </div>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <!-- Goal Bar Widget -->
             <div class="glass-card rounded-2xl border border-white/10 p-6">
@@ -1422,14 +1351,14 @@
                 <div class="flex items-center gap-2">
                   <code
                     class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                    >https://glianapay.com/overlay/{slug}{soundEnabled
-                      ? "?sound=1"
-                      : ""}</code
+                    >${PUBLIC_URL}/overlay/{slug}{soundEnabled
+                      ? ""
+                      : "?sound=0"}</code
                   >
                   <button
                     on:click={() =>
                       navigator.clipboard.writeText(
-                        `https://glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
+                        `${PUBLIC_URL}/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
                       )}
                     class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
                     >Copy</button
@@ -1477,9 +1406,12 @@
               <p class="text-xs text-zinc-500 mt-3">
                 <span class="text-yellow-500">Tip:</span> If settings don't update,
                 right-click the Browser Source in OBS and select "Interact" then
-                refresh the page.
+                refresh the page. If it's still stuck, try removing and re-adding
+                the Browser Source.
               </p>
             </div>
+
+
           </div>
         </div>
       </div>

@@ -1,12 +1,13 @@
 <script lang="ts">
   import { slide } from "svelte/transition";
+  import { PUBLIC_URL } from "$lib/config";
   let openIndex: number | null = null;
 
   const faqs = [
     {
       question: "What is GlianaPay?",
       answer:
-        "GlianaPay is a Web3 tipping platform built on Solana that lets streamers accept SOL tips directly to their wallet with real-time OBS stream alerts — no middleman, no payout delays, no chargebacks.",
+        "GlianaPay is a Web3 tipping platform built on Solana that lets streamers accept SOL and USDC tips directly to their wallet with real-time OBS stream alerts — no middleman, no payout delays, no chargebacks.",
     },
     {
       question: "Why GlianaPay?",
@@ -21,12 +22,22 @@
     {
       question: "Is this on mainnet or devnet?",
       answer:
-        "GlianaPay now runs on Solana Mainnet! All tips use real SOL with real monetary value. Make sure your wallet is set to Mainnet mode before connecting.",
+        "GlianaPay now runs on Solana Mainnet! All tips use real SOL and USDC with real monetary value. Make sure your wallet is set to Mainnet mode before connecting.",
+    },
+    {
+      question: "Can viewers tip with USDC?",
+      answer:
+        "Yes! Viewers can tip with both SOL and USDC. When sending a tip, they can choose their preferred currency. USDC tips appear in the same alert overlay — the currency is displayed alongside the amount so you always know what you received.",
     },
     {
       question: "How do OBS alerts work?",
       answer:
-        "Your dashboard provides a unique Browser Source URL. Paste it into OBS as a Browser Source. Whenever a tip comes in, the overlay automatically animates on-screen showing the tipper's name, amount, and message in real-time — no refresh needed.",
+        "Your dashboard provides a unique Browser Source URL. Paste it into OBS as a Browser Source (recommended: 600×400). Whenever a tip comes in, the overlay automatically animates on-screen showing the tipper's name, amount (SOL or USDC), and message in real-time — no refresh needed.",
+    },
+    {
+      question: "Where do I configure alert settings?",
+      answer:
+        "Alert settings are in the <strong>Settings</strong> page. You can configure the minimum tip amount to trigger alerts, set a custom alert sound URL, upload a custom alert image, and assign a skip alert hotkey. Changes are saved together with your profile settings.",
     },
     {
       question:
@@ -66,7 +77,7 @@
     property="og:description"
     content="Frequently asked questions about accepting Solana tips and crypto donations as a streamer."
   />
-  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
 
   <!-- Twitter -->
   <meta
@@ -77,9 +88,9 @@
     name="twitter:description"
     content="Frequently asked questions about accepting Solana tips and crypto donations as a streamer."
   />
-  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
 
-  <link rel="alternate" hreflang="en" href="https://glianapay.com/faq" />
+  <link rel="alternate" hreflang="en" href="${PUBLIC_URL}/faq" />
 </svelte:head>
 
 <div

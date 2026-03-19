@@ -12,7 +12,8 @@
   let showAlert = $state(false);
   let alertSound: HTMLAudioElement | null = $state(null);
   let wsUrl = "";
-  let soundEnabled = $state(false);
+  // Enable sound by default in OBS (OBS allows autoplay without interaction)
+  let soundEnabled = $state(true);
   let soundLoading = $state(false);
   let soundUrl = $state(
     "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3",
@@ -41,14 +42,15 @@
 
   // Load sound preference from URL param only (ignore localStorage for OBS)
   function loadSoundPreference() {
-    // Check URL param first (?sound=1 or ?enableSound=true)
     const urlParams = new URLSearchParams(
       typeof window !== "undefined" ? window.location.search : "",
     );
     const urlSound = urlParams.get("sound") || urlParams.get("enableSound");
 
-    // Only enable sound if URL param says so - ignore localStorage
-    if (urlSound === "1" || urlSound === "true") {
+    // Enable sound by default unless explicitly disabled in URL
+    if (urlSound === "0" || urlSound === "false") {
+      soundEnabled = false;
+    } else {
       soundEnabled = true;
     }
 
@@ -86,20 +88,24 @@
   // Fetch streamer settings on mount
   async function loadSettings() {
     try {
-      const response = await fetch(`/api/streamer/${data.slug}/settings`);
+      // Append a timestamp to completely bypass OBS browser source caching on GET requests
+      const response = await fetch(`/api/streamer/${data.slug}/settings?_t=${Date.now()}`);
       if (response.ok) {
         const result = await response.json();
         if (result.settings?.sound_url) {
-          soundUrl = result.settings.sound_url;
+          const bust = Date.now();
+          soundUrl = `${result.settings.sound_url}?v=${bust}`;
         }
-        // Load custom alert image
+        // Load custom alert image cleanly, dropping "null" string edge-cases
+        const imgUrl = result.settings?.image_url;
         if (
-          result.settings?.image_url &&
-          result.settings.image_url !==
-            "https://cdn.gliana.app/alerts/default.png"
+          imgUrl &&
+          imgUrl !== "null" &&
+          imgUrl !== "undefined" &&
+          imgUrl !== "https://cdn.gliana.app/alerts/default.png"
         ) {
           const version = result.streamer?.image_version || Date.now();
-          alertImageUrl = `${result.settings.image_url}?v=${version}`;
+          alertImageUrl = `${imgUrl}?v=${version}`;
         } else {
           alertImageUrl = "";
         }
@@ -508,6 +514,7 @@
               src="/api/media/{alertImageUrl}"
               alt=""
               class="mx-auto max-w-[200px] max-h-[200px] object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"
+                onerror={() => { alertImageUrl = ''; }}
             />
           </div>
 

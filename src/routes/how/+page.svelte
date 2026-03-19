@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_URL } from "$lib/config";
   const currentYear = new Date().getFullYear();
 </script>
 
@@ -19,7 +20,7 @@
     property="og:description"
     content="Learn how to accept SOL tips on your stream with real-time OBS alerts."
   />
-  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
 
   <!-- Twitter -->
   <meta name="twitter:title" content="How to Use - GlianaPay" />
@@ -27,7 +28,7 @@
     name="twitter:description"
     content="Learn how to accept SOL tips on your stream with real-time OBS alerts."
   />
-  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">
@@ -83,7 +84,7 @@
         </span>
       </h1>
       <p class="text-zinc-400 text-base max-w-xl mx-auto">
-        Learn how to set up your tipping page and start receiving SOL tips from
+        Learn how to set up your tipping page and start receiving SOL and USDC tips from
         viewers with real-time OBS alerts.
       </p>
     </div>
@@ -122,10 +123,9 @@
           <div class="flex-1">
             <h2 class="font-semibold text-base">Configure Alert Settings</h2>
             <p class="text-sm text-zinc-400 mt-1">
-              In your dashboard, set the <span class="text-pink-400 font-medium">minimum tip amount</span> to trigger alerts
-              (default: 0.01 SOL), customize your alert message, and choose a
-              sound effect. You can also upload a custom image to display with
-              each tip.
+              Go to your <a href="/settings" class="text-cyan-400 font-medium hover:underline">Settings</a> page to set the <span class="text-pink-400 font-medium">minimum tip amount</span> to trigger alerts
+              (default: 0.01 SOL), customize your <span class="text-pink-400 font-medium">alert sound URL</span>, upload a custom alert image,
+              and set a <span class="text-pink-400 font-medium">skip alert hotkey</span> (default: S) to dismiss alerts from your dashboard or settings page.
             </p>
           </div>
         </div>
@@ -185,7 +185,7 @@
               When a viewer sends a tip, your OBS overlay instantly shows their
               name, the SOL amount, and their message. GlianaPay runs on <span
                 class="text-green-400 font-medium">Solana Mainnet</span
-              > — tips use real SOL!
+              > — tips use real SOL and USDC!
             </p>
           </div>
         </div>
