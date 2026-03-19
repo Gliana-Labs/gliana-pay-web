@@ -34,7 +34,7 @@
   import type { Streamer, AlertSettings, TopTipper } from "$lib/types";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import { WalletMultiButton } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
-  import { WORKER_URL, SOLANA_RPC, USDC_MINT } from "$lib/config";
+  import { WORKER_URL, SOLANA_RPC, USDC_MINT, PUBLIC_URL } from "$lib/config";
 
   // Client-side data (populated in onMount)
   let streamer: Streamer | undefined = undefined;
@@ -549,7 +549,7 @@
     property="og:description"
     content="Send a SOL tip with real-time OBS alerts"
   />
-  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
   <meta property="og:type" content="website" />
 
   <!-- Twitter -->
@@ -561,7 +561,7 @@
     name="twitter:description"
     content="Send a SOL tip with real-time OBS alerts"
   />
-  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
   <meta name="twitter:site" content="@glianalabs" />
   <meta name="twitter:creator" content="@glianalabs" />
 </svelte:head>

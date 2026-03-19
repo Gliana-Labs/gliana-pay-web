@@ -1,7 +1,9 @@
+import { PUBLIC_URL } from "$lib/config";
+
 const robots = `User-agent: *
 Allow: /
 
-Sitemap: https://glianapay.com/sitemap.xml
+Sitemap: ${PUBLIC_URL}/sitemap.xml
 `;
 
 export function GET() {

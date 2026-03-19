@@ -1,5 +1,6 @@
 <script lang="ts">
   import { slide } from "svelte/transition";
+  import { PUBLIC_URL } from "$lib/config";
   let openIndex: number | null = null;
 
   const faqs = [
@@ -76,7 +77,7 @@
     property="og:description"
     content="Frequently asked questions about accepting Solana tips and crypto donations as a streamer."
   />
-  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
 
   <!-- Twitter -->
   <meta
@@ -87,9 +88,9 @@
     name="twitter:description"
     content="Frequently asked questions about accepting Solana tips and crypto donations as a streamer."
   />
-  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
 
-  <link rel="alternate" hreflang="en" href="https://glianapay.com/faq" />
+  <link rel="alternate" hreflang="en" href="${PUBLIC_URL}/faq" />
 </svelte:head>
 
 <div

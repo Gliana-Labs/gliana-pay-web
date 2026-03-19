@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { PUBLIC_URL } from "$lib/config";
+</script>
+
 <svelte:head>
     <title>Roadmap - GlianaPay</title>
     <meta
@@ -15,7 +19,7 @@
         property="og:description"
         content="See what's coming next for GlianaPay — the Web3 tipping platform for streamers."
     />
-    <meta property="og:image" content="https://glianapay.com/og-image.png" />
+    <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
 
     <!-- Twitter -->
     <meta name="twitter:title" content="Roadmap - GlianaPay" />
@@ -23,7 +27,7 @@
         name="twitter:description"
         content="See what's coming next for GlianaPay — the Web3 tipping platform for streamers."
     />
-    <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+    <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">

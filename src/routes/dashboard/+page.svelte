@@ -4,7 +4,7 @@
   import { fade, slide } from "svelte/transition";
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import { signAuthMessage } from "$lib/wallet-helpers";
-  import { WORKER_URL } from "$lib/config";
+  import { WORKER_URL, PUBLIC_URL } from "$lib/config";
   import { fetchCloudflareStatus } from "$lib/cloudflare-status";
 
   // Check auth
@@ -62,7 +62,7 @@
   let eventListTheme = "dark";
   let eventListCopied = false;
 
-  $: eventListUrl = `https://dev.glianapay.com/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
+  $: eventListUrl = `${PUBLIC_URL}/overlay/${slug}/eventlist?mode=${eventListMode}&limit=${eventListLimit}&theme=${eventListTheme}`;
 
   // Tipping Goals
   let goals: any[] = [];
@@ -80,11 +80,11 @@
   let goalBarColor = "a855f7";
   let goalBarCopied = false;
 
-  $: goalBarUrl = `https://dev.glianapay.com/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
+  $: goalBarUrl = `${PUBLIC_URL}/overlay/${slug}/goalbar?theme=${goalBarTheme}&color=${goalBarColor}`;
 
   // QR Overlay
   let qrTheme = "dark";
-  $: qrOverlayUrl = `https://dev.glianapay.com/overlay/${slug}/qr${qrTheme !== "dark" ? `?theme=${qrTheme}` : ""}`;
+  $: qrOverlayUrl = `${PUBLIC_URL}/overlay/${slug}/qr${qrTheme !== "dark" ? `?theme=${qrTheme}` : ""}`;
 
   // Cloudflare Status
   let cfStatus:
@@ -153,7 +153,7 @@
   // Copy helpers
   let overlayCopied = false;
   async function copyOverlayUrl() {
-    const url = `https://dev.glianapay.com/overlay/${slug}${
+    const url = `${PUBLIC_URL}/overlay/${slug}${
       soundEnabled ? "" : "?sound=0"
     }`;
     await navigator.clipboard.writeText(url);
@@ -338,7 +338,7 @@
   // Copy state
   let copied = false;
   async function copyPageUrl() {
-    const url = `https://dev.glianapay.com/tip/${slug}`;
+    const url = `${PUBLIC_URL}/tip/${slug}`;
     await navigator.clipboard.writeText(url);
     copied = true;
     setTimeout(() => (copied = false), 2000);
@@ -1351,14 +1351,14 @@
                 <div class="flex items-center gap-2">
                 <code
                   class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
-                    >https://dev.glianapay.com/overlay/{slug}{soundEnabled
+                    >${PUBLIC_URL}/overlay/{slug}{soundEnabled
                       ? ""
                       : "?sound=0"}</code
                 >
                 <button
                     on:click={() =>
                       navigator.clipboard.writeText(
-                        `https://dev.glianapay.com/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
+                        `${PUBLIC_URL}/overlay/${slug}${soundEnabled ? "?sound=1" : ""}`,
                       )}
                   class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
                     >Copy</button

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_URL } from "$lib/config";
   const currentYear = new Date().getFullYear();
 </script>
 
@@ -19,7 +20,7 @@
     property="og:description"
     content="Learn how to accept SOL tips on your stream with real-time OBS alerts."
   />
-  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
 
   <!-- Twitter -->
   <meta name="twitter:title" content="How to Use - GlianaPay" />
@@ -27,7 +28,7 @@
     name="twitter:description"
     content="Learn how to accept SOL tips on your stream with real-time OBS alerts."
   />
-  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">

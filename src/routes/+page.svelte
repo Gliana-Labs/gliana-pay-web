@@ -1,6 +1,7 @@
 <script lang="ts">
   import FloatingIcons from "$lib/components/FloatingIcons.svelte";
   import { onMount } from "svelte";
+  import { PUBLIC_URL } from "$lib/config";
 
   let slug = "";
   let isLoggedIn = false;
@@ -43,7 +44,7 @@
     property="og:description"
     content="Accept SOL tips with real-time OBS alerts. Powered by Solana blockchain."
   />
-  <meta property="og:image" content="https://glianapay.com/og-image.png" />
+  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
@@ -53,12 +54,12 @@
     name="twitter:description"
     content="Accept SOL tips with real-time OBS alerts. Powered by Solana blockchain."
   />
-  <meta name="twitter:image" content="https://glianapay.com/og-image.png" />
+  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
   <meta name="twitter:site" content="@glianalabs" />
   <meta name="twitter:creator" content="@glianalabs" />
 
   <!-- Additional SEO -->
-  <link rel="alternate" hreflang="en" href="https://glianapay.com/" />
+  <link rel="alternate" hreflang="en" href="${PUBLIC_URL}/" />
 </svelte:head>
 
 <div
