@@ -996,13 +996,14 @@
                 <WalletMultiButton />
               </div>
 
-              <div class="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-left">
+              <div class="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-left sm:hidden">
                 <p class="text-xs font-medium text-amber-300 mb-2">
-                  Having trouble connecting?
+                  Having issues?
                 </p>
-                <p class="text-xs text-zinc-400 mb-2">
-                  If your wallet won't connect, copy this link and open it in your phone's browser instead.
-                </p>
+                <ol class="text-xs text-zinc-400 space-y-1 mb-2">
+                  <li>1. Connect wallet → refresh the page</li>
+                  <li>2. Still stuck? Copy link below and open in phone browser instead.</li>
+                </ol>
                 <button
                   on:click={() => {
                     navigator.clipboard.writeText(window.location.href);
