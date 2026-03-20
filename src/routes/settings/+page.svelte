@@ -679,6 +679,7 @@
 </script>
 
 <svelte:head>
+    <meta name="robots" content="noindex, nofollow" />
     <title>Settings - GlianaPay</title>
 </svelte:head>
 
