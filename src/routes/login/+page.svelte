@@ -19,7 +19,7 @@
   let turnstileToken = "";
   let turnstileContainer: HTMLDivElement;
   let turnstileWidgetId: string | null = null;
-  const TURNSTILE_SITE_KEY = "0x4AAAAAACd6patp0WteLo73";
+  const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
   // ============ REACTIVE WALLET STATE ============
 
