@@ -15,20 +15,28 @@
   />
 
   <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{PUBLIC_URL}/docs" />
   <meta property="og:title" content="Documentation - GlianaPay" />
   <meta
     property="og:description"
     content="Complete documentation for GlianaPay tipping platform."
   />
-  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
+  <meta property="og:image" content="{PUBLIC_URL}/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="GlianaPay" />
 
   <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Documentation - GlianaPay" />
   <meta
     name="twitter:description"
     content="Complete documentation for GlianaPay tipping platform."
   />
-  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
+  <meta name="twitter:image" content="{PUBLIC_URL}/og-image.png" />
+  <meta name="twitter:site" content="@glianalabs" />
+  <meta name="twitter:creator" content="@glianalabs" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">
