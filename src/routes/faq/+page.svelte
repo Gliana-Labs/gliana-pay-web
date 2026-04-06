@@ -69,6 +69,8 @@
   />
 
   <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{PUBLIC_URL}/faq" />
   <meta
     property="og:title"
     content="FAQ - GlianaPay | Web3 Tipping for Streamers"
@@ -77,9 +79,13 @@
     property="og:description"
     content="Frequently asked questions about accepting Solana tips and crypto donations as a streamer."
   />
-  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
+  <meta property="og:image" content="{PUBLIC_URL}/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="GlianaPay" />
 
   <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
   <meta
     name="twitter:title"
     content="FAQ - GlianaPay | Web3 Tipping for Streamers"
@@ -88,9 +94,11 @@
     name="twitter:description"
     content="Frequently asked questions about accepting Solana tips and crypto donations as a streamer."
   />
-  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
+  <meta name="twitter:image" content="{PUBLIC_URL}/og-image.png" />
+  <meta name="twitter:site" content="@glianapay" />
+  <meta name="twitter:creator" content="@glianapay" />
 
-  <link rel="alternate" hreflang="en" href="${PUBLIC_URL}/faq" />
+  <link rel="alternate" hreflang="en" href="{PUBLIC_URL}/faq" />
 </svelte:head>
 
 <div

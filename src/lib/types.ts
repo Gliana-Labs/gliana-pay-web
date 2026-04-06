@@ -45,7 +45,8 @@ export interface AlertSettings {
   streamer_id: number;
   sound_url: string;
   image_url: string;
-  min_amount: number; // minimum tip to trigger alert
+  min_amount_sol: number; // minimum SOL tip in lamports
+  min_amount_usdc: number; // minimum USDC tip in microunits
   created_at: string;
   updated_at: string;
 }

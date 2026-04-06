@@ -14,20 +14,28 @@
     />
 
     <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{PUBLIC_URL}/roadmap" />
     <meta property="og:title" content="Roadmap - GlianaPay" />
     <meta
         property="og:description"
         content="See what's coming next for GlianaPay — the Web3 tipping platform for streamers."
     />
-    <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
+    <meta property="og:image" content="{PUBLIC_URL}/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="GlianaPay" />
 
     <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Roadmap - GlianaPay" />
     <meta
         name="twitter:description"
         content="See what's coming next for GlianaPay — the Web3 tipping platform for streamers."
     />
-    <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
+    <meta name="twitter:image" content="{PUBLIC_URL}/og-image.png" />
+    <meta name="twitter:site" content="@glianapay" />
+    <meta name="twitter:creator" content="@glianapay" />
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] flex flex-col">
