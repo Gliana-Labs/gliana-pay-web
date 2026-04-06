@@ -44,7 +44,8 @@
     let socialsLoading = false;
 
     // Alert Settings
-    let minAmount = 0.01;
+    let minAmountSol = 0.01; // in SOL
+    let minAmountUsdc = 1; // in USDC
     let soundUrl = "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
     let soundError = "";
     let skipHotkey = "s";
@@ -180,8 +181,10 @@
                 }
                 // Load alert settings
                 if (data.settings) {
-                    const loadedAmount = data.settings.min_amount || 10000000;
-                    minAmount = Math.max(loadedAmount, 10000000) / 1e9;
+                    const loadedAmountSol = data.settings.min_amount_sol || 10000000;
+                    minAmountSol = Math.max(loadedAmountSol, 10000000) / 1e9;
+                    const loadedAmountUsdc = data.settings.min_amount_usdc || 1000000;
+                    minAmountUsdc = Math.max(loadedAmountUsdc, 1000000) / 1e6;
                     soundUrl = data.settings.sound_url || "https://www.myinstants.com/media/sounds/default_eKkIk7O.mp3";
                 }
                 // Load alert image from settings
@@ -326,7 +329,8 @@
                         banner_url: bannerUrl,
                         tip_bg_url: tipBgUrl,
                         image_url: alertImageUrl,
-                        min_amount: Math.floor(minAmount * 1e9),
+                        min_amount_sol: Math.floor(minAmountSol * 1e9),
+                        min_amount_usdc: Math.floor(minAmountUsdc * 1e6),
                         sound_url: soundUrl,
                         skip_hotkey: skipHotkey,
                         deleted_images: deletedImages.filter(
@@ -1049,16 +1053,31 @@
 
                     <div>
                         <label
-                            for="min-amount"
+                            for="min-amount-sol"
                             class="block text-xs text-zinc-400 mb-1"
-                            >Minimum Tip to Show Alert (SOL)</label
+                            >Minimum SOL Tip</label
                         >
                         <input
                             type="number"
-                            id="min-amount"
-                            bind:value={minAmount}
+                            id="min-amount-sol"
+                            bind:value={minAmountSol}
                             step="0.01"
                             min="0.01"
+                            class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
+                        />
+                    </div>
+                    <div>
+                        <label
+                            for="min-amount-usdc"
+                            class="block text-xs text-zinc-400 mb-1"
+                            >Minimum USDC Tip</label
+                        >
+                        <input
+                            type="number"
+                            id="min-amount-usdc"
+                            bind:value={minAmountUsdc}
+                            step="1"
+                            min="1"
                             class="w-full px-3 py-2 bg-zinc-900 border border-white/10 rounded-lg text-white"
                         />
                     </div>
