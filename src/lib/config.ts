@@ -1,16 +1,30 @@
-// Worker URL configuration
-// Use relative URLs - works for both client and server with Service binding
-export const WORKER_URL = ''; // relative URL (client-side)
-export const WORKER_URL_SERVER = ''; // relative URL (server-side)
-export const WORKER_HOST = ''; // for WebSocket
+// =============================================================================
+// WORKER URL CONFIGURATION
+// Relative URLs work for both client and server via Service binding
+// =============================================================================
+export const WORKER_URL = ''; // client-side fetch (relative)
+export const WORKER_URL_SERVER = ''; // server-side fetch (relative)
+export const HOST = ''; // WebSocket host
 
-// Solana Network configuration (Change these for mainnet later)
-export const SOLANA_RPC = 'https://api.devnet.solana.com';
-export const USDC_MINT = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
+// =============================================================================
+// CLOUDFLARE PAGES ENVIRONMENT VARIABLES
+// Set these in: Dashboard → Pages → project → Settings → Environment Variables
+//
+// IMPORTANT: Set for BOTH "Production" AND "Preview" environments
+// These VITE_* vars are baked into the client bundle at build time.
+// For secrets visible to client, use a proxy through the worker.
+// =============================================================================
 
-//Mainnet
-// export const SOLANA_RPC = 'https://mainnet.helius-rpc.com/?api-key=b3a3b7bf-3794-4a88-8b64-258b79657c48';
-// export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+// Solana mainnet RPC endpoint
+// Example: https://mainnet.helius-rpc.com/?api-key=YOUR_KEY
+// Warning: This URL is visible in client bundle - consider proxying through worker
+export const SOLANA_RPC = import.meta.env.VITE_SOLANA_RPC;
 
-// Public base URL (change for dev/prod)
-export const PUBLIC_URL = 'https://dev.glianapay.com';
+// USDC mint address on Solana mainnet
+export const USDC_MINT = import.meta.env.VITE_USDC_MINT;
+
+// Public base URL for the deployed site (no trailing slash)
+export const PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL;
+
+// Cloudflare Turnstile site key (public, safe for client)
+export const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;

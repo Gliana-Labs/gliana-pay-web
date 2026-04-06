@@ -1006,18 +1006,18 @@
                     <option value="light">Light</option>
                     <option value="minimal">Minimal</option>
                   </select>
-              </div>
+                </div>
               </div>
               <div class="flex items-center gap-2 mb-3">
-                  <code
-                    class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
+                <code
+                  class="flex-1 text-xs text-green-400 bg-black/30 p-2 rounded break-all"
                   >{eventListUrl}</code
-                  >
-                  <button
+                >
+                <button
                   on:click={copyEventListUrl}
-                    class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
+                  class="bg-purple-600 hover:bg-purple-500 px-3 py-2 rounded-lg text-xs whitespace-nowrap cursor-pointer"
                   >{eventListCopied ? "✓ Copied!" : "Copy"}</button
-                  >
+                >
               </div>
               <ol class="text-sm text-zinc-300 space-y-1 mb-3">
                 <li class="flex gap-2">
@@ -1042,9 +1042,9 @@
                   >
                 </li>
               </ol>
-                <a
+              <a
                 href="/overlay/{slug}/eventlist?mode={eventListMode}&limit={eventListLimit}&theme={eventListTheme}&preview=1"
-                  target="_blank"
+                target="_blank"
                 class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:underline"
                 ><span>Preview Event List</span></a
               >
@@ -1068,7 +1068,7 @@
                     <option value="light">Light</option>
                     <option value="neon">Neon</option>
                   </select>
-                </div>
+          </div>
               </div>
               <div class="flex items-center gap-2 mb-3">
                 <code
@@ -1409,7 +1409,7 @@
                 ><span>Preview Goal Bar</span></a
               >
             </div>
-                </div>
+          </div>
         </div>
       </div>
     </div>

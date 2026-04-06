@@ -28,38 +28,63 @@
 </script>
 
 <svelte:head>
-  <title>GlianaPay</title>
+  <title>GlianaPay — Web3 Tipping Platform for Streamers | Accept SOL & USDC Tips</title>
   <meta
     name="description"
-    content="Accept SOL tips with real-time OBS alerts. The easiest way for streamers to receive cryptocurrency donations. Powered by Solana blockchain."
+    content="GlianaPay is the easiest way for streamers to accept SOL and USDC tips with real-time OBS alerts. Zero platform fees, instant payouts, powered by Solana."
   />
   <meta
     name="keywords"
-    content="streamer tips, Solana tips, crypto donations, OBS overlay, live streaming, Web3 payments, creator monetization"
+    content="GlianaPay, gliana pay, streamer tips, Solana tips, USDC tips, crypto donations, OBS overlay, live streaming, Web3 payments, creator monetization"
   />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="GlianaPay - Web3 Tipping for Streamers" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{PUBLIC_URL}/" />
+  <meta property="og:title" content="GlianaPay — Web3 Tipping for Streamers" />
   <meta
     property="og:description"
-    content="Accept SOL tips with real-time OBS alerts. Powered by Solana blockchain."
+    content="Accept SOL and USDC tips with real-time OBS alerts. Zero fees, instant payouts."
   />
-  <meta property="og:image" content="${PUBLIC_URL}/og-image.png" />
+  <meta property="og:image" content="{PUBLIC_URL}/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="GlianaPay" />
 
   <!-- Twitter -->
-  <meta name="twitter:title" content="GlianaPay - Web3 Tipping for Streamers" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GlianaPay — Web3 Tipping for Streamers" />
   <meta
     name="twitter:description"
-    content="Accept SOL tips with real-time OBS alerts. Powered by Solana blockchain."
+    content="Accept SOL and USDC tips with real-time OBS alerts. Zero fees, instant payouts."
   />
-  <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
+  <meta name="twitter:image" content="{PUBLIC_URL}/og-image.png" />
   <meta name="twitter:site" content="@glianalabs" />
   <meta name="twitter:creator" content="@glianalabs" />
 
   <!-- Additional SEO -->
-  <link rel="alternate" hreflang="en" href="${PUBLIC_URL}/" />
+  <link rel="alternate" hreflang="en" href="{PUBLIC_URL}/" />
+
+  <!-- JSON-LD Structured Data -->
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "GlianaPay",
+    "url": "https://glianapay.com",
+    "description": "Web3 tipping platform for streamers. Accept SOL and USDC tips with real-time OBS alerts.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Organization",
+      "name": "Gliana Labs",
+      "url": "https://glianalabs.com"
+    }
+  })}</script>`}
 </svelte:head>
 
 <div
@@ -267,7 +292,7 @@
         </a>
         <p class="text-sm text-zinc-500 max-w-md text-center">
           Connect your wallet to create your tipping page. Share your link and
-          start receiving SOL tips with live OBS alerts.
+          start receiving SOL and USDC tips with live OBS alerts.
         </p>
       {/if}
     </div>

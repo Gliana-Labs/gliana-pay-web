@@ -64,5 +64,5 @@
 </svelte:head>
 
 <main>
-<slot />
+  <slot />
 </main>

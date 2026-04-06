@@ -679,6 +679,7 @@
 </script>
 
 <svelte:head>
+    <meta name="robots" content="noindex, nofollow" />
     <title>Settings - GlianaPay</title>
 </svelte:head>
 
@@ -983,68 +984,68 @@
                         <p class="text-xs text-zinc-400">
                             Custom image or GIF for your OBS tip alert overlay.
                             Replaces the default avatar.
-                    </p>
-                    <div class="relative inline-block">
-                        <button
-                            on:click={() => alertImageInput.click()}
-                            class="w-28 h-28 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
-                        >
-                            {#if localAlertImagePreview || alertImageUrl}
-                                <img
-                                    src={localAlertImagePreview
-                                        ? localAlertImagePreview
-                                        : `${WORKER_URL}/api/media/${alertImageUrl}?v=${imageVersion}`}
-                                    alt="Alert preview"
-                                    class="w-full h-full object-contain bg-black/50"
-                                />
-                                <div
-                                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                                >
-                                    <span class="text-xs font-medium"
-                                        >Change</span
-                                    >
-                                </div>
-                            {:else}
-                                <div
-                                    class="w-full h-full bg-gradient-to-br from-cyan-400/10 via-purple-500/10 to-pink-500/10 flex items-center justify-center"
-                                >
-                                    {#if uploadingAlertImage}
-                                        <div
-                                            class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
-                                        ></div>
-                                    {:else}
-                                        <div class="text-center">
-                                            <span class="text-2xl block mb-1"
-                                                >🎨</span
-                                            >
-                                            <span
-                                                class="text-[10px] text-zinc-400"
-                                                >Upload</span
-                                            >
-                                        </div>
-                                    {/if}
-                                </div>
-                            {/if}
-                        </button>
-                        <input
-                            bind:this={alertImageInput}
-                            type="file"
-                            accept="image/png,image/jpeg,image/webp,image/gif"
-                            on:change={handleAlertImageSelect}
-                            class="hidden"
-                        />
-                        {#if localAlertImagePreview || alertImageUrl}
+                        </p>
+                        <div class="relative inline-block">
                             <button
-                                on:click={() => removeImage("alert_image")}
-                                class="absolute -top-1 -right-1 z-10 w-5 h-5 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-[10px]"
-                                title="Remove alert image">✕</button
+                                on:click={() => alertImageInput.click()}
+                                class="w-28 h-28 rounded-xl border-2 border-dashed border-white/10 hover:border-purple-500/50 transition-all overflow-hidden relative group cursor-pointer"
                             >
-                        {/if}
+                                {#if localAlertImagePreview || alertImageUrl}
+                                    <img
+                                        src={localAlertImagePreview
+                                            ? localAlertImagePreview
+                                            : `${WORKER_URL}/api/media/${alertImageUrl}?v=${imageVersion}`}
+                                        alt="Alert preview"
+                                        class="w-full h-full object-contain bg-black/50"
+                                    />
+                                    <div
+                                        class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                    >
+                                        <span class="text-xs font-medium"
+                                            >Change</span
+                                        >
+                                    </div>
+                                {:else}
+                                    <div
+                                        class="w-full h-full bg-gradient-to-br from-cyan-400/10 via-purple-500/10 to-pink-500/10 flex items-center justify-center"
+                                    >
+                                        {#if uploadingAlertImage}
+                                            <div
+                                                class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                                            ></div>
+                                        {:else}
+                                            <div class="text-center">
+                                                <span class="text-2xl block mb-1"
+                                                    >🎨</span
+                                                >
+                                                <span
+                                                    class="text-[10px] text-zinc-400"
+                                                    >Upload</span
+                                                >
+                                            </div>
+                                        {/if}
+                                    </div>
+                                {/if}
+                            </button>
+                            <input
+                                bind:this={alertImageInput}
+                                type="file"
+                                accept="image/png,image/jpeg,image/webp,image/gif"
+                                on:change={handleAlertImageSelect}
+                                class="hidden"
+                            />
+                            {#if localAlertImagePreview || alertImageUrl}
+                                <button
+                                    on:click={() => removeImage("alert_image")}
+                                    class="absolute -top-1 -right-1 z-10 w-5 h-5 bg-black/70 hover:bg-red-500/80 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all text-[10px]"
+                                    title="Remove alert image">✕</button
+                                >
+                            {/if}
+                        </div>
+                        <p class="text-[10px] text-zinc-600">
+                            Max 5MB · PNG, JPEG, WebP, GIF
+                        </p>
                     </div>
-                    <p class="text-[10px] text-zinc-600">
-                        Max 5MB · PNG, JPEG, WebP, GIF
-                    </p>
-                </div>
 
                     <div>
                         <label

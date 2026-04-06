@@ -505,142 +505,142 @@
   >
     {#if currentTip}
       {#key currentTip}
-        {#if alertImageUrl}
-          <!-- Custom image alert: StreamElements-style vertical layout -->
-          <div class="custom-alert relative text-center">
-            <!-- Big custom image/GIF -->
-            <div class="mb-3">
-              <img
-                src="/api/media/{alertImageUrl}"
-                alt=""
-                class="mx-auto max-w-[200px] max-h-[200px] object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"
+      {#if alertImageUrl}
+        <!-- Custom image alert: StreamElements-style vertical layout -->
+        <div class="custom-alert relative text-center">
+          <!-- Big custom image/GIF -->
+          <div class="mb-3">
+            <img
+              src="/api/media/{alertImageUrl}"
+              alt=""
+              class="mx-auto max-w-[200px] max-h-[200px] object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"
                 onerror={() => { alertImageUrl = ''; }}
-              />
-            </div>
+            />
+          </div>
 
-            <!-- Name + Amount -->
-            <div class="text-lg font-bold text-white drop-shadow-lg">
-              {#if currentTip.sender_name}
-                <span class="text-purple-300">{currentTip.sender_name}</span>
-                <span class="text-zinc-400 mx-1">tipped</span>
-              {/if}
-              <span
-                class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400"
-              >
-                {formatAmount(currentTip.amount, currentTip.currency)}
-                {currentTip.currency || "SOL"}
-              </span>
-            </div>
+          <!-- Name + Amount -->
+          <div class="text-lg font-bold text-white drop-shadow-lg">
+            {#if currentTip.sender_name}
+              <span class="text-purple-300">{currentTip.sender_name}</span>
+              <span class="text-zinc-400 mx-1">tipped</span>
+            {/if}
+            <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400"
+            >
+              {formatAmount(currentTip.amount, currentTip.currency)}
+              {currentTip.currency || "SOL"}
+            </span>
+          </div>
 
-            <!-- Message -->
-            {#if currentTip.message}
+          <!-- Message -->
+          {#if currentTip.message}
               <div class="mt-3 w-full flex justify-center">
                 <div class="relative overflow-hidden rounded-xl bg-black/40 backdrop-blur border border-white/10 px-4 py-3 max-w-[280px] w-full">
                   <!-- Inner container limit to ~3 lines (e.g. 4.5rem) and scroll if overflow -->
                   <div class="max-h-[72px] overflow-hidden relative">
                     <div class="text-sm font-medium text-zinc-200 leading-snug break-words {currentTip.message.length > 80 ? 'animate-scroll-y' : ''}">
-                      {currentTip.message}
-                    </div>
+              {currentTip.message}
+            </div>
                   </div>
                 </div>
               </div>
-            {/if}
-          </div>
-        {:else}
-          <!-- Default alert: horizontal card layout -->
-          <div class="relative">
-            <!-- Glow -->
+          {/if}
+        </div>
+      {:else}
+        <!-- Default alert: horizontal card layout -->
+        <div class="relative">
+          <!-- Glow -->
+          <div
+            class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"
+          ></div>
+
+          <!-- Main Card -->
+          <div
+              class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl px-5 pt-5 pb-7 shadow-2xl"
+          >
+            <!-- Animated gradient border -->
             <div
-              class="absolute -inset-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"
+              class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-30 animate-pulse"
             ></div>
 
-            <!-- Main Card -->
-            <div
-              class="relative bg-[#0a0a0b]/95 backdrop-blur border border-white/20 rounded-2xl px-5 pt-5 pb-7 shadow-2xl"
-            >
-              <!-- Animated gradient border -->
-              <div
-                class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-30 animate-pulse"
-              ></div>
+            <div class="relative flex items-center gap-4">
+              <!-- Avatar -->
+              <div class="relative flex-shrink-0">
+                <div
+                  class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
+                >
+                  <span class="text-2xl">💎</span>
+                </div>
+                <!-- Sparkles -->
+                <div class="absolute -top-1 -right-1 text-lg animate-bounce">
+                  ✨
+                </div>
+              </div>
 
-              <div class="relative flex items-center gap-4">
-                <!-- Avatar -->
-                <div class="relative flex-shrink-0">
-                  <div
-                    class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg"
-                  >
-                    <span class="text-2xl">💎</span>
-                  </div>
-                  <!-- Sparkles -->
-                  <div class="absolute -top-1 -right-1 text-lg animate-bounce">
-                    ✨
-                  </div>
+              <!-- Content -->
+              <div class="flex-1 min-w-0">
+                <!-- Header -->
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-sm font-bold text-cyan-400 animate-pulse">
+                    🎉 NEW TIP!
+                  </span>
                 </div>
 
-                <!-- Content -->
-                <div class="flex-1 min-w-0">
-                  <!-- Header -->
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-sm font-bold text-cyan-400 animate-pulse">
-                      🎉 NEW TIP!
-                    </span>
-                  </div>
+                <!-- Amount -->
+                <div class="text-2xl font-bold text-white mb-1">
+                  {formatAmount(currentTip.amount, currentTip.currency)}
+                  {currentTip.currency || "SOL"}
+                </div>
 
-                  <!-- Amount -->
-                  <div class="text-2xl font-bold text-white mb-1">
-                    {formatAmount(currentTip.amount, currentTip.currency)}
-                    {currentTip.currency || "SOL"}
-                  </div>
-
-                  <!-- Name & Message -->
-                  {#if currentTip.sender_name}
+                <!-- Name & Message -->
+                {#if currentTip.sender_name}
                     <div class="text-base font-semibold text-purple-300 truncate mb-1">
-                      {currentTip.sender_name}
-                    </div>
-                  {/if}
+                    {currentTip.sender_name}
+                  </div>
+                {/if}
 
-                  {#if currentTip.message}
+                {#if currentTip.message}
                     <div class="mt-2 w-full max-w-[240px]">
                       <div class="relative overflow-hidden rounded-xl bg-white/5 border border-white/10 px-3 py-2">
                          <div class="max-h-[72px] overflow-hidden relative">
                           <div class="text-sm font-medium text-zinc-200 leading-snug break-words {currentTip.message.length > 70 ? 'animate-scroll-y' : ''}">
-                            {currentTip.message}
-                          </div>
+                    {currentTip.message}
+                  </div>
                          </div>
                       </div>
                     </div>
-                  {/if}
-                </div>
-
-                <!-- Coin icon -->
-                <div class="flex-shrink-0 text-3xl animate-bounce">🪙</div>
+                {/if}
               </div>
+
+              <!-- Coin icon -->
+              <div class="flex-shrink-0 text-3xl animate-bounce">🪙</div>
+            </div>
 
               <!-- Powered by -->
               <div class="absolute bottom-1 right-3 text-[10px] text-white/30 font-medium">
                 powered by glianapay
               </div>
 
-              <!-- Sparkle decorations -->
-              <div class="absolute top-2 right-8">
-                <span
-                  class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"
-                ></span>
-              </div>
-              <div class="absolute bottom-3 left-6">
-                <span
-                  class="absolute w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping"
-                  style="animation-delay: 0.3s;"
-                ></span>
-              </div>
+            <!-- Sparkle decorations -->
+            <div class="absolute top-2 right-8">
+              <span
+                class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"
+              ></span>
             </div>
-
-            <!-- Bottom line -->
-            <div
-              class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-3/4 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"
-            ></div>
+            <div class="absolute bottom-3 left-6">
+              <span
+                class="absolute w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping"
+                style="animation-delay: 0.3s;"
+              ></span>
+            </div>
           </div>
-        {/if}
+
+          <!-- Bottom line -->
+          <div
+            class="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-0.5 w-3/4 bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"
+          ></div>
+        </div>
+      {/if}
       {/key}
     {/if}
   </div>

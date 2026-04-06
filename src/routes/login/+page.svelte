@@ -3,7 +3,7 @@
   import { walletStore } from "@aztemi/svelte-on-solana-wallet-adapter-core";
   import { WalletMultiButton } from "@aztemi/svelte-on-solana-wallet-adapter-ui";
   import { signAuthMessage } from "$lib/wallet-helpers";
-  import { WORKER_URL } from "$lib/config";
+  import { WORKER_URL, TURNSTILE_SITE_KEY } from "$lib/config";
 
   // Simple state
   let mounted = false;
@@ -19,7 +19,6 @@
   let turnstileToken = "";
   let turnstileContainer: HTMLDivElement;
   let turnstileWidgetId: string | null = null;
-  const TURNSTILE_SITE_KEY = "0x4AAAAAACd6patp0WteLo73";
 
   // ============ REACTIVE WALLET STATE ============
 
