@@ -564,8 +564,8 @@
     content="Send a SOL tip with real-time OBS alerts"
   />
   <meta name="twitter:image" content="${PUBLIC_URL}/og-image.png" />
-  <meta name="twitter:site" content="@glianalabs" />
-  <meta name="twitter:creator" content="@glianalabs" />
+  <meta name="twitter:site" content="@glianapay" />
+  <meta name="twitter:creator" content="@glianapay" />
 </svelte:head>
 
 <div

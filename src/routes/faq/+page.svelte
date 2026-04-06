@@ -95,8 +95,8 @@
     content="Frequently asked questions about accepting Solana tips and crypto donations as a streamer."
   />
   <meta name="twitter:image" content="{PUBLIC_URL}/og-image.png" />
-  <meta name="twitter:site" content="@glianalabs" />
-  <meta name="twitter:creator" content="@glianalabs" />
+  <meta name="twitter:site" content="@glianapay" />
+  <meta name="twitter:creator" content="@glianapay" />
 
   <link rel="alternate" hreflang="en" href="{PUBLIC_URL}/faq" />
 </svelte:head>

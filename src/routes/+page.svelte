@@ -59,8 +59,8 @@
     content="Accept SOL and USDC tips with real-time OBS alerts. Zero fees, instant payouts."
   />
   <meta name="twitter:image" content="{PUBLIC_URL}/og-image.png" />
-  <meta name="twitter:site" content="@glianalabs" />
-  <meta name="twitter:creator" content="@glianalabs" />
+  <meta name="twitter:site" content="@glianapay" />
+  <meta name="twitter:creator" content="@glianapay" />
 
   <!-- Additional SEO -->
   <link rel="alternate" hreflang="en" href="{PUBLIC_URL}/" />
