@@ -50,12 +50,55 @@
 
 html {
   font-family: var(--font-sans);
+  scroll-behavior: smooth;
 }
 
 body {
   @apply bg-gl-bg text-white;
   background: var(--bg-primary);
   font-family: var(--font-sans);
+  /* Native form controls (checkbox/radio/range) pick up brand color */
+  accent-color: var(--accent-purple);
+}
+
+/* Brand-tinted text selection */
+::selection {
+  background: rgba(168, 85, 247, 0.35);
+  color: #fff;
+}
+
+/* Keyboard focus ring — visible for tab users, hidden for mouse clicks.
+   Applies to every interactive element app-wide (buttons, links, inputs). */
+:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Inputs/textarea: replace the default outline with a soft brand ring */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: rgba(168, 85, 247, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+}
+
+/* Respect reduced-motion: kill the looping gradients/orbs/spins/floats.
+   Keeps one-shot transitions snappy instead of fully removing feedback. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Noise texture overlay */
@@ -247,6 +290,25 @@ body::before {
   width: 32px !important;
   height: 32px !important;
   border-radius: 8px !important;
+}
+
+/* Robust wallet icon rendering — covers modal list, trigger button, and
+   dropdown. Without flex-shrink:0 + min-width the icon collapses to 0 when
+   the wallet name is long or the img is still loading, so the logo vanishes. */
+.wallet-adapter-button-start-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  min-width: 24px !important;
+}
+
+.wallet-adapter-button-start-icon img,
+.wallet-adapter-dropdown .wallet-adapter-button-trigger img {
+  display: block !important;
+  flex-shrink: 0 !important;
+  object-fit: contain !important;
+  max-width: none !important;
 }
 
 .wallet-adapter-modal-list .wallet-adapter-button span {

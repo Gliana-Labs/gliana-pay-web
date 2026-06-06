@@ -146,6 +146,20 @@
         >
       </nav>
 
+      <!-- Right: primary account CTA -->
+      {#if isLoggedIn}
+        <a
+          href="/dashboard"
+          class="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all"
+          >Dashboard</a
+        >
+      {:else}
+        <a
+          href="/login"
+          class="px-4 py-2 text-sm font-semibold rounded-xl border border-white/15 text-zinc-200 hover:border-purple-500/50 hover:text-white transition-all"
+          >Log in</a
+        >
+      {/if}
     </div>
 
     <!-- Logo & Title -->

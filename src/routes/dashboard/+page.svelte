@@ -702,6 +702,11 @@
   <title>Dashboard - GlianaPay</title>
 </svelte:head>
 
+<svelte:window
+  on:keydown={(e) =>
+    e.key === "Escape" && showExportModal && (showExportModal = false)}
+/>
+
 {#if !loading}
   <div
     class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden"
@@ -1522,6 +1527,8 @@
   <!-- Toast -->
   {#if toast}
     <div
+      role="status"
+      aria-live="polite"
       transition:slide={{ duration: 300 }}
       class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-3 rounded-lg shadow-lg z-50 {toastType ===
       'success'

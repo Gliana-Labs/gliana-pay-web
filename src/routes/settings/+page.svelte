@@ -1455,6 +1455,8 @@
         <!-- Toast -->
         {#if toast}
             <div
+                role="status"
+                aria-live="polite"
                 transition:slide={{ duration: 300 }}
                 class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 {toastType ===
                 'success'
