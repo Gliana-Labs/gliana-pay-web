@@ -52,6 +52,14 @@
   let walletError = "";
   let copiedFallback = false;
 
+  // Classify status message tone for clearer visual feedback
+  $: statusTone =
+    /fail|cancel|restricted|not found|error|delayed|blocked/i.test(status)
+      ? "error"
+      : /confirmed|sent|thank you|🎉/i.test(status)
+        ? "success"
+        : "info";
+
   // Reactive wallet state from walletStore
   $: viewerWallet = $walletStore?.publicKey?.toBase58() || "";
   $: viewerConnected = !!$walletStore?.connected;
@@ -1260,9 +1268,24 @@
 
             {#if status}
               <div
-                class="mt-4 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 animate-slide-up"
+                role="status"
+                aria-live="polite"
+                class="mt-4 p-3 rounded-xl border animate-slide-up {statusTone ===
+                'error'
+                  ? 'bg-red-500/10 border-red-500/30'
+                  : statusTone === 'success'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-purple-500/10 border-purple-500/30'}"
               >
-                <p class="text-center text-purple-300 text-sm">{status}</p>
+                <p
+                  class="text-center text-sm {statusTone === 'error'
+                    ? 'text-red-300'
+                    : statusTone === 'success'
+                      ? 'text-green-300'
+                      : 'text-purple-300'}"
+                >
+                  {status}
+                </p>
               </div>
             {/if}
           </div>
