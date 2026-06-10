@@ -736,7 +736,7 @@
           <img
             src="/logo.svg"
             alt="GlianaPay"
-            class="w-9 h-9 bg-transparent transition-transform group-hover:scale-110"
+            class="h-9 w-auto bg-transparent transition-transform group-hover:scale-110"
             width="36"
             height="36"
           />
