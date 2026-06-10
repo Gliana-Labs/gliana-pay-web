@@ -212,7 +212,7 @@
         <span
           class="text-gradient bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient"
         >
-          Get paid to stream.
+          Crypto tips, live on stream.
         </span>
       </h1>
 
