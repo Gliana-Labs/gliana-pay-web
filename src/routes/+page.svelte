@@ -199,7 +199,7 @@
         <img
           src="/logo.svg"
           alt="GlianaPay"
-          class="w-24 h-24 bg-transparent animate-float-soft"
+          class="w-24 h-24 bg-transparent"
           width="96"
           height="96"
         />
