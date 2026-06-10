@@ -88,7 +88,7 @@
 </svelte:head>
 
 <div
-  class="min-h-screen bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden"
+  class="min-h-[100dvh] bg-[#0a0a0b] text-white font-['Sora'] relative overflow-hidden"
 >
   <!-- Animated Background -->
   <div class="absolute inset-0 overflow-hidden">
@@ -116,35 +116,47 @@
   </div>
 
   <div
-    class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 pb-32 pt-16"
+    class="relative z-10 min-h-[100dvh] flex flex-col items-center justify-center px-4 pb-32 pt-24"
   >
     <!-- Top Header (Edge-to-Edge) -->
     <div
       class="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex items-center justify-between"
     >
-      <!-- Left Navigation -->
-      <nav class="flex items-center gap-2 sm:gap-6">
-        <a
-          href="/how"
-          class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-          >How</a
-        >
-        <a
-          href="/docs"
-          class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-          >Docs</a
-        >
-        <a
-          href="/roadmap"
-          class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-          >Roadmap</a
-        >
-        <a
-          href="/faq"
-          class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-          >FAQ</a
-        >
-      </nav>
+      <!-- Left: brand + nav -->
+      <div class="flex items-center gap-4 sm:gap-8">
+        <a href="/" class="flex items-center gap-2 group">
+          <img
+            src="/logo.svg"
+            alt="GlianaPay"
+            class="w-8 h-8 transition-transform group-hover:scale-110"
+            width="32"
+            height="32"
+          />
+          <span class="font-bold tracking-tight hidden sm:inline">GlianaPay</span>
+        </a>
+        <nav class="flex items-center gap-2 sm:gap-5">
+          <a
+            href="/how"
+            class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >How</a
+          >
+          <a
+            href="/docs"
+            class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >Docs</a
+          >
+          <a
+            href="/roadmap"
+            class="text-sm font-medium text-zinc-400 hover:text-white transition-colors hidden sm:inline"
+            >Roadmap</a
+          >
+          <a
+            href="/faq"
+            class="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >FAQ</a
+          >
+        </nav>
+      </div>
 
       <!-- Right: primary account CTA -->
       {#if isLoggedIn}
@@ -162,151 +174,176 @@
       {/if}
     </div>
 
+    <!-- Live badge -->
+    <div
+      class="reveal inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur mb-7"
+      style="animation-delay: 0ms;"
+    >
+      <span class="relative flex h-2 w-2">
+        <span
+          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"
+        ></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-green-400"
+        ></span>
+      </span>
+      Live on Solana · Zero platform fees
+    </div>
+
     <!-- Logo & Title -->
-    <div class="text-center mb-12" id="logo-container">
+    <div class="text-center mb-10" id="logo-container">
       <!-- Animated Logo -->
-      <div class="relative inline-block mb-6" id="logo-wrapper">
+      <div class="relative inline-block mb-6 reveal" id="logo-wrapper" style="animation-delay: 60ms;">
+        <div
+          class="absolute inset-0 -z-10 blur-2xl bg-gradient-to-br from-cyan-500/40 via-purple-500/40 to-pink-500/40 rounded-full scale-90"
+        ></div>
         <img
           src="/logo.svg"
           alt="GlianaPay"
-          class="w-24 h-24 bg-transparent rounded-3xl shadow-2xl shadow-purple-500/40 animate-pulse-glow"
+          class="w-24 h-24 bg-transparent animate-float-soft"
+          width="96"
+          height="96"
         />
-        <!-- Sparkles -->
-        <div class="absolute -top-2 -right-2 text-2xl animate-bounce">✨</div>
-        <div
-          class="absolute -bottom-1 -left-1 text-xl animate-bounce"
-          style="animation-delay: 0.5s;"
-        >
-          ⭐
-        </div>
       </div>
 
-      <h1 class="text-5xl md:text-7xl font-bold mb-4">
+      <h1
+        class="reveal text-5xl md:text-7xl font-bold mb-5 tracking-tight"
+        style="animation-delay: 120ms;"
+      >
         <span
           class="text-gradient bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient"
         >
-          GlianaPay
+          Get paid to stream.
         </span>
       </h1>
 
-      <p class="text-xl text-zinc-400 max-w-lg mx-auto mb-2">
-        Web3 Tipping Platform for Streamers
+      <p
+        class="reveal text-lg md:text-xl text-zinc-400 max-w-xl mx-auto"
+        style="animation-delay: 180ms;"
+      >
+        Accept SOL &amp; USDC tips with real-time OBS alerts. Instant payouts,
+        zero platform fees.
       </p>
-      <p class="text-zinc-500">Accept SOL tips with real-time OBS alerts</p>
     </div>
 
-    <!-- Search Form -->
-    <form on:submit={handleSubmit} class="w-full max-w-md">
-      <div class="relative group">
-        <div
-          class="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300"
-        ></div>
-        <input
-          type="text"
-          bind:value={slug}
-          placeholder="Enter streamer slug..."
-          class="relative w-full px-6 py-4 bg-zinc-900/90 border border-white/10 rounded-2xl text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500/50 transition-all text-center text-lg backdrop-blur"
-        />
-      </div>
-
-      <button
-        type="submit"
-        class="mt-6 w-full py-4 px-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/30"
-      >
-        <span class="inline-flex items-center gap-2">
-          <span>Go to Streamer</span>
-          <span>→</span>
-        </span>
-      </button>
-    </form>
+    <!-- Tipper search -->
+    <div class="reveal w-full max-w-md" style="animation-delay: 240ms;">
+      <p class="text-center text-xs uppercase tracking-[0.18em] text-zinc-500 mb-3">
+        Tipping a creator? Find their page
+      </p>
+      <form on:submit={handleSubmit}>
+        <div class="relative group">
+          <div
+            class="absolute -inset-0.5 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-60 group-focus-within:opacity-70 transition-opacity duration-300"
+          ></div>
+          <div class="relative flex items-center gap-2 bg-zinc-900/90 border border-white/10 rounded-2xl p-1.5 backdrop-blur">
+            <span class="pl-3 text-zinc-500 text-sm font-mono select-none hidden sm:inline"
+              >glianapay.com/tip/</span
+            >
+            <input
+              type="text"
+              bind:value={slug}
+              placeholder="creator-name"
+              aria-label="Creator page name"
+              class="flex-1 min-w-0 px-3 sm:px-1 py-3 bg-transparent text-white placeholder-zinc-500 focus:outline-none text-base"
+            />
+            <button
+              type="submit"
+              aria-label="Go to creator page"
+              class="shrink-0 px-4 py-3 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold text-white transition-all active:scale-95"
+            >
+              Go →
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
 
     <!-- Features -->
     <h2 class="sr-only">Features</h2>
-    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full">
       <div
-        class="glass-card p-5 rounded-2xl border border-white/10 hover:border-purple-500/30 transition-colors"
+        class="reveal feature-card group p-6 rounded-2xl"
+        style="animation-delay: 300ms;"
       >
-        <div class="mb-3">
-          <svg
-            class="w-8 h-8 text-yellow-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
-          </svg>
-        </div>
-        <h3 class="font-semibold text-white mb-1">Instant</h3>
-        <p class="text-sm text-zinc-500">Receive tips in seconds</p>
+        <img
+          src="/3dicons-wallet-dynamic-color.webp"
+          alt=""
+          class="w-14 h-14 mb-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110"
+          width="56"
+          height="56"
+          loading="lazy"
+        />
+        <h3 class="font-semibold text-white mb-1">Instant payouts</h3>
+        <p class="text-sm text-zinc-500">
+          SOL &amp; USDC land in your wallet in seconds. No middleman holding
+          your money.
+        </p>
       </div>
       <div
-        class="glass-card p-5 rounded-2xl border border-white/10 hover:border-cyan-500/30 transition-colors"
+        class="reveal feature-card group p-6 rounded-2xl"
+        style="animation-delay: 360ms;"
       >
-        <div class="mb-3">
-          <svg
-            class="w-8 h-8 text-cyan-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-            />
-          </svg>
-        </div>
-        <h3 class="font-semibold text-white mb-1">Web3 Native</h3>
-        <p class="text-sm text-zinc-500">Powered by Solana</p>
+        <img
+          src="/3dicons-video-cam-dynamic-color.webp"
+          alt=""
+          class="w-14 h-14 mb-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110"
+          width="56"
+          height="56"
+          loading="lazy"
+        />
+        <h3 class="font-semibold text-white mb-1">Live OBS alerts</h3>
+        <p class="text-sm text-zinc-500">
+          On-stream popups fire the moment a tip lands. Hype your chat in real
+          time.
+        </p>
       </div>
       <div
-        class="glass-card p-5 rounded-2xl border border-white/10 hover:border-pink-500/30 transition-colors"
+        class="reveal feature-card group p-6 rounded-2xl"
+        style="animation-delay: 420ms;"
       >
-        <div class="mb-3">
-          <svg
-            class="w-8 h-8 text-pink-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-            />
-          </svg>
-        </div>
-        <h3 class="font-semibold text-white mb-1">OBS Alerts</h3>
-        <p class="text-sm text-zinc-500">Real-time overlays</p>
+        <img
+          src="/3dicons-dollar-dynamic-color.webp"
+          alt=""
+          class="w-14 h-14 mb-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110"
+          width="56"
+          height="56"
+          loading="lazy"
+        />
+        <h3 class="font-semibold text-white mb-1">Keep 100%</h3>
+        <p class="text-sm text-zinc-500">
+          Zero platform fees. You only ever pay Solana network gas, which is
+          fractions of a cent.
+        </p>
       </div>
     </div>
 
     <!-- CTA -->
-    <div class="mt-12 flex flex-col items-center gap-4">
+    <div class="reveal mt-14 flex flex-col items-center gap-4" style="animation-delay: 480ms;">
       {#if isLoggedIn}
         <a
           href="/dashboard"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all"
+          class="inline-flex items-center gap-2 px-7 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all active:scale-95 shadow-lg shadow-purple-500/30"
         >
-          Go to Dashboard
+          Go to Dashboard →
         </a>
       {:else}
-        <a
-          href="/login"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all"
-        >
-          Start Tipping Page
-        </a>
+        <div class="flex flex-col sm:flex-row items-center gap-3">
+          <a
+            href="/login"
+            class="inline-flex items-center gap-2 px-7 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold transition-all active:scale-95 shadow-lg shadow-purple-500/30"
+          >
+            Start your tip page →
+          </a>
+          <a
+            href="/how"
+            class="inline-flex items-center gap-2 px-7 py-4 rounded-xl font-semibold text-zinc-300 border border-white/10 hover:border-white/25 hover:text-white transition-all"
+          >
+            See how it works
+          </a>
+        </div>
         <p class="text-sm text-zinc-500 max-w-md text-center">
-          Connect your wallet to create your tipping page. Share your link and
-          start receiving SOL and USDC tips with live OBS alerts.
+          Connect your wallet, claim your link, and start receiving tips in under
+          a minute.
         </p>
       {/if}
     </div>
@@ -350,22 +387,52 @@
     animation: gradient 3s ease infinite;
   }
 
-  @keyframes pulse-glow {
+  /* Gentle logo float — calmer than the old pulse-glow + emoji */
+  @keyframes float-soft {
     0%,
     100% {
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+      transform: translateY(0);
     }
     50% {
-      box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+      transform: translateY(-8px);
     }
   }
 
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+  .animate-float-soft {
+    animation: float-soft 4s ease-in-out infinite;
   }
 
-  .glass-card {
-    background: rgba(17, 17, 19, 0.8);
+  /* Staggered entrance. Global prefers-reduced-motion rule in app.css
+     collapses the duration so content snaps to its final (visible) state. */
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .reveal {
+    opacity: 0;
+    animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .feature-card {
+    background: rgba(17, 17, 19, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px);
+    transition:
+      border-color 0.3s ease,
+      transform 0.3s ease,
+      background 0.3s ease;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+    background: rgba(24, 24, 27, 0.7);
+    transform: translateY(-2px);
   }
 </style>

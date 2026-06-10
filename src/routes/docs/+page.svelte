@@ -60,15 +60,17 @@
   >
     <a
       href="/"
-      class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+      class="group flex items-center gap-2 sm:gap-3 transition-opacity"
     >
       <img
         src="/logo.svg"
         alt="GlianaPay"
-        class="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/20"
+        class="w-9 h-9 transition-transform group-hover:scale-110"
+        width="36"
+        height="36"
       />
       <span
-        class="font-bold text-sm sm:text-base md:text-lg tracking-wide hidden sm:inline"
+        class="font-bold text-sm sm:text-base md:text-lg tracking-tight hidden sm:inline"
         >GlianaPay</span
       >
     </a>
@@ -382,5 +384,12 @@
   .glass-card {
     background: rgba(17, 17, 19, 0.8);
     backdrop-filter: blur(12px);
+    transition:
+      border-color 0.3s ease,
+      transform 0.3s ease;
+  }
+  .glass-card:hover {
+    border-color: rgba(168, 85, 247, 0.3);
+    transform: translateY(-2px);
   }
 </style>

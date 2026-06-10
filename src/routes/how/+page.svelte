@@ -52,15 +52,17 @@
   >
     <a
       href="/"
-      class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+      class="group flex items-center gap-2 sm:gap-3 transition-opacity"
     >
       <img
         src="/logo.svg"
         alt="GlianaPay"
-        class="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/20"
+        class="w-9 h-9 transition-transform group-hover:scale-110"
+        width="36"
+        height="36"
       />
       <span
-        class="font-bold text-sm sm:text-base md:text-lg tracking-wide hidden sm:inline"
+        class="font-bold text-sm sm:text-base md:text-lg tracking-tight hidden sm:inline"
         >GlianaPay</span
       >
     </a>
@@ -75,17 +77,16 @@
     class="relative z-10 max-w-3xl mx-auto px-4 pt-0 pb-8 flex-1 overflow-y-auto"
   >
     <!-- Header -->
-    <div class="text-center mb-12">
-      <h1 class="text-2xl md:text-3xl font-bold mb-2">
-        <span
-          class="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent"
-        >
-          How to Use
-        </span>
+    <div class="text-center mb-12 pt-6">
+      <p class="text-xs uppercase tracking-[0.18em] text-zinc-500 mb-3">
+        Up and running in 5 steps
+      </p>
+      <h1 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">
+        <span class="text-gradient">How it works</span>
       </h1>
-      <p class="text-zinc-400 text-base max-w-xl mx-auto">
-        Learn how to set up your tipping page and start receiving SOL and USDC tips from
-        viewers with real-time OBS alerts.
+      <p class="text-zinc-400 text-base md:text-lg max-w-xl mx-auto">
+        Set up your tip page and start receiving SOL and USDC from viewers with
+        real-time OBS alerts.
       </p>
     </div>
 
@@ -196,9 +197,9 @@
     <div class="text-center mt-6 pb-6">
       <a
         href="/login"
-        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold transition-all"
+        class="inline-flex items-center gap-2 px-7 py-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 rounded-xl font-semibold transition-all active:scale-95 shadow-lg shadow-purple-500/30"
       >
-        Get Started
+        Start your tip page →
       </a>
     </div>
   </div>
@@ -208,5 +209,14 @@
   .glass-card {
     background: rgba(17, 17, 19, 0.8);
     backdrop-filter: blur(12px);
+    transition:
+      border-color 0.3s ease,
+      transform 0.3s ease,
+      background 0.3s ease;
+  }
+  .glass-card:hover {
+    border-color: rgba(168, 85, 247, 0.35);
+    background: rgba(24, 24, 27, 0.85);
+    transform: translateY(-2px);
   }
 </style>

@@ -711,14 +711,16 @@
             >
                 <button
                     on:click={goToHomepage}
-                    class="flex items-center gap-2 cursor-pointer"
+                    class="group flex items-center gap-2 cursor-pointer"
                 >
                     <img
                         src="/logo.svg"
                         alt="GlianaPay"
-                        class="w-10 h-10 bg-transparent rounded-xl"
+                        class="w-9 h-9 bg-transparent transition-transform group-hover:scale-110"
+                        width="36"
+                        height="36"
                     />
-                    <span class="font-bold hidden md:inline">GlianaPay</span>
+                    <span class="font-bold tracking-tight hidden md:inline">GlianaPay</span>
                 </button>
                 <div class="flex items-center gap-2 md:gap-4">
                     <a
