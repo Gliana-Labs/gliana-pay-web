@@ -274,15 +274,17 @@
     >
       <a
         href="/"
-        class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+        class="group flex items-center gap-2 sm:gap-3 transition-opacity"
       >
         <img
           src="/logo.svg"
           alt="GlianaPay"
-          class="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/20"
+          class="w-9 h-9 transition-transform group-hover:scale-110"
+          width="36"
+          height="36"
         />
         <span
-          class="font-bold text-sm sm:text-base md:text-lg tracking-wide hidden sm:inline"
+          class="font-bold text-sm sm:text-base md:text-lg tracking-tight hidden sm:inline"
           >GlianaPay</span
         >
       </a>
@@ -297,17 +299,28 @@
     <div class="relative z-10 max-w-xl mx-auto px-4 pt-[12vh] md:pt-[15vh] pb-8 flex-1">
 
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gradient">Streamer Login</h1>
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight">
+          <span class="text-gradient">Creator login</span>
+        </h1>
         <p class="text-zinc-400 mt-2">
-          Connect wallet to manage your tipping page
+          Connect your wallet to claim or manage your tip page
         </p>
       </div>
 
-      <div class="glass-card rounded-2xl p-6 border border-white/10">
+      <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-2xl shadow-black/40">
         {#if !connected}
           <!-- Connect Wallet via Wallet Adapter -->
-          <div class="space-y-3 flex flex-col items-center">
-            <p class="text-sm text-zinc-400 mb-2">Select your wallet to continue</p>
+          <div class="flex flex-col items-center">
+            <img
+              src="/3dicons-wallet-dynamic-color.webp"
+              alt=""
+              class="w-16 h-16 mb-3 animate-float-soft"
+              width="64"
+              height="64"
+            />
+            <p class="text-sm text-zinc-400 mb-4">
+              Pick your wallet to continue
+            </p>
             <WalletMultiButton />
           </div>
 

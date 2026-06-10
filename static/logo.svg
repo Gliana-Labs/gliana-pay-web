@@ -1,6 +1,6 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- [GP] text -->
-  <text x="32" y="43" font-family="JetBrains Mono, monospace" font-size="26" font-weight="bold" text-anchor="middle">
-    <tspan fill="#22d3ee">[</tspan><tspan fill="white">GP</tspan><tspan fill="#ec4899">]</tspan>
-  </text>
+  <!-- GlianaPay [GP] mark: refined neon terminal brackets + bold wordmark -->
+  <path d="M20.5 14 H12 V50 H20.5" fill="none" stroke="#22d3ee" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M43.5 14 H52 V50 H43.5" fill="none" stroke="#ec4899" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="32" y="32" font-family="'JetBrains Mono','DejaVu Sans Mono',ui-monospace,monospace" font-size="20" font-weight="700" text-anchor="middle" dominant-baseline="central" letter-spacing="0" fill="#fafafa">GP</text>
 </svg>

@@ -63,15 +63,17 @@
     >
         <a
             href="/"
-            class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+            class="group flex items-center gap-2 sm:gap-3 transition-opacity"
         >
             <img
                 src="/logo.svg"
                 alt="GlianaPay"
-                class="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/20"
+                class="w-9 h-9 transition-transform group-hover:scale-110"
+                width="36"
+                height="36"
             />
             <span
-                class="font-bold text-sm sm:text-base md:text-lg tracking-wide hidden sm:inline"
+                class="font-bold text-sm sm:text-base md:text-lg tracking-tight hidden sm:inline"
                 >GlianaPay</span
             >
         </a>
@@ -94,16 +96,12 @@
                 ></span>
                 In Active Development
             </div>
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">
-                <span
-                    class="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent"
-                >
-                    Product Roadmap
-                </span>
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
+                <span class="text-gradient">Where we're headed</span>
             </h1>
-            <p class="text-zinc-400 text-base max-w-xl mx-auto">
-                Here's where GlianaPay is headed. We build in public — this is
-                the honest, no-hype version of what's coming.
+            <p class="text-zinc-400 text-base md:text-lg max-w-xl mx-auto">
+                We build in public. This is the honest, no-hype version of
+                what's coming to GlianaPay.
             </p>
         </div>
 
