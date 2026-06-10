@@ -206,7 +206,7 @@
       </div>
 
       <h1
-        class="reveal text-5xl md:text-7xl font-bold mb-5 tracking-tight"
+        class="reveal text-4xl md:text-6xl font-bold mb-5 tracking-tight"
         style="animation-delay: 120ms;"
       >
         <span
