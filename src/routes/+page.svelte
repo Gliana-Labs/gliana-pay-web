@@ -128,8 +128,8 @@
           <img
             src="/logo.svg"
             alt="GlianaPay"
-            class="w-8 h-8 transition-transform group-hover:scale-110"
-            width="32"
+            class="h-8 w-auto transition-transform group-hover:scale-110"
+            width="43"
             height="32"
           />
           <span class="font-bold tracking-tight hidden sm:inline">GlianaPay</span>
@@ -199,9 +199,9 @@
         <img
           src="/logo.svg"
           alt="GlianaPay"
-          class="w-24 h-24 bg-transparent"
-          width="96"
-          height="96"
+          class="h-20 w-auto bg-transparent"
+          width="134"
+          height="100"
         />
       </div>
 

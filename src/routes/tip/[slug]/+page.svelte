@@ -590,7 +590,7 @@
       <img
         src="/logo.svg"
         alt="GlianaPay"
-        class="w-8 h-8 sm:w-9 sm:h-9 transition-transform group-hover:scale-110"
+        class="h-8 sm:h-9 w-auto transition-transform group-hover:scale-110"
         width="36"
         height="36"
       />
